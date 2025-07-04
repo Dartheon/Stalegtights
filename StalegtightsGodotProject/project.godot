@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="StalegtightsGodotProject"
+run/main_scene="uid://cnhykp74l5agf"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
