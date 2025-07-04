@@ -12,8 +12,14 @@ config_version=5
 
 config/name="StalegtightsGodotProject"
 run/main_scene="uid://cnhykp74l5agf"
-config/features=PackedStringArray("4.4", "Mobile")
+config/features=PackedStringArray("4.4", "C#", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SaveLoadManager="*res://Scripts/SaveLoadManager.cs"
+SoundManager="*res://Scripts/SoundManager.cs"
+GameManager="*res://Scripts/GameManager.cs"
 
 [display]
 

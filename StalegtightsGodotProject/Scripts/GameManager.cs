@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class SaveLoadManager : Node
+public partial class GameManager : Node
 {
     public override void _Ready()
     {
