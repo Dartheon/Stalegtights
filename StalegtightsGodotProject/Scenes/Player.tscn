@@ -1,13 +1,45 @@
-[gd_scene load_steps=3 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=10 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
+[ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
+[ext_resource type="Script" uid="uid://ttliqt6i2fqt" path="res://Scripts/GroundState.cs" id="3_bhhdu"]
+[ext_resource type="Script" uid="uid://gag34jhae8xb" path="res://Scripts/AirState.cs" id="4_megsn"]
+[ext_resource type="Script" uid="uid://c43t60qkrjp8c" path="res://Scripts/WallState.cs" id="5_yoq75"]
+[ext_resource type="Script" uid="uid://s2akdqcbw637" path="res://Scripts/ClimbingState.cs" id="6_ksbbd"]
+[ext_resource type="Script" uid="uid://m61immn8iknm" path="res://Scripts/DeathState.cs" id="7_glx4g"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qbkls"]
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_rpqav"]
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_rpqav")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="PlayerSprite" type="Sprite2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="PlayerCollision" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_qbkls")
+
+[node name="PlayerAnimation" type="AnimationPlayer" parent="."]
+
+[node name="PlayerAnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_rpqav")
+anim_player = NodePath("../PlayerAnimation")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_52ee3")
+
+[node name="GROUND STATE" type="Node" parent="StateMachine"]
+script = ExtResource("3_bhhdu")
+
+[node name="AIR STATE" type="Node" parent="StateMachine"]
+script = ExtResource("4_megsn")
+
+[node name="WALL STATE" type="Node" parent="StateMachine"]
+script = ExtResource("5_yoq75")
+
+[node name="CLIMBING STATE" type="Node" parent="StateMachine"]
+script = ExtResource("6_ksbbd")
+
+[node name="DEATH STATE" type="Node" parent="StateMachine"]
+script = ExtResource("7_glx4g")
