@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://biplutctlwy0i"]
+
+[node name="TimerClock" type="Node"]

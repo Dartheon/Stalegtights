@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://dfsno4lo838yd"]
+[gd_scene load_steps=4 format=3 uid="uid://dfsno4lo838yd"]
 
 [ext_resource type="Script" uid="uid://caklxtmia1wmw" path="res://Scripts/SoundManager.cs" id="1_eh0l7"]
+[ext_resource type="PackedScene" uid="uid://biplutctlwy0i" path="res://Scenes/TimerClock.tscn" id="2_76n4a"]
+[ext_resource type="Script" uid="uid://bo6wot1llq8fo" path="res://Scripts/TimerClock.cs" id="3_4m8jc"]
 
 [node name="SoundManager" type="Node"]
 script = ExtResource("1_eh0l7")
+
+[node name="ExpireTimerSFX" type="Timer" parent="."]
+one_shot = true
+
+[node name="NextRequestTimerClockSFX" parent="." instance=ExtResource("2_76n4a")]
+script = ExtResource("3_4m8jc")
+
+[connection signal="timeout" from="ExpireTimerSFX" to="." method="OnExpiredTimerTimeoutSFX"]

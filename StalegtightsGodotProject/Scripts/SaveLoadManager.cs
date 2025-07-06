@@ -41,7 +41,15 @@ public partial class SaveLoadManager : Node
     #endregion
 
     #region Sounds
-    //Will Be Filled In Soon
+    //Sound Loading Lists
+    public Dictionary<string, SoundRequestSFX> SFXPlayer { get; private set; }
+    public Dictionary<string, SoundRequestSFX> SFXEnemy { get; private set; }
+    public Dictionary<string, SoundRequestSFX> SFXEnvironment { get; private set; }
+    public Dictionary<string, SoundRequestBGMMenu> BGMMenu { get; private set; }
+    public Dictionary<string, SoundRequestBGMMenu> BGMAmbient { get; private set; }
+
+    private Node2D soundObjectSFX;
+    private Node soundObjectBGMMenu;
     #endregion
 
     #region Inventory
@@ -90,7 +98,54 @@ public partial class SaveLoadManager : Node
     #region Sounds
     private void SoundCreation()
     {
-        //Will Be Filled In Soon
+        //Load your sounds
+        #region Load Player Sounds
+        SFXPlayer = new()
+        {
+            //["PlayerShoot"] = new("PlayerShoot", (AudioStream)ResourceLoader.Load("res://Sounds/player_shoot.wav"), SoundRequestSFX.SoundSourceSFX.Player, false, "Master", 0.0f, 0.0f, soundObjectSFX)
+            // Add more sounds as needed...
+        };
+        #endregion
+
+        #region Load Enemy Sounds
+        SFXEnemy = new()
+        {
+            //["EnemyHit"] = new("EnemyHit", (AudioStream)ResourceLoader.Load("res://Sounds/enemy_hit.wav"), SoundRequestSFX.SoundSourceSFX.Enemy, false, "Master", 0.0f, 0.0f, soundObjectSFX)
+            // Add more sounds as needed...
+        };
+        #endregion
+
+        #region Load Environment Sounds
+        SFXEnvironment = new()
+        {
+            //["ChestOpen"] = new("ChestOpen", (AudioStream)ResourceLoader.Load("res://Sounds/chest_open.wav"), SoundRequestSFX.SoundSourceSFX.Environment, true, "Master", 0.0f, 0.0f, soundObjectSFX)
+            //Add more sounds as needed...
+        };
+        #endregion
+
+        #region Load Menu Sounds
+        BGMMenu = new()
+        {
+            //["MenuClick"] = new("MenuClick", (AudioStream)ResourceLoader.Load("res://Sounds/menu_click.wav"), SoundRequestBGMMenu.SoundSourceBGMMenu.Menu, "Master")
+            // Add more sounds as needed
+        };
+        #endregion
+
+        #region Load BGM Sounds
+        BGMAmbient = new()
+        {
+            #region BGM
+            //["TitleBGM"] = new("TitleBGM", (AudioStream)ResourceLoader.Load("res://Sounds/title_music.ogg"), SoundRequestBGMMenu.SoundSourceBGMMenu.BGM, "Master"),
+            //["RaveBGM"] = new("RaveBGM", (AudioStream)ResourceLoader.Load("res://Sounds/rave_bgm.ogg"), SoundRequestBGMMenu.SoundSourceBGMMenu.BGM, "Master"),
+            // Add more sounds as needed...
+            #endregion
+
+            #region Ambient
+            //["EerieAmbient"] = new("EerieAmbient", (AudioStream)ResourceLoader.Load("res://Sounds/eerie_ambient.mp3"), SoundRequestBGMMenu.SoundSourceBGMMenu.Ambient, "Ambient"),
+            //Add more sounds as needed...
+            #endregion
+        };
+        #endregion
     }
     #endregion
 

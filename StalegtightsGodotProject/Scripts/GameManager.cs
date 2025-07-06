@@ -8,7 +8,7 @@ public partial class GameManager : Node
     #region Class Scripts
     private SaveLoadManager slManager;
     private SoundManager soundManager;
-    //private World world;
+    private World world;
     #endregion
 
     #region Scenes
@@ -18,12 +18,11 @@ public partial class GameManager : Node
 
     #region Sounds
     #region Sound Queues
-    //Will be Addressed Later//
-    /*private Dictionary<string, SoundRequestSFX> sfxPlayer;
+    private Dictionary<string, SoundRequestSFX> sfxPlayer;
     private Dictionary<string, SoundRequestSFX> sfxEnvironment;
     private Dictionary<string, SoundRequestBGMMenu> bgmMenu;
     private Dictionary<string, SoundRequestBGMMenu> bgmAmbient;
-    private Queue<string> soundQueue = new();*/
+    private Queue<string> soundQueue = new();
     #endregion
 
     #endregion
@@ -38,6 +37,7 @@ public partial class GameManager : Node
         GameStartScenes();
 
         //Sets the BGM to play at the game start
+        //Currently off for testing//
         //SetBGM();
     }
     #endregion
@@ -47,15 +47,13 @@ public partial class GameManager : Node
     {
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
         soundManager = GetNode<SoundManager>("/root/SoundManager");
-        //Will Be Addressed Later//
-        //world = GetNode<World>("/root/Main/World");
+        world = GetNode<World>("/root/Main/World");
 
-        //assign to new variables to shorten code
-        //Will Be Addressed Later//
-        /*sfxPlayer = slManager.SFXPlayer;
+        //Assign to new variables to shorten code
+        sfxPlayer = slManager.SFXPlayer;
         sfxEnvironment = slManager.SFXEnvironment;
         bgmMenu = slManager.BGMMenu;
-        bgmAmbient = slManager.BGMAmbient;*/
+        bgmAmbient = slManager.BGMAmbient;
     }
     #endregion
 
@@ -77,8 +75,7 @@ public partial class GameManager : Node
             if (slManager.ScenesLoaded.Values.Any(state => state.SceneState))
             {
                 //CallDeferred is used here to avoid errors when Initializing new nodes rapidly
-                //Will Be Addressed Later//
-                //world.CallDeferred("LoadSceneWorld");
+                world.CallDeferred("LoadSceneWorld");
             }
         }
     }
@@ -97,8 +94,7 @@ public partial class GameManager : Node
         if (slManager.ScenesLoaded.Values.Any(state => state.SceneState))
         {
             //CallDeferred is used here to avoid errors when Initializing new nodes rapidly
-            //Will Be Addressed Later//
-            //world.CallDeferred("LoadSceneWorld");
+            world.CallDeferred("LoadSceneWorld");
         }
     }
     #endregion
@@ -106,9 +102,8 @@ public partial class GameManager : Node
     #region Sounds
     private void SetBGM()
     {
-        //Will Be Addressed Later//
-        /*string startSound;
-        //soundManager.PlayBGMMenu(bgmAmbient.GetValueOrDefault("TitleBGM").Source, bgmAmbient.GetValueOrDefault("TitleBGM").SoundName);
+        string startSound;
+        soundManager.PlayBGMMenu(bgmAmbient.GetValueOrDefault("TitleBGM").Source, bgmAmbient.GetValueOrDefault("TitleBGM").SoundName);
         if (bgmAmbient.TryGetValue(startSound = "TitleBGM", out var soundRequest))
         {
             soundManager.PlayBGMMenu(soundRequest.Source, soundRequest.SoundName);
@@ -116,13 +111,12 @@ public partial class GameManager : Node
         else
         {
             GD.PushWarning($"Sound key '{startSound}' not found in bgmAmbient.");
-        }*/
+        }
     }
 
     private void QueueEnvironmentSFX(string soundKey)
     {
-        //Will Be Addressed Later//
-        /*if (sfxEnvironment.TryGetValue(soundKey, out SoundRequestSFX soundData))
+        if (sfxEnvironment.TryGetValue(soundKey, out SoundRequestSFX soundData))
         {
             soundQueue.Enqueue(soundData.SoundName);
             SendEnvironmentSFXRequest(); // Call after enqueueing a valid sound
@@ -130,20 +124,19 @@ public partial class GameManager : Node
         else
         {
             GD.PushWarning($"QueueEnvironmentSFX Sound not found: {soundKey}");
-        }*/
+        }
     }
 
     private void SendEnvironmentSFXRequest()
     {
-        //Will Be Addressed Later//
-        /*if (soundQueue.Count > 0)
+        if (soundQueue.Count > 0)
         {
             string soundName = soundQueue.Dequeue();
             if (sfxEnvironment.TryGetValue(soundName, out SoundRequestSFX soundData))
             {
                 soundManager.PlaySFX(soundData.Source, soundData.SoundName);
             }
-        }*/
+        }
     }
     #endregion
     #endregion

@@ -17,9 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SaveLoadManager="*res://Scripts/SaveLoadManager.cs"
-SoundManager="*res://Scripts/SoundManager.cs"
-GameManager="*res://Scripts/GameManager.cs"
+SaveLoadManager="*res://Scenes/SaveLoadManager.tscn"
+SoundManager="*res://Scenes/SoundManager.tscn"
+GameManager="*res://Scenes/GameManager.tscn"
 
 [display]
 
