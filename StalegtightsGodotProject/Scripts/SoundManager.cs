@@ -127,8 +127,8 @@ public partial class SoundManager : Node
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
         gameManager = GetNode<GameManager>("/root/GameManager");
         playerScript = GetNode<Player>("/root/Main/World/Player");
-        nextRequestTimerClockSFX = GetNode<TimerClock>("/root/Main/SoundManager/NextRequestTimerClockSFX");
-        expireTimerSFX = GetNode<Timer>("/root/Main/SoundManager/ExpireTimerSFX");
+        nextRequestTimerClockSFX = GetNode<TimerClock>("/root/SoundManager/NextRequestTimerClockSFX");
+        expireTimerSFX = GetNode<Timer>("/root/SoundManager/ExpireTimerSFX");
 
         //assign to new variables to shorten code
         sfxPlayer = slManager.SFXPlayer;
