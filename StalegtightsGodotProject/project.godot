@@ -39,6 +39,25 @@ naming/default_signal_callback_to_self_name="On{signal_name}"
 naming/scene_name_casing=1
 naming/script_name_casing=1
 
+[input]
+
+move_right={
+"deadzone": 0.2,
+"events": []
+}
+move_left={
+"deadzone": 0.2,
+"events": []
+}
+jump={
+"deadzone": 0.2,
+"events": []
+}
+duck={
+"deadzone": 0.2,
+"events": []
+}
+
 [physics]
 
 2d/run_on_separate_thread=true

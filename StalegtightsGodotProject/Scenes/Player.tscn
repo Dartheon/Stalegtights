@@ -245,11 +245,12 @@ states/Start/position = Vector2(129, 300)
 "states/WALL STATE/node" = SubResource("AnimationNodeStateMachine_ksbbd")
 "states/WALL STATE/position" = Vector2(973, 499)
 transitions = ["Start", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_glx4g"), "GROUND STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_miouo"), "AIR STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_o3h8g"), "GROUND STATE", "CLIMB STATE", SubResource("AnimationNodeStateMachineTransition_1e7my"), "CLIMB STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_arntx"), "AIR STATE", "WALL STATE", SubResource("AnimationNodeStateMachineTransition_lslt6"), "WALL STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_ulo2v"), "GROUND STATE", "WALL STATE", SubResource("AnimationNodeStateMachineTransition_1iu4k"), "WALL STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_m0x7a"), "AIR STATE", "CLIMB STATE", SubResource("AnimationNodeStateMachineTransition_5v66d"), "CLIMB STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_x63xi"), "GROUND STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_i2e8t"), "CLIMB STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_qidb7"), "AIR STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_70hv0"), "WALL STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_8flut"), "Start", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_u7x0b")]
+graph_offset = Vector2(-25, -21)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
-graph_offset = Vector2(-22.2728, 23)
+graph_offset = Vector2(-27, -89)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(260, 120)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_kih0c")
@@ -274,13 +275,14 @@ libraries = {
 tree_root = SubResource("AnimationNodeBlendTree_52ee3")
 advance_expression_base_node = NodePath("../PLAYERSTATEMACHINE")
 anim_player = NodePath("../PlayerAnimation")
-"parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position" = 0.998778
+"parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position" = -0.988998
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position" = 0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/TRANSITION/blend_position" = 0
 parameters/TimeScale/scale = 1.0
 
 [node name="PLAYERSTATEMACHINE" type="Node" parent="."]
 script = ExtResource("2_52ee3")
+InitialState = NodePath("GROUND STATE")
 
 [node name="GROUND STATE" type="Node" parent="PLAYERSTATEMACHINE"]
 script = ExtResource("3_bhhdu")
