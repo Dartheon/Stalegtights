@@ -13,6 +13,9 @@ public partial class GroundState : States
     PlayerScript        - Player
     Gravity             - Float
     */
+    /*Variables from StateMachine that need direct Referenece
+    StateMachineScript.smPlayerVelocity     - Vector2
+    */
     #endregion
 
     #region Animation
