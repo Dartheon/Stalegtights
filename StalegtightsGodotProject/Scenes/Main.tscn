@@ -8,6 +8,7 @@
 [node name="World" parent="." instance=ExtResource("2_kln2b")]
 
 [node name="Player" parent="World" instance=ExtResource("2_idj7w")]
+spawnPosition = Vector2(0, -100)
 
 [node name="Camera2D" type="Camera2D" parent="World/Player"]
 zoom = Vector2(1.5, 1.5)

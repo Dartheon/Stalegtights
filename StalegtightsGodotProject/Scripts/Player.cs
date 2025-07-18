@@ -14,6 +14,10 @@ public partial class Player : CharacterBody2D
     private Dictionary<string, SoundRequestSFX> sfxPlayer;
     private Queue<string> soundQueue = new();
     #endregion
+
+    #region Position
+    [Export] public Vector2 spawnPosition;
+    #endregion
     #endregion
 
     #region Methods
@@ -30,6 +34,8 @@ public partial class Player : CharacterBody2D
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
         soundManager = GetNode<SoundManager>("/root/SoundManager");
         gameManager = GetNode<GameManager>("/root/GameManager");
+
+        Position = spawnPosition;
 
         //assign to new variables to shorten code
         sfxPlayer = slManager.SFXPlayer;

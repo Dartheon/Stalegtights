@@ -44,7 +44,7 @@ public partial class World : Node2D
                 {
                     Node newScene = slManager.ScenesLoaded[sceneName].ScenePackedLoaded.Instantiate();
                     slManager.ScenesLoaded[sceneName].SceneNode = newScene;
-                    AddChild(newScene);
+                    GetChild(0).AddChild(newScene);
                 }
             }
             //if the node state is false then it checks to see if it exists, if it does exist then it removes it from the game world
@@ -53,7 +53,7 @@ public partial class World : Node2D
                 // As long as the Node exists, remove and free it. Otherwise nothing needs to happen
                 if (currentScene != null)
                 {
-                    RemoveChild(currentScene);
+                    GetChild(0).RemoveChild(currentScene);
                     currentScene.QueueFree();
                     slManager.ScenesLoaded[sceneName].SceneNode = null;
                 }
