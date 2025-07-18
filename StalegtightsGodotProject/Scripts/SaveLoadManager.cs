@@ -90,6 +90,7 @@ public partial class SaveLoadManager : Node
         {
             //Example//
             //["Area1"] = new("Area1", false, (PackedScene)ResourceLoader.Load("res://Areas/Area1.tscn"), null),
+            ["TestScene"] = new("TestScene", false, (PackedScene)ResourceLoader.Load("res://Scenes/TestScene.tscn"), null),
             // Add more scenes if needed...
         };
     }
