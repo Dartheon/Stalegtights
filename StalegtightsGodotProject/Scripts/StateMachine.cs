@@ -31,6 +31,7 @@ public partial class StateMachine : Node
 
     #region Movement
     public Vector2 smPlayerVelocity;
+    [Export] public float smPlayerJumpVelocity = -500.0f;
     #endregion
 
     #region Methods

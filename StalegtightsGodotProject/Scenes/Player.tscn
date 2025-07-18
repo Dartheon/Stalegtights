@@ -473,7 +473,7 @@ parameters/TimeScale/scale = 1.0
 
 [node name="PLAYERSTATEMACHINE" type="Node" parent="."]
 script = ExtResource("2_52ee3")
-InitialState = NodePath("GROUND STATE")
+InitialState = NodePath("AIR STATE")
 
 [node name="GROUND STATE" type="Node" parent="PLAYERSTATEMACHINE"]
 script = ExtResource("3_bhhdu")

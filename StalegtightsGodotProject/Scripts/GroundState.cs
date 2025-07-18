@@ -63,7 +63,7 @@ public partial class GroundState : States
         #endregion
 
         #region Movement
-        StateMachineScript.smPlayerVelocity.Y = 0; //Sets the Y Velocity to 0 when on the ground
+        //
         #endregion
     }
 
@@ -213,9 +213,14 @@ public partial class GroundState : States
         #endregion
 
         #region Check if Character is on the Ground
-        if (!PlayerCB2D.IsOnFloor() && !PlayerCB2D.IsOnWall())
+        if (!PlayerCB2D.IsOnFloor())
         {
             NewStateChange = AIRSTATESTRING;
+        }
+        else
+        {
+            //sets the velocity to 0 if the player is not touching the ground
+            StateMachineScript.smPlayerVelocity.Y = 0.0f;
         }
         #endregion
 
@@ -252,7 +257,11 @@ public partial class GroundState : States
 
         #region Movement
         #region Detect any Jump and keep track of the type of jump used
-        //
+        if (Input.IsActionJustPressed("jump"))
+        {
+            StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
+            NewStateChange = AIRSTATESTRING;
+        }
         #endregion
 
         #region Check for Braking input - add code

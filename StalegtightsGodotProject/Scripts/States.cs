@@ -34,6 +34,7 @@ public partial class States : Node
     #region Movement
     // Get the gravity from the project settings to be synced with RigidBody nodes.
     public float Gravity => StateMachineScript.smGravity;
+    public float PlayerJumpVelocity => StateMachineScript.smPlayerJumpVelocity;
     #endregion
     #endregion
 

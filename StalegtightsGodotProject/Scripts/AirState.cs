@@ -173,7 +173,7 @@ public partial class AirState : States
 
         #region Movement
         #region Apply Gravity on Character
-        StateMachineScript.smPlayerVelocity.Y = Gravity; //When in the air the Y Velocity is equal to the Gravity Value 
+        StateMachineScript.smPlayerVelocity.Y += Gravity * (float)delta; //When in the air the Y Velocity is equal to the Gravity Value 
         #endregion
 
         #region Landing - check to see if leaving air state or chaining to next jump from input during timing window - add code
