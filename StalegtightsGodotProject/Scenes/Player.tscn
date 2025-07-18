@@ -258,7 +258,7 @@ nodes/TimeScale/position = Vector2(720, 140)
 nodes/output/position = Vector2(1120, 200)
 node_connections = [&"TimeScale", 0, &"PlayerStateMachine", &"output", 0, &"TimeScale"]
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["Player"]]
 script = ExtResource("1_rpqav")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]

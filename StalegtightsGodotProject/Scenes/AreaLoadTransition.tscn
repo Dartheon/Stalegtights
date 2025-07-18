@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bh1dtibldp68d"]
+
+[ext_resource type="Script" uid="uid://0518v7unqpad" path="res://Scripts/AreaSceneLoader.cs" id="1_eyr1t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rqmta"]
+
+[node name="AreaLoadTransition" type="Node2D"]
+script = ExtResource("1_eyr1t")
+
+[node name="TransitionBoundary" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TransitionBoundary"]
+shape = SubResource("RectangleShape2D_rqmta")
+
+[connection signal="body_entered" from="TransitionBoundary" to="." method="OnBodyEnteredSceneLoading"]
