@@ -26,18 +26,17 @@ public partial class StateMachine : Node
     #endregion
 
     #region Animations
-    private AnimationTree playerAnimTree;
-    private AnimationNodeStateMachinePlayback playback;
-    private string playerState = "DEFAULT STATE";
-    private float lastFacingDirection = 1.0f;
-    public bool PlayerAnimIdle { get; set; }
-    public bool hasWeapon;
-    public bool hasStalag;
+    public AnimationTree PlayerAnimTree { get; set; } //Used to access the different variables of the AnimationTree
+    private string playerState = "DEFAULT STATE"; //Used for animation tree transitions between state machines
+    public float LastFacingDirection { get; set; } = 1.0f; //Identifies the Players last facing direction used for animation blend
+    public bool PlayerAnimIdle { get; set; } //Checks for player movement
+    public bool hasWeapon; //bool to see if player is holding weapon
+    public bool hasStalag; //bool to see if player is holding stalag
     #endregion
 
     #region Movement
-    public Vector2 smPlayerVelocity;
-    [Export] public float smPlayerJumpVelocity = -500.0f;
+    public Vector2 smPlayerVelocity; //The Variable for storing and changing the Players Velocity
+    [Export] public float smPlayerJumpVelocity = -500.0f; //Temp variable for jumping
     #endregion
 
     #region Methods
@@ -49,8 +48,7 @@ public partial class StateMachine : Node
 
         smGravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
-        playerAnimTree = GetNode<AnimationTree>("/root/Main/World/Player/PlayerAnimationTree");
-        playback = (AnimationNodeStateMachinePlayback)playerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/playback");
+        PlayerAnimTree = GetNode<AnimationTree>("/root/Main/World/Player/PlayerAnimationTree");
 
         //Sets the State Nodes and Initializes them in order
         foreach (Node stateNode in GetChildren())
@@ -72,18 +70,6 @@ public partial class StateMachine : Node
     public override void _Process(double delta)
     {
         CurrentState.Update(delta);
-
-        GD.Print(playback.GetCurrentNode());
-        PlayerAnimIdle = smPlayerVelocity.X == 0.0f ? true : false;
-        GD.Print(PlayerAnimIdle);
-
-        if (Mathf.Abs(smPlayerVelocity.X) > 0.1f) // If moving, update facing
-        {
-            lastFacingDirection = smPlayerVelocity.X > 0 ? 1f : -1f;
-            GD.Print(lastFacingDirection);
-        }
-
-        playerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position", lastFacingDirection);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -93,10 +79,6 @@ public partial class StateMachine : Node
 
         // Call current state for physics-based updates (after input handling)
         CurrentState.PhysicsUpdate(delta);
-
-        float runBlend = Mathf.Clamp(smPlayerVelocity.X / 500.0f, -1f, 1f);
-        GD.Print(runBlend);
-        playerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position", runBlend);
 
         smPlayerCB2D.Velocity = smPlayerVelocity;
         smPlayerCB2D.MoveAndSlide();
@@ -115,7 +97,7 @@ public partial class StateMachine : Node
 
         CurrentState.Exit();
         CurrentState = newState;
-        playerState = key; //For changing Animations in the Tree
+        playerState = key; //For changing States in the AnimationTree
         CurrentState.Enter();
         SMPreviousState = key;
     }

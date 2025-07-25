@@ -22,7 +22,8 @@ public partial class GroundState : States
     #endregion
 
     #region Animation
-    public bool PlayerAnimIdle { get; set; } = true;
+    //
+    private float runBlend;
     #endregion
 
     #region Movement
@@ -62,6 +63,7 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
+        //Used for testing, will be handled different later
         StateMachineScript.hasStalag = HasStalag;
         StateMachineScript.hasWeapon = HasWeapon;
         #endregion
@@ -81,7 +83,22 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
-        //
+        //Sets the Idle bool to true or false
+        StateMachineScript.PlayerAnimIdle = StateMachineScript.smPlayerVelocity.X == 0.0f ? true : false;
+
+        //Normalizes the Velocity before setting the BlendSpace value to it
+        runBlend = Mathf.Clamp(StateMachineScript.smPlayerVelocity.X / groundMoveSpeed, -1f, 1f);
+        //Sets the blend Value in the AnimationTree
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position", runBlend);
+
+        //Updates the LastFacingDirection based on velocity
+        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.1f) // If moving, update facing
+        {
+            StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1f : -1f;
+        }
+
+        //Sets the blend using te LastFacingPosition
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position", StateMachineScript.LastFacingDirection);
         #endregion
     }
 

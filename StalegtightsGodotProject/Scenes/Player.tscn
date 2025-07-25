@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=61 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://m61immn8iknm" path="res://Scripts/DeathState.cs" id="7_glx4g"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qbkls"]
-radius = 20.0
+radius = 29.0
 height = 96.0
 
 [sub_resource type="Animation" id="Animation_bhhdu"]
@@ -152,7 +152,7 @@ blend_point_0/node = SubResource("AnimationNodeAnimation_o3h8g")
 blend_point_0/pos = -1.0
 blend_point_1/node = SubResource("AnimationNodeAnimation_1e7my")
 blend_point_1/pos = 1.0
-value_label = "smPlayerVelocity.X.Normalized"
+value_label = "LastFacingDirection"
 blend_mode = 1
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_lslt6"]
@@ -166,6 +166,7 @@ blend_point_0/node = SubResource("AnimationNodeAnimation_lslt6")
 blend_point_0/pos = -1.0
 blend_point_1/node = SubResource("AnimationNodeAnimation_ulo2v")
 blend_point_1/pos = 1.0
+value_label = "smPlayerVelocity.X"
 blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_avx33"]
@@ -180,14 +181,18 @@ advance_expression = "PlayerAnimIdle"
 advance_mode = 2
 advance_expression = "!PlayerAnimIdle"
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yoq75"]
+advance_mode = 2
+advance_expression = "!PlayerAnimIdle"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_glx4g"]
 states/End/position = Vector2(1228, 188)
 states/IDLE/node = SubResource("AnimationNodeBlendSpace1D_arntx")
-states/IDLE/position = Vector2(374, 188)
+states/IDLE/position = Vector2(416, 318)
 states/RUN/node = SubResource("AnimationNodeBlendSpace1D_1iu4k")
-states/RUN/position = Vector2(998, 188)
+states/RUN/position = Vector2(416, 117)
 states/Start/position = Vector2(153, 188)
-transitions = ["Start", "IDLE", SubResource("AnimationNodeStateMachineTransition_avx33"), "RUN", "IDLE", SubResource("AnimationNodeStateMachineTransition_bhhdu"), "IDLE", "RUN", SubResource("AnimationNodeStateMachineTransition_megsn")]
+transitions = ["Start", "IDLE", SubResource("AnimationNodeStateMachineTransition_avx33"), "RUN", "IDLE", SubResource("AnimationNodeStateMachineTransition_bhhdu"), "IDLE", "RUN", SubResource("AnimationNodeStateMachineTransition_megsn"), "Start", "RUN", SubResource("AnimationNodeStateMachineTransition_yoq75")]
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_hkrn1"]
 
@@ -341,7 +346,7 @@ texture = ExtResource("2_bhhdu")
 hframes = 24
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
-position = Vector2(5, 30)
+position = Vector2(1, 31)
 shape = SubResource("CapsuleShape2D_qbkls")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
