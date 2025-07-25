@@ -12,14 +12,17 @@ public partial class GroundState : States
     PlayerCB2D          - CharacterBody2D
     PlayerScript        - Player
     Gravity             - Float
+    PlayerAnimIdle      - Bool
     */
     /*Variables from StateMachine that need direct Referenece
     StateMachineScript.smPlayerVelocity     - Vector2
+    StateMachineScript.hasWeapon            - bool
+    StateMachineScript.hasStalag            - bool
     */
     #endregion
 
     #region Animation
-    //
+    public bool PlayerAnimIdle { get; set; } = true;
     #endregion
 
     #region Movement
@@ -59,7 +62,8 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
-        //
+        StateMachineScript.hasStalag = HasStalag;
+        StateMachineScript.hasWeapon = HasWeapon;
         #endregion
 
         #region Movement
