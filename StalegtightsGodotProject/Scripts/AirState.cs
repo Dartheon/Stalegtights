@@ -16,6 +16,9 @@ public partial class AirState : States
 
     /*Variables from StateMachine that need direct Referenece
     StateMachineScript.smPlayerVelocity     - Vector2
+    StateMachineScript.PlayerAnimTree       - AnimationTree
+    StateMachineScript.LastFacingDirection  - float
+    StateMachineScript.isJumping            - bool
     */
     #endregion
 
@@ -61,7 +64,9 @@ public partial class AirState : States
         #endregion
 
         #region Animations
-        //
+        //Used for testing, will be handled different later
+        StateMachineScript.hasStalag = HasStalag;
+        StateMachineScript.hasWeapon = HasWeapon;
         #endregion
 
         #region Movement
@@ -76,7 +81,14 @@ public partial class AirState : States
         #endregion
 
         #region Animation
-        //
+        //Updates the LastFacingDirection based on velocity
+        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.1f) // If moving, update facing
+        {
+            StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1f : -1f;
+        }
+
+        //Sets the blend using te LastFacingPosition
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/JUMP/blend_position", StateMachineScript.LastFacingDirection);
         #endregion
     }
 
@@ -187,6 +199,8 @@ public partial class AirState : States
         #region Check if the Character is Grounded
         if (PlayerCB2D.IsOnFloor())
         {
+            IsLanding = true;
+            StateMachineScript.isLanding = IsLanding;
             NewStateChange = GROUNDSTATESTRING;
         }
         #endregion

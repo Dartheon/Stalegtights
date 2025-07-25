@@ -30,6 +30,7 @@ public partial class States : Node
     #region Animations
     public bool HasWeapon { get; set; } = false;
     public bool HasStalag { get; set; } = false;
+    public bool IsLanding { get; set; } = false;
     #endregion
 
     #region Movement

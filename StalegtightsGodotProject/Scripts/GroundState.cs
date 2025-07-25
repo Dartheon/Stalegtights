@@ -12,12 +12,15 @@ public partial class GroundState : States
     PlayerCB2D          - CharacterBody2D
     PlayerScript        - Player
     Gravity             - Float
-    PlayerAnimIdle      - Bool
     */
     /*Variables from StateMachine that need direct Referenece
     StateMachineScript.smPlayerVelocity     - Vector2
     StateMachineScript.hasWeapon            - bool
     StateMachineScript.hasStalag            - bool
+    StateMachineScript.LastFacingDirection  - float
+    StateMachineScript.PlayerAnimIdle       - bool
+    StateMachineScript.PlayerAnimTree       - AnimationTree
+    StateMachineScript.isJumping            - bool
     */
     #endregion
 
@@ -31,6 +34,7 @@ public partial class GroundState : States
     #endregion
     #endregion
 
+    #region Start
     public override void Start()
     {
         #region DEBUG
@@ -49,7 +53,9 @@ public partial class GroundState : States
         //
         #endregion
     }
+    #endregion
 
+    #region Enter
     public override void Enter()
     {
         //set up stuff when entering this state
@@ -66,13 +72,16 @@ public partial class GroundState : States
         //Used for testing, will be handled different later
         StateMachineScript.hasStalag = HasStalag;
         StateMachineScript.hasWeapon = HasWeapon;
+        IsLanding = false;
         #endregion
 
         #region Movement
         //
         #endregion
     }
+    #endregion
 
+    #region Update
     /*Update Tasks
      U* Animations
     */
@@ -101,7 +110,9 @@ public partial class GroundState : States
         StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position", StateMachineScript.LastFacingDirection);
         #endregion
     }
+    #endregion
 
+    #region HandleContinuousInput
     /*HandleContinuousinput Tasks
      CIPU* detect input for ducking
 
@@ -202,7 +213,9 @@ public partial class GroundState : States
         #endregion
         #endregion
     }
+    #endregion
 
+    #region PhysicsUpdate
     /*Physics Update Tasks
      PUPU* check and apply for stun
      PUPU* check and apply for knockback
@@ -253,7 +266,9 @@ public partial class GroundState : States
         #endregion
         #endregion
     }
+    #endregion
 
+    #region HandleInput
     /*HandleInput Tasks
      HIPU* detect any jump
      HIPU* detect input for braking
@@ -331,7 +346,9 @@ public partial class GroundState : States
         #endregion
         #endregion
     }
+    #endregion
 
+    #region Exit
     public override void Exit()
     {
         //clean up this state when moving out of it
@@ -352,4 +369,5 @@ public partial class GroundState : States
         //
         #endregion
     }
+    #endregion
 }

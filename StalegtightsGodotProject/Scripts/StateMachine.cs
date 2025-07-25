@@ -5,7 +5,7 @@ public partial class StateMachine : Node
 {
     #region DEBUG
     //DEBUG Variables Go Here...
-    //
+    public AnimationNodeStateMachinePlayback playback;
     #endregion
 
     #region General
@@ -30,8 +30,9 @@ public partial class StateMachine : Node
     private string playerState = "DEFAULT STATE"; //Used for animation tree transitions between state machines
     public float LastFacingDirection { get; set; } = 1.0f; //Identifies the Players last facing direction used for animation blend
     public bool PlayerAnimIdle { get; set; } //Checks for player movement
-    public bool hasWeapon; //bool to see if player is holding weapon
-    public bool hasStalag; //bool to see if player is holding stalag
+    public bool hasWeapon = false; //bool to see if player is holding weapon
+    public bool hasStalag = false; //bool to see if player is holding stalag
+    public bool isLanding = false; //bool to see if player is jumping
     #endregion
 
     #region Movement
@@ -49,6 +50,7 @@ public partial class StateMachine : Node
         smGravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
         PlayerAnimTree = GetNode<AnimationTree>("/root/Main/World/Player/PlayerAnimationTree");
+        playback = (AnimationNodeStateMachinePlayback)PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/playback");
 
         //Sets the State Nodes and Initializes them in order
         foreach (Node stateNode in GetChildren())
@@ -70,6 +72,7 @@ public partial class StateMachine : Node
     public override void _Process(double delta)
     {
         CurrentState.Update(delta);
+        GD.Print(playback.GetCurrentNode());
     }
 
     public override void _PhysicsProcess(double delta)
