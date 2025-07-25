@@ -23,8 +23,8 @@ GameManager="*res://Scenes/GameManager.tscn"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=1908
+window/size/viewport_height=980
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

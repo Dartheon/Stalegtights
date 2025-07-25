@@ -13,33 +13,6 @@
 radius = 29.0
 height = 96.0
 
-[sub_resource type="Animation" id="Animation_bhhdu"]
-resource_name = "IDLE_RIGHT"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite:flip_h")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerSprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
 [sub_resource type="Animation" id="Animation_megsn"]
 resource_name = "IDLE_LEFT"
 tracks/0/type = "value"
@@ -67,11 +40,8 @@ tracks/1/keys = {
 "values": [0]
 }
 
-[sub_resource type="Animation" id="Animation_yoq75"]
-resource_name = "RUN_RIGHT"
-length = 0.5
-loop_mode = 1
-step = 0.0625
+[sub_resource type="Animation" id="Animation_bhhdu"]
+resource_name = "IDLE_RIGHT"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -91,10 +61,68 @@ tracks/1/path = NodePath("PlayerSprite:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [14, 15, 16, 17, 18, 19, 20, 21]
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_miouo"]
+resource_name = "JUMP_LEFT"
+length = 0.5
+step = 0.0714
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprite:flip_h")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0714, 0.1428, 0.2142, 0.2856, 0.357, 0.4284),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 3, 4, 5, 6, 7]
+}
+
+[sub_resource type="Animation" id="Animation_glx4g"]
+resource_name = "JUMP_RIGHT"
+length = 0.5
+step = 0.0714
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprite:flip_h")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0714, 0.1428, 0.2142, 0.2856, 0.357, 0.4284),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 3, 4, 5, 6, 7]
 }
 
 [sub_resource type="Animation" id="Animation_ksbbd"]
@@ -127,10 +155,11 @@ tracks/1/keys = {
 "values": [14, 15, 16, 17, 18, 19, 20, 21]
 }
 
-[sub_resource type="Animation" id="Animation_glx4g"]
-resource_name = "JUMP_RIGHT"
+[sub_resource type="Animation" id="Animation_yoq75"]
+resource_name = "RUN_RIGHT"
 length = 0.5
-step = 0.0714
+loop_mode = 1
+step = 0.0625
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -150,39 +179,10 @@ tracks/1/path = NodePath("PlayerSprite:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0714, 0.1428, 0.2142, 0.2856, 0.357, 0.4284),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [1, 2, 3, 4, 5, 6, 7]
-}
-
-[sub_resource type="Animation" id="Animation_miouo"]
-resource_name = "JUMP_LEFT"
-length = 0.5
-step = 0.0714
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerSprite:flip_h")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerSprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0714, 0.1428, 0.2142, 0.2856, 0.357, 0.4284),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [1, 2, 3, 4, 5, 6, 7]
+"values": [14, 15, 16, 17, 18, 19, 20, 21]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_glx4g"]
@@ -467,6 +467,7 @@ graph_offset = Vector2(94, 58)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
+graph_offset = Vector2(584.022, 284.176)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(250, 100)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_kih0c")
@@ -498,7 +499,7 @@ anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/LANDING/blend_position" = 0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position" = 0.0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position" = 0
-parameters/TimeScale/scale = 1.0
+parameters/TimeScale/scale = 0.2
 
 [node name="PLAYERSTATEMACHINE" type="Node" parent="."]
 script = ExtResource("2_52ee3")
