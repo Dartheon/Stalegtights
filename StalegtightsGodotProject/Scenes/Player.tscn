@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=81 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
@@ -214,12 +214,16 @@ blend_mode = 1
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ksbbd"]
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fvoow"]
+advance_mode = 2
+advance_expression = "isLanding == true"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_o3h8g"]
 states/JUMP/node = SubResource("AnimationNodeBlendSpace1D_bhhdu")
 states/JUMP/position = Vector2(437, 100)
 states/LANDING/node = SubResource("AnimationNodeBlendSpace1D_megsn")
 states/LANDING/position = Vector2(676, 97)
-transitions = ["Start", "JUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd")]
+transitions = ["Start", "JUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "JUMP", "LANDING", SubResource("AnimationNodeStateMachineTransition_fvoow")]
 graph_offset = Vector2(-108, -108)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1e7my"]

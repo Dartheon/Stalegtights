@@ -72,7 +72,8 @@ public partial class GroundState : States
         //Used for testing, will be handled different later
         StateMachineScript.hasStalag = HasStalag;
         StateMachineScript.hasWeapon = HasWeapon;
-        IsLanding = false;
+        IsLanding = true;
+        StateMachineScript.isLanding = IsLanding;
         #endregion
 
         #region Movement
@@ -89,6 +90,7 @@ public partial class GroundState : States
     {
         #region DEBUG
         //DEBUG Variables Go Here...
+        //
         #endregion
 
         #region Animations
