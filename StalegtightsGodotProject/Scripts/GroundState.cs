@@ -26,7 +26,7 @@ public partial class GroundState : States
 
     #region Animation
     //
-    private float runBlend;
+    private float runBlend; //Used for storing a variable to use in the AnimationTree BlendSpace1D for running
     #endregion
 
     #region Movement
@@ -69,10 +69,9 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
-        //Used for testing, will be handled different later
+        //Used for setting the bools used to change the AnimationTree though Expressions
         StateMachineScript.hasStalag = HasStalag;
         StateMachineScript.hasWeapon = HasWeapon;
-        IsLanding = true;
         StateMachineScript.isLanding = IsLanding;
         #endregion
 
@@ -108,8 +107,9 @@ public partial class GroundState : States
             StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1f : -1f;
         }
 
-        //Sets the blend using te LastFacingPosition
+        //Sets the blend using the LastFacingPosition
         StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position", StateMachineScript.LastFacingDirection);
         #endregion
     }
     #endregion
@@ -364,7 +364,9 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
-        //
+        //Due to how the AnimationTree Expressions check bools it works if the bools are reversed when setting them to change the states
+        IsLanding = true;
+        StateMachineScript.isLanding = IsLanding;
         #endregion
 
         #region Movement

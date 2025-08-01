@@ -27,6 +27,7 @@ public partial class StateMachine : Node
 
     #region Animations
     public AnimationTree PlayerAnimTree { get; set; } //Used to access the different variables of the AnimationTree
+    public AnimationPlayer PlayerCB2DAnimPlayer { get; set; }
     private string playerState = "DEFAULT STATE"; //Used for animation tree transitions between state machines
     public float LastFacingDirection { get; set; } = 1.0f; //Identifies the Players last facing direction used for animation blend
     public bool PlayerAnimIdle { get; set; } //Checks for player movement
@@ -50,7 +51,8 @@ public partial class StateMachine : Node
         smGravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
         PlayerAnimTree = GetNode<AnimationTree>("/root/Main/World/Player/PlayerAnimationTree");
-        playback = (AnimationNodeStateMachinePlayback)PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/playback");
+        PlayerCB2DAnimPlayer = GetNode<AnimationPlayer>("/root/Main/World/Player/AnimationPlayer");
+        playback = (AnimationNodeStateMachinePlayback)PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/playback");
 
         //Sets the State Nodes and Initializes them in order
         foreach (Node stateNode in GetChildren())
@@ -73,6 +75,7 @@ public partial class StateMachine : Node
     {
         CurrentState.Update(delta);
         GD.Print(playback.GetCurrentNode());
+        GD.Print(GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame);
     }
 
     public override void _PhysicsProcess(double delta)

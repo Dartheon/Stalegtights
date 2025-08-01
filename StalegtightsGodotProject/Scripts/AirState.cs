@@ -67,7 +67,6 @@ public partial class AirState : States
         //Used for testing, will be handled different later
         StateMachineScript.hasStalag = HasStalag;
         StateMachineScript.hasWeapon = HasWeapon;
-        StateMachineScript.isLanding = IsLanding;
         #endregion
 
         #region Movement
