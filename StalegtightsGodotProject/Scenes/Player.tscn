@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
-[ext_resource type="Texture2D" uid="uid://kqugrcrsuewo" path="res://Sprites/Spike_Jump-To-Run-v60.png" id="2_bhhdu"]
+[ext_resource type="Texture2D" uid="uid://b1lmax25tkkax" path="res://Sprites/Spike_Jump-To-Run_Test.png" id="2_bhhdu"]
 [ext_resource type="Script" uid="uid://ttliqt6i2fqt" path="res://Scripts/GroundState.cs" id="3_bhhdu"]
 [ext_resource type="Script" uid="uid://gag34jhae8xb" path="res://Scripts/AirState.cs" id="4_megsn"]
 [ext_resource type="Script" uid="uid://c43t60qkrjp8c" path="res://Scripts/WallState.cs" id="5_yoq75"]
@@ -480,6 +480,7 @@ script = ExtResource("1_rpqav")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_bhhdu")
+flip_h = true
 hframes = 24
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
@@ -499,7 +500,7 @@ anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/LANDING/blend_position" = 0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position" = 0.0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position" = 0
-parameters/TimeScale/scale = 0.2
+parameters/TimeScale/scale = 1.0
 
 [node name="PLAYERSTATEMACHINE" type="Node" parent="."]
 script = ExtResource("2_52ee3")
