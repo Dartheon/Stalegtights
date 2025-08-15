@@ -199,8 +199,7 @@ public partial class AirState : States
         #region Check if the Character is Grounded
         if (PlayerCB2D.IsOnFloor())
         {
-            IsLanding = true;
-            StateMachineScript.isLanding = IsLanding;
+            IsLanding = false;
             NewStateChange = GROUNDSTATESTRING;
         }
         #endregion
@@ -285,7 +284,7 @@ public partial class AirState : States
         #endregion
 
         #region Animations
-        //
+        StateMachineScript.isLanding = IsLanding;
         #endregion
 
         #region Movement
