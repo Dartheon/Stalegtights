@@ -467,7 +467,7 @@ graph_offset = Vector2(94, 58)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
-graph_offset = Vector2(584.022, 284.176)
+graph_offset = Vector2(-115.807, 22.5907)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(250, 100)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_kih0c")
