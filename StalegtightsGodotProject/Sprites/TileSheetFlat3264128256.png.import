@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kqugrcrsuewo"
-path="res://.godot/imported/Spike_Jump-To-Run-v60.png-1402a614ee1956e3ab70aeb4cf170a15.ctex"
+uid="uid://cxfeokshmca7a"
+path="res://.godot/imported/TileSheetFlat3264128256.png-9c8c0494f2bcfb3e68acd7a08f299c2a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Spike_Jump-To-Run-v60.png"
-dest_files=["res://.godot/imported/Spike_Jump-To-Run-v60.png-1402a614ee1956e3ab70aeb4cf170a15.ctex"]
+source_file="res://Sprites/TileSheetFlat3264128256.png"
+dest_files=["res://.godot/imported/TileSheetFlat3264128256.png-9c8c0494f2bcfb3e68acd7a08f299c2a.ctex"]
 
 [params]
 

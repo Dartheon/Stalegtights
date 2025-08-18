@@ -13,7 +13,10 @@ spawnPosition = Vector2(0, -100)
 [node name="Camera2D" type="Camera2D" parent="World/Player"]
 zoom = Vector2(1.5, 1.5)
 position_smoothing_enabled = true
+position_smoothing_speed = 20.0
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
+drag_left_margin = 0.05
+drag_right_margin = 0.05
 
 [node name="UILayer" type="CanvasLayer" parent="."]
