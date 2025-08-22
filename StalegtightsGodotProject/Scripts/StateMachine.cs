@@ -74,8 +74,6 @@ public partial class StateMachine : Node
     public override void _Process(double delta)
     {
         CurrentState.Update(delta);
-        GD.Print(playback.GetCurrentNode());
-        GD.Print(GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame);
     }
 
     public override void _PhysicsProcess(double delta)

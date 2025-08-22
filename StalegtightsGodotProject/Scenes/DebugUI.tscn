@@ -36,9 +36,9 @@ color = Color(0, 0, 0, 1)
 [node name="GeneralCheckButton" type="CheckButton" parent="General"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
-offset_left = 7.0
+offset_left = 9.0
 offset_top = 7.0
-offset_right = 146.0
+offset_right = 148.0
 offset_bottom = 49.0
 focus_mode = 0
 theme_override_font_sizes/font_size = 24
@@ -55,13 +55,77 @@ offset_bottom = 234.0
 
 [node name="PlayerStateLabel" type="Label" parent="General/GeneralVBoxContainer"]
 layout_mode = 2
-text = "Player State: Ground"
+text = "Player State: Ground State"
 label_settings = SubResource("LabelSettings_swdn5")
 
 [node name="Velocity" type="Label" parent="General/GeneralVBoxContainer"]
 layout_mode = 2
 text = "VelocityY:
 VelocityX:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="Animation" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AnimationColorRect" type="ColorRect" parent="Animation"]
+layout_mode = 0
+offset_left = 395.0
+offset_top = 9.0
+offset_right = 780.0
+offset_bottom = 269.0
+color = Color(0, 0, 0, 1)
+
+[node name="AnimationCheckButton" type="CheckButton" parent="Animation"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_left = 395.0
+offset_top = 7.0
+offset_right = 564.0
+offset_bottom = 49.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+button_pressed = true
+keep_pressed_outside = true
+text = "Animation"
+
+[node name="AnimationVBoxContainer" type="VBoxContainer" parent="Animation"]
+layout_mode = 0
+offset_left = 400.0
+offset_top = 42.0
+offset_right = 776.0
+offset_bottom = 234.0
+
+[node name="PlayerSpriteFrame" type="Label" parent="Animation/AnimationVBoxContainer"]
+layout_mode = 2
+text = "Frame: "
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="PlayerAnimPlaybackState" type="Label" parent="Animation/AnimationVBoxContainer"]
+layout_mode = 2
+text = "AnimState: GroundState"
+label_settings = SubResource("LabelSettings_swdn5")
+
+[node name="PlayerAnimPlaybackGround" type="Label" parent="Animation/AnimationVBoxContainer"]
+layout_mode = 2
+text = "GroundState: GROUND NORMAL"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="PlayerAnimPlaybackAir" type="Label" parent="Animation/AnimationVBoxContainer"]
+layout_mode = 2
+text = "AirState:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="PlayerAnimPlaybackWall" type="Label" parent="Animation/AnimationVBoxContainer"]
+layout_mode = 2
+text = "WallState:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="PlayerAnimPlaybackClimb" type="Label" parent="Animation/AnimationVBoxContainer"]
+layout_mode = 2
+text = "ClimbState:"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="Engine" type="Control" parent="."]
@@ -110,4 +174,5 @@ text = "Max FPS:"
 label_settings = SubResource("LabelSettings_5xmph")
 
 [connection signal="toggled" from="General/GeneralCheckButton" to="." method="GeneralCheckBoxToggled"]
+[connection signal="toggled" from="Animation/AnimationCheckButton" to="." method="AnimationCheckBoxToggled"]
 [connection signal="toggled" from="Engine/EngineCheckButton" to="." method="EngineCheckBoxToggled"]

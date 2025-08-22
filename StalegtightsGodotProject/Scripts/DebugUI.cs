@@ -14,6 +14,7 @@ public partial class DebugUI : Control
 
     #region ColorRect Boxes
     private Vector2 generalBoxSize;
+    private Vector2 animationBoxSize;
     /*private Vector2 groundBoxSize;
     private Vector2 airBoxSize;
     private Vector2 wallBoxSize;
@@ -22,11 +23,26 @@ public partial class DebugUI : Control
     private Vector2 engineBoxSize;
     #endregion
 
-    #region All States
+    #region General
     private Label playerStatelabelGeneral;
     private Label playerVelocityGeneral;
     /*private Label playerJumpTypeGeneral;
     private Label playerJumpBufferGeneral;*/
+    #endregion
+
+    #region Animation
+    private Label playerSpriteFrame;
+    private int playerCurrentFrame;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackState;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackGround;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackAir;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackWall;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackClimb;
+    private Label playerAnimPlaybackState;
+    private Label playerAnimPlaybackGround;
+    private Label playerAnimPlaybackAir;
+    private Label playerAnimPlaybackWall;
+    private Label playerAnimPlaybackClimb;
     #endregion
 
     #region Ground State
@@ -68,8 +84,16 @@ public partial class DebugUI : Control
 
         bgmMenu = slManager.BGMMenu;
 
+        //Animation Playback
+        statemachinePlaybackState = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/playback");
+        statemachinePlaybackGround = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/playback");
+        statemachinePlaybackAir = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/playback");
+        statemachinePlaybackWall = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/playback");
+        statemachinePlaybackClimb = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/playback");
+
         //Color Rect Boxes
         generalBoxSize = GetNode<ColorRect>("General/GeneralColorRect").Size;
+        animationBoxSize = GetNode<ColorRect>("Animation/AnimationColorRect").Size;
         /*groundBoxSize = GetNode<ColorRect>("Ground/GroundColorRect").Size;
         airBoxSize = GetNode<ColorRect>("Air/AirColorRect").Size;
         wallBoxSize = GetNode<ColorRect>("Wall/WallColorRect").Size;
@@ -77,32 +101,40 @@ public partial class DebugUI : Control
         soundBoxSize = GetNode<ColorRect>("Sounds/SoundsColorRect").Size;*/
         engineBoxSize = GetNode<ColorRect>("Engine/EngineColorRect").Size;
 
-        //General State
+        //General Labels
         playerStatelabelGeneral = GetNode<Label>("General/GeneralVBoxContainer/PlayerStateLabel");
         playerVelocityGeneral = GetNode<Label>("General/GeneralVBoxContainer/Velocity");
         /*playerJumpTypeAll = GetNode<Label>("General/GeneralVBoxContainer/JumpType");
         playerJumpBuffer = GetNode<Label>("General/GeneralVBoxContainer/JumpBuffer");*/
 
-        //Ground State
+        //Animation Labels
+        playerSpriteFrame = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerSpriteFrame");
+        playerAnimPlaybackState = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackState");
+        playerAnimPlaybackGround = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackGround");
+        playerAnimPlaybackAir = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackAir");
+        playerAnimPlaybackWall = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackWall");
+        playerAnimPlaybackClimb = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackClimb");
 
-        //Air State
+        //Ground State Labels
+
+        //Air State Labels
         //playerJumpHeight = GetNode<Label>("AirVBoxContainer/JumpHeight");
 
-        //Wall State
+        //Wall State Labels
 
 
-        //Climbing State
+        //Climbing State Labels
         /*playerFirstArea = GetNode<Label>("ClimbingVBoxContainer/PlayerFirstArea");
         playerSecondArea = GetNode<Label>("ClimbingVBoxContainer/PlayerSecondArea");
         playerThirdArea = GetNode<Label>("ClimbingVBoxContainer/PlayerThirdArea");*/
 
-        //Sounds
+        //Sounds Labels
         /*playerSoundName = GetNode<Label>("SoundsVBoxContainer/SoundName");
         playerBus = GetNode<Label>("SoundsVBoxContainer/SoundBus");
         playerVolume = GetNode<Label>("SoundsVBoxContainer/SoundVolume");
         playerDistance = GetNode<Label>("SoundsVBoxContainer/SoundDistance");*/
 
-        //Engine
+        //Engine Labels
         engineScale = GetNode<Label>("Engine/EngineVBoxContainer/EngineScale");
         fpsCounter = GetNode<Label>("Engine/EngineVBoxContainer/FPSCounter");
         maxFPS = GetNode<Label>("Engine/EngineVBoxContainer/MaxFPS");
@@ -112,6 +144,7 @@ public partial class DebugUI : Control
     {
         //Color Rect Boxes
         GetNode<ColorRect>("General/GeneralColorRect").Size = generalBoxSize;
+        GetNode<ColorRect>("Animation/AnimationColorRect").Size = animationBoxSize;
         /*GetNode<ColorRect>("GroundColorRect").Size = groundBoxSize;
         GetNode<ColorRect>("AirColorRect").Size = airBoxSize;
         GetNode<ColorRect>("WallColorRect").Size = wallBoxSize;
@@ -119,27 +152,35 @@ public partial class DebugUI : Control
         GetNode<ColorRect>("SoundsColorRect").Size = soundBoxSize;*/
         GetNode<ColorRect>("Engine/EngineColorRect").Size = engineBoxSize;
 
-        //General State
+        //General Text
         playerStatelabelGeneral.Text = $"State: {stateMachine.CurrentState.Name}";
         playerVelocityGeneral.Text = $"Velocity.X: {stateMachine.smPlayerVelocity.X:0.00}\nVelocity.Y: {stateMachine.smPlayerVelocity.Y:0.00}";
         /*playerJumpTypeAll.Text = ("Jump Type: ") + stateMachine.JumpType + "\n" + ("JTypeHold: ") + stateMachine.JumpTypeHold;
         playerJumpBuffer.Text = ("JBuffer: ") + stateMachine.JumpInputBuffer;*/
 
-        //Ground State
+        //Animation Text
+        playerSpriteFrame.Text = $"Frame: {GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame}";
+        playerAnimPlaybackState.Text = $"AnimState: {statemachinePlaybackState.GetCurrentNode()}";
+        playerAnimPlaybackGround.Text = $"GroundState: {statemachinePlaybackGround.GetCurrentNode()}";
+        playerAnimPlaybackAir.Text = $"AirState: {statemachinePlaybackAir.GetCurrentNode()}";
+        playerAnimPlaybackWall.Text = $"WallState: {statemachinePlaybackWall.GetCurrentNode()}";
+        playerAnimPlaybackClimb.Text = $"ClimbState: {statemachinePlaybackClimb.GetCurrentNode()}";
+
+        //Ground State Text
 
 
-        //Air State
+        //Air State Text
         //playerJumpHeight.Text = ("Jump Height: " + stateMachine.WallJumpHeight);
 
-        //Wall State
+        //Wall State Text
 
 
-        //Climbing State
+        //Climbing State Text
         /*playerFirstArea.Text = ("FirstArea: " + stateMachine.ClimableFirstAreaEntered);
         playerSecondArea.Text = ("SecondArea: " + stateMachine.ClimbableSecondTopEntered);
         playerThirdArea.Text = ("ThirdArea: " + stateMachine.ClimbableThirdTopEntered);*/
 
-        //Sounds
+        //Sounds Text
         /*if (soundManager.debugPlayer != null)
         {
             playerSoundName.Text = ("Name: " + soundManager.playerToRequestSFX[soundManager.debugPlayer.Name].SoundName);
@@ -148,7 +189,7 @@ public partial class DebugUI : Control
             playerDistance.Text = "Position: " + soundManager.Call("GetObjectPosition", soundManager.nextRequestSFX);
         }*/
 
-        //Engine
+        //Engine Text
         engineScale.Text = $"Engine Scale: {Engine.TimeScale}";
         fpsCounter.Text = $"FPS: {Engine.GetFramesPerSecond()}";
         maxFPS.Text = $"Max FPS: {Engine.MaxFps}";
@@ -167,6 +208,22 @@ public partial class DebugUI : Control
         {
             GetNode<VBoxContainer>("General/GeneralVBoxContainer").Visible = true;
             generalBoxSize.Y = 225.0f;
+            soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
+        }
+    }
+
+    private void AnimationCheckBoxToggled(bool toggle)
+    {
+        if (!toggle)
+        {
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer").Visible = false;
+            animationBoxSize.Y = 40f;
+            soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
+        }
+        else
+        {
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer").Visible = true;
+            animationBoxSize.Y = 260.0f;
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }
     }
