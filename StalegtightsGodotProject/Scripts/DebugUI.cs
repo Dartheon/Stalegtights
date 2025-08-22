@@ -9,11 +9,11 @@ public partial class DebugUI : Control
     private Player playerScript;
     private SaveLoadManager slManager;
     private SoundManager soundManager;
-    /*private StateMachine stateMachine;
-    private GroundState groundStateScript;*/
+    private StateMachine stateMachine;
     #endregion
 
     #region ColorRect Boxes
+    private Vector2 generalBoxSize;
     /*private Vector2 groundBoxSize;
     private Vector2 airBoxSize;
     private Vector2 wallBoxSize;
@@ -23,10 +23,10 @@ public partial class DebugUI : Control
     #endregion
 
     #region All States
-    /*private Label playerStatelabelAll;
-    private Label playerVelocityAll;
-    private Label playerJumpTypeAll;
-    private Label playerJumpBuffer;*/
+    private Label playerStatelabelGeneral;
+    private Label playerVelocityGeneral;
+    /*private Label playerJumpTypeGeneral;
+    private Label playerJumpBufferGeneral;*/
     #endregion
 
     #region Ground State
@@ -64,33 +64,34 @@ public partial class DebugUI : Control
         playerScript = GetNode<Player>("/root/Main/World/Player");
         soundManager = GetNode<SoundManager>("/root/SoundManager");
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
-        //stateMachine = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");*/
+        stateMachine = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
 
         bgmMenu = slManager.BGMMenu;
 
         //Color Rect Boxes
-        /*groundBoxSize = GetNode<ColorRect>("GroundColorRect").Size;
-        airBoxSize = GetNode<ColorRect>("AirColorRect").Size;
-        wallBoxSize = GetNode<ColorRect>("WallColorRect").Size;
-        climbingBoxSize = GetNode<ColorRect>("ClimbingColorRect").Size;
-        soundBoxSize = GetNode<ColorRect>("SoundsColorRect").Size;*/
+        generalBoxSize = GetNode<ColorRect>("General/GeneralColorRect").Size;
+        /*groundBoxSize = GetNode<ColorRect>("Ground/GroundColorRect").Size;
+        airBoxSize = GetNode<ColorRect>("Air/AirColorRect").Size;
+        wallBoxSize = GetNode<ColorRect>("Wall/WallColorRect").Size;
+        climbingBoxSize = GetNode<ColorRect>("Climbing/ClimbingColorRect").Size;
+        soundBoxSize = GetNode<ColorRect>("Sounds/SoundsColorRect").Size;*/
         engineBoxSize = GetNode<ColorRect>("Engine/EngineColorRect").Size;
 
-        //All State Tab
-        /*playerStatelabelAll = GetNode<Label>("AllVBoxContainer/PlayerStateLabel");
-        playerVelocityAll = GetNode<Label>("AllVBoxContainer/Velocity");
-        playerJumpTypeAll = GetNode<Label>("AllVBoxContainer/JumpType");
-        playerJumpBuffer = GetNode<Label>("AllVBoxContainer/JumpBuffer");*/
+        //General State
+        playerStatelabelGeneral = GetNode<Label>("General/GeneralVBoxContainer/PlayerStateLabel");
+        playerVelocityGeneral = GetNode<Label>("General/GeneralVBoxContainer/Velocity");
+        /*playerJumpTypeAll = GetNode<Label>("General/GeneralVBoxContainer/JumpType");
+        playerJumpBuffer = GetNode<Label>("General/GeneralVBoxContainer/JumpBuffer");*/
 
-        //Ground State Tab
+        //Ground State
 
-        //Air State Tab
+        //Air State
         //playerJumpHeight = GetNode<Label>("AirVBoxContainer/JumpHeight");
 
-        //Wall State Tab
+        //Wall State
 
 
-        //Climbing State Tab
+        //Climbing State
         /*playerFirstArea = GetNode<Label>("ClimbingVBoxContainer/PlayerFirstArea");
         playerSecondArea = GetNode<Label>("ClimbingVBoxContainer/PlayerSecondArea");
         playerThirdArea = GetNode<Label>("ClimbingVBoxContainer/PlayerThirdArea");*/
@@ -110,6 +111,7 @@ public partial class DebugUI : Control
     public override void _Process(double delta)
     {
         //Color Rect Boxes
+        GetNode<ColorRect>("General/GeneralColorRect").Size = generalBoxSize;
         /*GetNode<ColorRect>("GroundColorRect").Size = groundBoxSize;
         GetNode<ColorRect>("AirColorRect").Size = airBoxSize;
         GetNode<ColorRect>("WallColorRect").Size = wallBoxSize;
@@ -117,22 +119,22 @@ public partial class DebugUI : Control
         GetNode<ColorRect>("SoundsColorRect").Size = soundBoxSize;*/
         GetNode<ColorRect>("Engine/EngineColorRect").Size = engineBoxSize;
 
-        //All State Tab
-        /*playerStatelabelAll.Text = ("State: ") + stateMachine.CurrentState.Name;
-        playerVelocityAll.Text = ("Velocity.X: ") + stateMachine.playerVelocity.X + ("\nVelocity.Y: ") + stateMachine.playerVelocity.Y;
-        playerJumpTypeAll.Text = ("Jump Type: ") + stateMachine.JumpType + "\n" + ("JTypeHold: ") + stateMachine.JumpTypeHold;
+        //General State
+        playerStatelabelGeneral.Text = $"State: {stateMachine.CurrentState.Name}";
+        playerVelocityGeneral.Text = $"Velocity.X: {stateMachine.smPlayerVelocity.X:0.00}\nVelocity.Y: {stateMachine.smPlayerVelocity.Y:0.00}";
+        /*playerJumpTypeAll.Text = ("Jump Type: ") + stateMachine.JumpType + "\n" + ("JTypeHold: ") + stateMachine.JumpTypeHold;
         playerJumpBuffer.Text = ("JBuffer: ") + stateMachine.JumpInputBuffer;*/
 
-        //Ground State Tab
+        //Ground State
 
 
-        //Air State Tab
+        //Air State
         //playerJumpHeight.Text = ("Jump Height: " + stateMachine.WallJumpHeight);
 
-        //Wall State Tab
+        //Wall State
 
 
-        //Climbing State Tab
+        //Climbing State
         /*playerFirstArea.Text = ("FirstArea: " + stateMachine.ClimableFirstAreaEntered);
         playerSecondArea.Text = ("SecondArea: " + stateMachine.ClimbableSecondTopEntered);
         playerThirdArea.Text = ("ThirdArea: " + stateMachine.ClimbableThirdTopEntered);*/
@@ -147,12 +149,28 @@ public partial class DebugUI : Control
         }*/
 
         //Engine
-        engineScale.Text = ("Engine Scale: " + Engine.TimeScale);
-        fpsCounter.Text = ("FPS: " + Engine.GetFramesPerSecond());
-        maxFPS.Text = ("Max FPS: " + Engine.MaxFps);
+        engineScale.Text = $"Engine Scale: {Engine.TimeScale}";
+        fpsCounter.Text = $"FPS: {Engine.GetFramesPerSecond()}";
+        maxFPS.Text = $"Max FPS: {Engine.MaxFps}";
     }
 
     #region Toggle Buttons
+    private void GeneralCheckBoxToggled(bool toggle)
+    {
+        if (!toggle)
+        {
+            GetNode<VBoxContainer>("General/GeneralVBoxContainer").Visible = false;
+            generalBoxSize.Y = 40f;
+            soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
+        }
+        else
+        {
+            GetNode<VBoxContainer>("General/GeneralVBoxContainer").Visible = true;
+            generalBoxSize.Y = 225.0f;
+            soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
+        }
+    }
+
     /*private void GroundCheckButtonToggled(bool toggle)
     {
         if (!toggle)
