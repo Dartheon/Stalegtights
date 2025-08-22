@@ -1,0 +1,68 @@
+[gd_scene load_steps=5 format=3 uid="uid://b05i8umpsqyae"]
+
+[ext_resource type="Script" uid="uid://bo7apeguda3vr" path="res://Scripts/DebugUI.cs" id="1_swdn5"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_swdn5"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_33s7u"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_5xmph"]
+font_size = 24
+
+[node name="DebugUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_swdn5")
+
+[node name="Engine" type="Control" parent="."]
+anchors_preset = 0
+
+[node name="EngineColorRect" type="ColorRect" parent="Engine"]
+layout_mode = 0
+offset_left = 1663.0
+offset_top = 9.0
+offset_right = 1899.0
+offset_bottom = 164.0
+color = Color(0, 0, 0, 1)
+
+[node name="EngineCheckButton" type="CheckButton" parent="Engine"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_left = 1664.0
+offset_top = 7.0
+offset_right = 1790.0
+offset_bottom = 49.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+button_pressed = true
+keep_pressed_outside = true
+text = "Engine	"
+
+[node name="EngineVBoxContainer" type="VBoxContainer" parent="Engine"]
+offset_left = 1669.0
+offset_top = 52.0
+offset_right = 1906.0
+offset_bottom = 204.0
+
+[node name="EngineScale" type="Label" parent="Engine/EngineVBoxContainer"]
+layout_mode = 2
+text = "Engine Scale:"
+label_settings = SubResource("LabelSettings_swdn5")
+
+[node name="FPSCounter" type="Label" parent="Engine/EngineVBoxContainer"]
+layout_mode = 2
+text = "FPS:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="MaxFPS" type="Label" parent="Engine/EngineVBoxContainer"]
+layout_mode = 2
+text = "Max FPS:"
+label_settings = SubResource("LabelSettings_5xmph")
+
+[connection signal="toggled" from="Engine/EngineCheckButton" to="." method="EngineCheckBoxToggled"]

@@ -127,7 +127,7 @@ public partial class SaveLoadManager : Node
         #region Load Menu Sounds
         BGMMenu = new()
         {
-            //["MenuClick"] = new("MenuClick", (AudioStream)ResourceLoader.Load("res://Sounds/menu_click.wav"), SoundRequestBGMMenu.SoundSourceBGMMenu.Menu, "Master")
+            ["MenuClick"] = new("MenuClick", (AudioStream)ResourceLoader.Load("res://Sounds/menu_click.wav"), SoundRequestBGMMenu.SoundSourceBGMMenu.Menu, "Master")
             // Add more sounds as needed
         };
         #endregion
