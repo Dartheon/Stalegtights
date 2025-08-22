@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class DebugUI : Control
 {
@@ -33,7 +34,7 @@ public partial class DebugUI : Control
     #region Animation
     //VBox1
     private Label playerSpriteFrame;
-    private int playerCurrentFrame;
+    private Label playerCurrentAnim;
     public AnimationNodeStateMachinePlayback statemachinePlaybackState;
     public AnimationNodeStateMachinePlayback statemachinePlaybackGround;
     public AnimationNodeStateMachinePlayback statemachinePlaybackAir;
@@ -132,6 +133,7 @@ public partial class DebugUI : Control
         //Animation Labels
         //VBox1
         playerSpriteFrame = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerSpriteFrame");
+        playerCurrentAnim = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerCurrentAnim");
         playerAnimPlaybackState = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackState");
         playerAnimPlaybackGround = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackGround");
         playerAnimPlaybackAir = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackAir");
@@ -170,7 +172,9 @@ public partial class DebugUI : Control
         fpsCounter = GetNode<Label>("Engine/EngineVBoxContainer/FPSCounter");
         maxFPS = GetNode<Label>("Engine/EngineVBoxContainer/MaxFPS");
     }
+    #endregion
 
+    #region Process
     public override void _Process(double delta)
     {
         //Color Rect Boxes
@@ -192,6 +196,9 @@ public partial class DebugUI : Control
         //Animation Text
         //VBox1
         playerSpriteFrame.Text = $"Frame: {GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame}";
+        //problem to be fixed
+        playerCurrentAnim.Text = $"AnimName: {GetBlendSpace1DAnimation(stateMachine.PlayerAnimTree, "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position")}";
+
         playerAnimPlaybackState.Text = $"AnimState: {statemachinePlaybackState.GetCurrentNode()}";
         playerAnimPlaybackGround.Text = $"GroundState: {statemachinePlaybackGround.GetCurrentNode()}";
         playerAnimPlaybackAir.Text = $"AirState: {statemachinePlaybackAir.GetCurrentNode()}";
@@ -234,6 +241,7 @@ public partial class DebugUI : Control
         fpsCounter.Text = $"FPS: {Engine.GetFramesPerSecond()}";
         maxFPS.Text = $"Max FPS: {Engine.MaxFps}";
     }
+    #endregion
 
     #region Toggle Buttons
     private void GeneralCheckBoxToggled(bool toggle)
@@ -267,7 +275,7 @@ public partial class DebugUI : Control
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer").Visible = true;
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer2").Visible = true;
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer3").Visible = true;
-            animationBoxSize.Y = 260.0f;
+            animationBoxSize.Y = 300.0f;
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }
     }
@@ -364,6 +372,36 @@ public partial class DebugUI : Control
         }
     }
     #endregion
-    #endregion
+
+    // blendNodePath like: "parameters/RunBlend"
+    public static string GetBlendSpace1DAnimation(AnimationTree tree, string blendNodePath)
+    {
+        //current problem not pointing to correct spot in animation tree
+        AnimationNodeBlendSpace1D blend = (AnimationNodeBlendSpace1D)tree.Get(blendNodePath);
+        if (blend == null) return "Unknown";
+
+        float pos = (float)tree.Get($"{blendNodePath}/blend_position");
+
+        int count = blend.GetBlendPointCount();
+        if (count == 0) { return "None"; }
+
+        int closest = 0;
+        float best = float.MaxValue;
+
+        for (int i = 0; i < count; i++)
+        {
+            float p = blend.GetBlendPointPosition(i);
+            float d = Mathf.Abs(p - pos);
+            if (d < best) { best = d; closest = i; }
+        }
+
+        AnimationRootNode node = blend.GetBlendPointNode(closest);
+        if (node is AnimationNodeAnimation animNode)
+        {
+            return animNode.Animation ?? "Unnamed";
+        }
+
+        return "Non-clip node";
+    }
     #endregion
 }

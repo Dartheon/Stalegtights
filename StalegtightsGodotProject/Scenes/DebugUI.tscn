@@ -75,7 +75,7 @@ layout_mode = 0
 offset_left = 395.0
 offset_top = 9.0
 offset_right = 1334.0
-offset_bottom = 269.0
+offset_bottom = 309.0
 color = Color(0, 0, 0, 1)
 
 [node name="AnimationCheckButton" type="CheckButton" parent="Animation"]
@@ -101,6 +101,11 @@ offset_bottom = 234.0
 [node name="PlayerSpriteFrame" type="Label" parent="Animation/AnimationVBoxContainer"]
 layout_mode = 2
 text = "Frame: "
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="PlayerCurrentAnim" type="Label" parent="Animation/AnimationVBoxContainer"]
+layout_mode = 2
+text = "AnimName: RUN_RIGHT"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="PlayerAnimPlaybackState" type="Label" parent="Animation/AnimationVBoxContainer"]

@@ -569,7 +569,6 @@ script = ExtResource("1_rpqav")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_bhhdu")
-flip_h = true
 hframes = 24
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
