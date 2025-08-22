@@ -74,7 +74,7 @@ offset_bottom = 40.0
 layout_mode = 0
 offset_left = 395.0
 offset_top = 9.0
-offset_right = 780.0
+offset_right = 1334.0
 offset_bottom = 269.0
 color = Color(0, 0, 0, 1)
 
@@ -126,6 +126,50 @@ label_settings = SubResource("LabelSettings_33s7u")
 [node name="PlayerAnimPlaybackClimb" type="Label" parent="Animation/AnimationVBoxContainer"]
 layout_mode = 2
 text = "ClimbState:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="AnimationVBoxContainer2" type="VBoxContainer" parent="Animation"]
+layout_mode = 0
+offset_left = 780.0
+offset_top = 20.0
+offset_right = 1156.0
+offset_bottom = 130.0
+
+[node name="PlayerAnimPlaybackGroundNormal" type="Label" parent="Animation/AnimationVBoxContainer2"]
+layout_mode = 2
+text = "GroundNormal:"
+label_settings = SubResource("LabelSettings_swdn5")
+
+[node name="PlayerAnimPlaybackGroundWeapon" type="Label" parent="Animation/AnimationVBoxContainer2"]
+layout_mode = 2
+text = "GroundWeapon:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="PlayerAnimPlaybackGroundStalag" type="Label" parent="Animation/AnimationVBoxContainer2"]
+layout_mode = 2
+text = "GroundStalag:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="AnimationVBoxContainer3" type="VBoxContainer" parent="Animation"]
+layout_mode = 0
+offset_left = 782.0
+offset_top = 150.0
+offset_right = 1158.0
+offset_bottom = 260.0
+
+[node name="PlayerAnimPlaybackAirNormal" type="Label" parent="Animation/AnimationVBoxContainer3"]
+layout_mode = 2
+text = "AirNormal:"
+label_settings = SubResource("LabelSettings_swdn5")
+
+[node name="PlayerAnimPlaybackAirWeapon" type="Label" parent="Animation/AnimationVBoxContainer3"]
+layout_mode = 2
+text = "AirWeapon:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="PlayerAnimPlaybackAirStalag" type="Label" parent="Animation/AnimationVBoxContainer3"]
+layout_mode = 2
+text = "AirStalag:"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="Engine" type="Control" parent="."]

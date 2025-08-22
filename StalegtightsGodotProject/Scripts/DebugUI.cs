@@ -31,6 +31,7 @@ public partial class DebugUI : Control
     #endregion
 
     #region Animation
+    //VBox1
     private Label playerSpriteFrame;
     private int playerCurrentFrame;
     public AnimationNodeStateMachinePlayback statemachinePlaybackState;
@@ -43,6 +44,22 @@ public partial class DebugUI : Control
     private Label playerAnimPlaybackAir;
     private Label playerAnimPlaybackWall;
     private Label playerAnimPlaybackClimb;
+
+    //VBox2
+    public AnimationNodeStateMachinePlayback statemachinePlaybackGroundNormal;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackGroundWeapon;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackGroundStalag;
+    private Label playerAnimPlaybackGroundNormal;
+    private Label playerAnimPlaybackGroundWeapon;
+    private Label playerAnimPlaybackGroundStalag;
+
+    //VBox3
+    public AnimationNodeStateMachinePlayback statemachinePlaybackAirNormal;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackAirWeapon;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackAirStalag;
+    private Label playerAnimPlaybackAirNormal;
+    private Label playerAnimPlaybackAirWeapon;
+    private Label playerAnimPlaybackAirStalag;
     #endregion
 
     #region Ground State
@@ -85,11 +102,16 @@ public partial class DebugUI : Control
         bgmMenu = slManager.BGMMenu;
 
         //Animation Playback
+        //VBox1
         statemachinePlaybackState = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/playback");
         statemachinePlaybackGround = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/playback");
         statemachinePlaybackAir = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/playback");
         statemachinePlaybackWall = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/playback");
         statemachinePlaybackClimb = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/playback");
+        //VBox2
+        statemachinePlaybackGroundNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/playback"); statemachinePlaybackGroundWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND WEAPON/playback"); statemachinePlaybackGroundStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND STALAG/playback");
+        //VBox3
+        statemachinePlaybackAirNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/playback"); statemachinePlaybackAirWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR WEAPON/playback"); statemachinePlaybackAirStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR STALAG/playback");
 
         //Color Rect Boxes
         generalBoxSize = GetNode<ColorRect>("General/GeneralColorRect").Size;
@@ -108,12 +130,21 @@ public partial class DebugUI : Control
         playerJumpBuffer = GetNode<Label>("General/GeneralVBoxContainer/JumpBuffer");*/
 
         //Animation Labels
+        //VBox1
         playerSpriteFrame = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerSpriteFrame");
         playerAnimPlaybackState = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackState");
         playerAnimPlaybackGround = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackGround");
         playerAnimPlaybackAir = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackAir");
         playerAnimPlaybackWall = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackWall");
         playerAnimPlaybackClimb = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackClimb");
+        //VBox2
+        playerAnimPlaybackGroundNormal = GetNode<Label>("Animation/AnimationVBoxContainer2/PlayerAnimPlaybackGroundNormal");
+        playerAnimPlaybackGroundWeapon = GetNode<Label>("Animation/AnimationVBoxContainer2/PlayerAnimPlaybackGroundWeapon");
+        playerAnimPlaybackGroundStalag = GetNode<Label>("Animation/AnimationVBoxContainer2/PlayerAnimPlaybackGroundStalag");
+        //VBox3
+        playerAnimPlaybackAirNormal = GetNode<Label>("Animation/AnimationVBoxContainer3/PlayerAnimPlaybackAirNormal");
+        playerAnimPlaybackAirWeapon = GetNode<Label>("Animation/AnimationVBoxContainer3/PlayerAnimPlaybackAirWeapon");
+        playerAnimPlaybackAirStalag = GetNode<Label>("Animation/AnimationVBoxContainer3/PlayerAnimPlaybackAirStalag");
 
         //Ground State Labels
 
@@ -159,12 +190,21 @@ public partial class DebugUI : Control
         playerJumpBuffer.Text = ("JBuffer: ") + stateMachine.JumpInputBuffer;*/
 
         //Animation Text
+        //VBox1
         playerSpriteFrame.Text = $"Frame: {GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame}";
         playerAnimPlaybackState.Text = $"AnimState: {statemachinePlaybackState.GetCurrentNode()}";
         playerAnimPlaybackGround.Text = $"GroundState: {statemachinePlaybackGround.GetCurrentNode()}";
         playerAnimPlaybackAir.Text = $"AirState: {statemachinePlaybackAir.GetCurrentNode()}";
         playerAnimPlaybackWall.Text = $"WallState: {statemachinePlaybackWall.GetCurrentNode()}";
         playerAnimPlaybackClimb.Text = $"ClimbState: {statemachinePlaybackClimb.GetCurrentNode()}";
+        //VBox2
+        playerAnimPlaybackGroundNormal.Text = $"GroundNormal: {statemachinePlaybackGroundNormal.GetCurrentNode()}";
+        playerAnimPlaybackGroundWeapon.Text = $"GroundWeapon: {statemachinePlaybackGroundWeapon.GetCurrentNode()}";
+        playerAnimPlaybackGroundStalag.Text = $"GroundStalag: {statemachinePlaybackGroundStalag.GetCurrentNode()}";
+        //VBox3
+        playerAnimPlaybackAirNormal.Text = $"AirNormal: {statemachinePlaybackAirNormal.GetCurrentNode()}";
+        playerAnimPlaybackAirWeapon.Text = $"AirWeapon: {statemachinePlaybackAirWeapon.GetCurrentNode()}";
+        playerAnimPlaybackAirStalag.Text = $"AirStalag: {statemachinePlaybackAirStalag.GetCurrentNode()}";
 
         //Ground State Text
 
@@ -217,12 +257,16 @@ public partial class DebugUI : Control
         if (!toggle)
         {
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer").Visible = false;
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer2").Visible = false;
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer3").Visible = false;
             animationBoxSize.Y = 40f;
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }
         else
         {
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer").Visible = true;
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer2").Visible = true;
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer3").Visible = true;
             animationBoxSize.Y = 260.0f;
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }
