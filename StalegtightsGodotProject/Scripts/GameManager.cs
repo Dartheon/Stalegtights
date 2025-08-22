@@ -11,6 +11,10 @@ public partial class GameManager : Node
     private World world;
     #endregion
 
+    #region General
+    private float engineTimeScale = 0.1f;
+    #endregion
+
     #region Scenes
     //Sets Which Scenes Should be Started at Gamestart - Can be Set In Editor For Testing
     [Export] private string[] startScenes;
@@ -24,7 +28,6 @@ public partial class GameManager : Node
     private Dictionary<string, SoundRequestBGMMenu> bgmAmbient;
     private Queue<string> soundQueue = new();
     #endregion
-
     #endregion
     #endregion
 
@@ -54,6 +57,37 @@ public partial class GameManager : Node
         sfxEnvironment = slManager.SFXEnvironment;
         bgmMenu = slManager.BGMMenu;
         bgmAmbient = slManager.BGMAmbient;
+    }
+    #endregion
+
+    #region Process
+    public override void _Process(double delta)
+    {
+        #region EngineScale 
+        //Changing the EngineScale Faster
+        if (Input.IsActionJustPressed("engine_scale_up"))
+        {
+            Engine.TimeScale += engineTimeScale;
+            Engine.TimeScale = Mathf.Round(Engine.TimeScale * 10f) / 10f; // Round to one decimal place
+        }
+
+        //Changing the EngineScale Slower
+        if (Input.IsActionJustPressed("engine_scale_down"))
+        {
+            Engine.TimeScale -= engineTimeScale;
+            if (Engine.TimeScale <= 0)
+            {
+                Engine.TimeScale = engineTimeScale;
+            }
+            Engine.TimeScale = Mathf.Round(Engine.TimeScale * 10f) / 10f; // Round to one decimal place
+        }
+
+        //Changing the EngineScale back to normal
+        if (Input.IsActionJustPressed("engine_scale_reset"))
+        {
+            Engine.TimeScale = 1.0;
+        }
+        #endregion
     }
     #endregion
 
