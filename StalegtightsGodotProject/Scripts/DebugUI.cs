@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,7 +35,6 @@ public partial class DebugUI : Control
     #region Animation
     //VBox1
     private Label playerSpriteFrame;
-    private Label playerCurrentAnim;
     public AnimationNodeStateMachinePlayback statemachinePlaybackState;
     public AnimationNodeStateMachinePlayback statemachinePlaybackGround;
     public AnimationNodeStateMachinePlayback statemachinePlaybackAir;
@@ -61,6 +61,22 @@ public partial class DebugUI : Control
     private Label playerAnimPlaybackAirNormal;
     private Label playerAnimPlaybackAirWeapon;
     private Label playerAnimPlaybackAirStalag;
+
+    //VBox4
+    public AnimationNodeStateMachinePlayback statemachinePlaybackWallNormal;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackWallWeapon;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackWallStalag;
+    private Label playerAnimPlaybackWallNormal;
+    private Label playerAnimPlaybackWallWeapon;
+    private Label playerAnimPlaybackWallStalag;
+
+    //VBox5
+    public AnimationNodeStateMachinePlayback statemachinePlaybackClimbNormal;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackClimbWeapon;
+    public AnimationNodeStateMachinePlayback statemachinePlaybackClimbStalag;
+    private Label playerAnimPlaybackClimbNormal;
+    private Label playerAnimPlaybackClimbWeapon;
+    private Label playerAnimPlaybackClimbStalag;
     #endregion
 
     #region Ground State
@@ -77,7 +93,7 @@ public partial class DebugUI : Control
     #endregion
 
     #region Sounds
-    private Dictionary<string, SoundRequestBGMMenu> bgmMenu;
+    private System.Collections.Generic.Dictionary<string, SoundRequestBGMMenu> bgmMenu;
     /*private Label playerSoundName;
     private Label playerBus;
     private Label playerVolume;
@@ -113,6 +129,11 @@ public partial class DebugUI : Control
         statemachinePlaybackGroundNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/playback"); statemachinePlaybackGroundWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND WEAPON/playback"); statemachinePlaybackGroundStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND STALAG/playback");
         //VBox3
         statemachinePlaybackAirNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/playback"); statemachinePlaybackAirWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR WEAPON/playback"); statemachinePlaybackAirStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR STALAG/playback");
+        //VBox4
+        //Animation Tree not currently populated with Nodes, Uncomment when populated
+        /*statemachinePlaybackWallNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/playback"); statemachinePlaybackWallWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL WEAPON/playback"); statemachinePlaybackWallStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL STALAG/playback");
+        //VBox5
+        statemachinePlaybackClimbNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/playback"); statemachinePlaybackClimbWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB WEAPON/playback"); statemachinePlaybackClimbStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB STALAG/playback");*/
 
         //Color Rect Boxes
         generalBoxSize = GetNode<ColorRect>("General/GeneralColorRect").Size;
@@ -133,7 +154,6 @@ public partial class DebugUI : Control
         //Animation Labels
         //VBox1
         playerSpriteFrame = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerSpriteFrame");
-        playerCurrentAnim = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerCurrentAnim");
         playerAnimPlaybackState = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackState");
         playerAnimPlaybackGround = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackGround");
         playerAnimPlaybackAir = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackAir");
@@ -147,6 +167,14 @@ public partial class DebugUI : Control
         playerAnimPlaybackAirNormal = GetNode<Label>("Animation/AnimationVBoxContainer3/PlayerAnimPlaybackAirNormal");
         playerAnimPlaybackAirWeapon = GetNode<Label>("Animation/AnimationVBoxContainer3/PlayerAnimPlaybackAirWeapon");
         playerAnimPlaybackAirStalag = GetNode<Label>("Animation/AnimationVBoxContainer3/PlayerAnimPlaybackAirStalag");
+        //VBox4
+        playerAnimPlaybackWallNormal = GetNode<Label>("Animation/AnimationVBoxContainer4/PlayerAnimPlaybackWallNormal");
+        playerAnimPlaybackWallWeapon = GetNode<Label>("Animation/AnimationVBoxContainer4/PlayerAnimPlaybackWallWeapon");
+        playerAnimPlaybackWallStalag = GetNode<Label>("Animation/AnimationVBoxContainer4/PlayerAnimPlaybackWallStalag");
+        //VBox5
+        playerAnimPlaybackClimbNormal = GetNode<Label>("Animation/AnimationVBoxContainer5/PlayerAnimPlaybackClimbNormal");
+        playerAnimPlaybackClimbWeapon = GetNode<Label>("Animation/AnimationVBoxContainer5/PlayerAnimPlaybackClimbWeapon");
+        playerAnimPlaybackClimbStalag = GetNode<Label>("Animation/AnimationVBoxContainer5/PlayerAnimPlaybackClimbStalag");
 
         //Ground State Labels
 
@@ -196,8 +224,6 @@ public partial class DebugUI : Control
         //Animation Text
         //VBox1
         playerSpriteFrame.Text = $"Frame: {GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame}";
-        //problem to be fixed
-        playerCurrentAnim.Text = $"AnimName: {GetBlendSpace1DAnimation(stateMachine.PlayerAnimTree, "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position")}";
 
         playerAnimPlaybackState.Text = $"AnimState: {statemachinePlaybackState.GetCurrentNode()}";
         playerAnimPlaybackGround.Text = $"GroundState: {statemachinePlaybackGround.GetCurrentNode()}";
@@ -212,6 +238,15 @@ public partial class DebugUI : Control
         playerAnimPlaybackAirNormal.Text = $"AirNormal: {statemachinePlaybackAirNormal.GetCurrentNode()}";
         playerAnimPlaybackAirWeapon.Text = $"AirWeapon: {statemachinePlaybackAirWeapon.GetCurrentNode()}";
         playerAnimPlaybackAirStalag.Text = $"AirStalag: {statemachinePlaybackAirStalag.GetCurrentNode()}";
+        //VBox4
+        //Animation Tree not populated, Need to populate Tree before uncommenting
+        /*playerAnimPlaybackWallNormal.Text = $"WallNormal: {statemachinePlaybackWallNormal.GetCurrentNode()}";
+        playerAnimPlaybackWallWeapon.Text = $"WallWeapon: {statemachinePlaybackWallWeapon.GetCurrentNode()}";
+        playerAnimPlaybackWallStalag.Text = $"WallStalag: {statemachinePlaybackWallStalag.GetCurrentNode()}";
+        //VBox5
+        playerAnimPlaybackClimbNormal.Text = $"ClimbNormal: {statemachinePlaybackClimbNormal.GetCurrentNode()}";
+        playerAnimPlaybackClimbWeapon.Text = $"ClimbWeapon: {statemachinePlaybackClimbWeapon.GetCurrentNode()}";
+        playerAnimPlaybackClimbStalag.Text = $"ClimbStalag: {statemachinePlaybackClimbStalag.GetCurrentNode()}";*/
 
         //Ground State Text
 
@@ -373,35 +408,5 @@ public partial class DebugUI : Control
     }
     #endregion
 
-    // blendNodePath like: "parameters/RunBlend"
-    public static string GetBlendSpace1DAnimation(AnimationTree tree, string blendNodePath)
-    {
-        //current problem not pointing to correct spot in animation tree
-        AnimationNodeBlendSpace1D blend = (AnimationNodeBlendSpace1D)tree.Get(blendNodePath);
-        if (blend == null) return "Unknown";
-
-        float pos = (float)tree.Get($"{blendNodePath}/blend_position");
-
-        int count = blend.GetBlendPointCount();
-        if (count == 0) { return "None"; }
-
-        int closest = 0;
-        float best = float.MaxValue;
-
-        for (int i = 0; i < count; i++)
-        {
-            float p = blend.GetBlendPointPosition(i);
-            float d = Mathf.Abs(p - pos);
-            if (d < best) { best = d; closest = i; }
-        }
-
-        AnimationRootNode node = blend.GetBlendPointNode(closest);
-        if (node is AnimationNodeAnimation animNode)
-        {
-            return animNode.Animation ?? "Unnamed";
-        }
-
-        return "Non-clip node";
-    }
     #endregion
 }

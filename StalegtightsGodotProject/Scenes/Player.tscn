@@ -586,7 +586,7 @@ advance_expression_base_node = NodePath("../PLAYERSTATEMACHINE")
 anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/JUMP/blend_position" = 0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position" = 0.0
-"parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position" = 0
+"parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position" = -0.457213
 "parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position" = 0
 parameters/TimeScale/scale = 1.0
 

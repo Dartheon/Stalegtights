@@ -52,7 +52,6 @@ public partial class StateMachine : Node
 
         PlayerAnimTree = GetNode<AnimationTree>("/root/Main/World/Player/PlayerAnimationTree");
         PlayerCB2DAnimPlayer = GetNode<AnimationPlayer>("/root/Main/World/Player/AnimationPlayer");
-        playback = (AnimationNodeStateMachinePlayback)PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/playback");
 
         //Sets the State Nodes and Initializes them in order
         foreach (Node stateNode in GetChildren())
