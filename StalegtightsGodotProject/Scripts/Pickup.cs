@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class Pickup : Area2D
+public partial class PickupTemplate : Area2D
 {
     #region Variables
     #region Class Scripts
@@ -10,6 +10,17 @@ public partial class Pickup : Area2D
 
     #region General
     private string nodeName;
+    #endregion
+
+    #region Pickup Effects
+    private float bobHeight = 5.0f; //setting how far coin will bob up and down from starting point
+    private float bobSpeed = 5.0f; //how fast the coin moves
+
+    private float time = 0.0f; //used for keeping track of time to calculate the sin wave
+    private float movement; // initializing the variable that will hold the sin wave formula
+
+    private Vector2 pos; //initializing the variable to change position of the coin
+    private float startY; //initializing the variable to set the starting point of the coin
     #endregion
 
     #region Percentage Modifiers
@@ -37,10 +48,34 @@ public partial class Pickup : Area2D
         jumpChangePercent = 10.0f;
         gravityChangePercent = 10.0f;
 
+        //Setting up Pickup Effects Variables
+        pos = Position;//setting the position of the object to a variable to make future changes
+        startY = pos.Y; //setting up the starting point for the object to use later
+
     }
     #endregion
 
-    #region Pickup Signal
+    #region Process
+    public override void _Process(double delta)
+    {
+        PickupMovement(delta);
+    }
+    #endregion
+
+    #region Pickup Effects
+    public void PickupMovement(double delta)
+    {
+        time += (float)delta; //increases number slowly by the time
+
+        movement = (Mathf.Sin(time * bobSpeed) + 1) / 2; //creating a sin wave based on time and speed set
+
+        pos.Y = startY + (movement * bobHeight); //setting the Y variable for the objects position
+
+        Position = pos; //applying the position changes to the object
+    }
+    #endregion
+
+    #region Signal
     public void OnPickupBodyEntered(Node body)
     {
         if (body != null && body.IsInGroup("Player"))
