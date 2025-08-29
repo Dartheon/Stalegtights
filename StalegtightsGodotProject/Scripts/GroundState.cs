@@ -30,7 +30,7 @@ public partial class GroundState : States
     #endregion
 
     #region Movement
-    [Export] private float groundMoveSpeed = 500.0f; //characters speed
+    [Export] public float GroundMoveSpeed { get; set; } = 500.0f; //characters speed
     #endregion
     #endregion
 
@@ -97,7 +97,7 @@ public partial class GroundState : States
         StateMachineScript.PlayerAnimIdle = StateMachineScript.smPlayerVelocity.X == 0.0f ? true : false;
 
         //Normalizes the Velocity before setting the BlendSpace value to it
-        runBlend = Mathf.Clamp(StateMachineScript.smPlayerVelocity.X / groundMoveSpeed, -1f, 1f);
+        runBlend = Mathf.Clamp(StateMachineScript.smPlayerVelocity.X / GroundMoveSpeed, -1f, 1f);
         //Sets the blend Value in the AnimationTree
         StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position", runBlend);
 
@@ -158,12 +158,12 @@ public partial class GroundState : States
                 StateMachineScript.smPlayerVelocity.X -= StateMachineScript.RunAcceleration;
             }
 
-            if (StateMachineScript.smPlayerVelocity.X >= -groundMoveSpeed)
+            if (StateMachineScript.smPlayerVelocity.X >= -GroundMoveSpeed)
             {
                 StateMachineScript.RunAcceleration = 20.0f;
                 StateMachineScript.smPlayerVelocity.X -= StateMachineScript.RunAcceleration;
             }
-            else if (StateMachineScript.smPlayerVelocity.X < -groundMoveSpeed)
+            else if (StateMachineScript.smPlayerVelocity.X < -GroundMoveSpeed)
             {
                 StateMachineScript.RunAcceleration = 0f;
             }
@@ -181,12 +181,12 @@ public partial class GroundState : States
                 StateMachineScript.RunAcceleration = 200.0f;
                 StateMachineScript.smPlayerVelocity.X += StateMachineScript.RunAcceleration;
             }
-            if (StateMachineScript.smPlayerVelocity.X <= groundMoveSpeed)
+            if (StateMachineScript.smPlayerVelocity.X <= GroundMoveSpeed)
             {
                 StateMachineScript.RunAcceleration = 20.0f;
                 StateMachineScript.smPlayerVelocity.X += StateMachineScript.RunAcceleration;
             }
-            else if (StateMachineScript.smPlayerVelocity.X > groundMoveSpeed)
+            else if (StateMachineScript.smPlayerVelocity.X > GroundMoveSpeed)
             {
                 StateMachineScript.RunAcceleration = 0f;
             }

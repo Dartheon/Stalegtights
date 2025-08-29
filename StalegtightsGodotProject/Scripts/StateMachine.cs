@@ -5,7 +5,6 @@ public partial class StateMachine : Node
 {
     #region DEBUG
     //DEBUG Variables Go Here...
-    public AnimationNodeStateMachinePlayback playback;
     #endregion
 
     #region General
@@ -39,7 +38,7 @@ public partial class StateMachine : Node
 
     #region Movement
     public Vector2 smPlayerVelocity; //The Variable for storing and changing the Players Velocity
-    [Export] public float smPlayerJumpVelocity = -500.0f; //Temp variable for jumping
+    [Export] public float smPlayerJumpVelocity { get; set; } = -500.0f; //Temp variable for jumping
     #endregion
 
     #region Methods
