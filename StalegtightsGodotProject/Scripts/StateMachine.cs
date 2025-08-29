@@ -28,6 +28,7 @@ public partial class StateMachine : Node
     #region Animations
     public AnimationTree PlayerAnimTree { get; set; } //Used to access the different variables of the AnimationTree
     public AnimationPlayer PlayerCB2DAnimPlayer { get; set; }
+    public StringName CurrentAnimationPlaying { get; set; } = "";
     private string playerState = "DEFAULT STATE"; //Used for animation tree transitions between state machines
     public float LastFacingDirection { get; set; } = 1.0f; //Identifies the Players last facing direction used for animation blend
     public bool PlayerAnimIdle { get; set; } //Checks for player movement
@@ -103,6 +104,11 @@ public partial class StateMachine : Node
         playerState = key; //For changing States in the AnimationTree
         CurrentState.Enter();
         SMPreviousState = key;
+    }
+
+    public void CurrentAnimationStartPlaying(StringName animName)
+    {
+        CurrentAnimationPlaying = animName;
     }
     #endregion
 

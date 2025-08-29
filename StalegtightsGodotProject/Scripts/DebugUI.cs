@@ -35,6 +35,7 @@ public partial class DebugUI : Control
     #region Animation
     //VBox1
     private Label playerSpriteFrame;
+    private Label playerCurrentAnim;
     public AnimationNodeStateMachinePlayback statemachinePlaybackState;
     public AnimationNodeStateMachinePlayback statemachinePlaybackGround;
     public AnimationNodeStateMachinePlayback statemachinePlaybackAir;
@@ -154,6 +155,7 @@ public partial class DebugUI : Control
         //Animation Labels
         //VBox1
         playerSpriteFrame = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerSpriteFrame");
+        playerCurrentAnim = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerCurrentAnim");
         playerAnimPlaybackState = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackState");
         playerAnimPlaybackGround = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackGround");
         playerAnimPlaybackAir = GetNode<Label>("Animation/AnimationVBoxContainer/PlayerAnimPlaybackAir");
@@ -224,7 +226,7 @@ public partial class DebugUI : Control
         //Animation Text
         //VBox1
         playerSpriteFrame.Text = $"Frame: {GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame}";
-
+        playerCurrentAnim.Text = $"CurrentAnim: {stateMachine.CurrentAnimationPlaying}";
         playerAnimPlaybackState.Text = $"AnimState: {statemachinePlaybackState.GetCurrentNode()}";
         playerAnimPlaybackGround.Text = $"GroundState: {statemachinePlaybackGround.GetCurrentNode()}";
         playerAnimPlaybackAir.Text = $"AirState: {statemachinePlaybackAir.GetCurrentNode()}";

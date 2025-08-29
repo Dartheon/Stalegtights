@@ -580,7 +580,7 @@ libraries = {
 &"": SubResource("AnimationLibrary_glx4g")
 }
 
-[node name="PlayerAnimationTree" type="AnimationTree" parent="."]
+[node name="PlayerAnimationTree" type="AnimationTree" parent="." groups=["Player"]]
 tree_root = SubResource("AnimationNodeBlendTree_52ee3")
 advance_expression_base_node = NodePath("../PLAYERSTATEMACHINE")
 anim_player = NodePath("../AnimationPlayer")
@@ -608,3 +608,5 @@ script = ExtResource("6_ksbbd")
 
 [node name="DEATH STATE" type="Node" parent="PLAYERSTATEMACHINE"]
 script = ExtResource("7_glx4g")
+
+[connection signal="animation_started" from="PlayerAnimationTree" to="PLAYERSTATEMACHINE" method="CurrentAnimationStartPlaying"]

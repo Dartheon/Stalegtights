@@ -103,6 +103,11 @@ layout_mode = 2
 text = "Frame: "
 label_settings = SubResource("LabelSettings_33s7u")
 
+[node name="PlayerCurrentAnim" type="Label" parent="Animation/AnimationVBoxContainer"]
+layout_mode = 2
+text = "Frame: "
+label_settings = SubResource("LabelSettings_33s7u")
+
 [node name="PlayerAnimPlaybackState" type="Label" parent="Animation/AnimationVBoxContainer"]
 layout_mode = 2
 text = "AnimState: GroundState"
