@@ -30,7 +30,7 @@ layout_mode = 0
 offset_left = 9.0
 offset_top = 9.0
 offset_right = 390.0
-offset_bottom = 234.0
+offset_bottom = 154.0
 color = Color(0, 0, 0, 1)
 
 [node name="GeneralCheckButton" type="CheckButton" parent="General"]

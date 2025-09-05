@@ -30,7 +30,9 @@ public partial class GroundState : States
     #endregion
 
     #region Movement
-    [Export] public float GroundMoveSpeed { get; set; } = 500.0f; //characters speed
+    [Export] public float BaseSpeed { get; set; } = 500.0f; //characters speed
+    public float MoveSpeedModifier { get; set; } = 1.0f;
+    public float GroundMoveSpeed => BaseSpeed * MoveSpeedModifier;
     #endregion
     #endregion
 
@@ -154,18 +156,18 @@ public partial class GroundState : States
         {
             if (StateMachineScript.smPlayerVelocity.X > 0)
             {
-                StateMachineScript.RunAcceleration = 200.0f;
+                StateMachineScript.BaseAcceleration = 200.0f;
                 StateMachineScript.smPlayerVelocity.X -= StateMachineScript.RunAcceleration;
             }
 
             if (StateMachineScript.smPlayerVelocity.X >= -GroundMoveSpeed)
             {
-                StateMachineScript.RunAcceleration = 20.0f;
+                StateMachineScript.BaseAcceleration = 20.0f;
                 StateMachineScript.smPlayerVelocity.X -= StateMachineScript.RunAcceleration;
             }
             else if (StateMachineScript.smPlayerVelocity.X < -GroundMoveSpeed)
             {
-                StateMachineScript.RunAcceleration = 0f;
+                StateMachineScript.BaseAcceleration = 0f;
             }
 
             if (Input.IsActionPressed("move_left") && Input.IsActionPressed("move_right"))
@@ -178,29 +180,29 @@ public partial class GroundState : States
         {
             if (StateMachineScript.smPlayerVelocity.X < 0)
             {
-                StateMachineScript.RunAcceleration = 200.0f;
+                StateMachineScript.BaseAcceleration = 200.0f;
                 StateMachineScript.smPlayerVelocity.X += StateMachineScript.RunAcceleration;
             }
             if (StateMachineScript.smPlayerVelocity.X <= GroundMoveSpeed)
             {
-                StateMachineScript.RunAcceleration = 20.0f;
+                StateMachineScript.BaseAcceleration = 20.0f;
                 StateMachineScript.smPlayerVelocity.X += StateMachineScript.RunAcceleration;
             }
             else if (StateMachineScript.smPlayerVelocity.X > GroundMoveSpeed)
             {
-                StateMachineScript.RunAcceleration = 0f;
+                StateMachineScript.BaseAcceleration = 0f;
             }
         }
 
         else if (StateMachineScript.smPlayerVelocity.X > 0)
         {
-            StateMachineScript.RunAcceleration = 20.0f;
+            StateMachineScript.BaseAcceleration = 20.0f;
             StateMachineScript.smPlayerVelocity.X = Mathf.Max(0, StateMachineScript.smPlayerVelocity.X - StateMachineScript.RunAcceleration);
         }
 
         else if (StateMachineScript.smPlayerVelocity.X < 0)
         {
-            StateMachineScript.RunAcceleration = 20.0f;
+            StateMachineScript.BaseAcceleration = 20.0f;
             StateMachineScript.smPlayerVelocity.X = Mathf.Min(0, StateMachineScript.smPlayerVelocity.X + StateMachineScript.RunAcceleration);
         }
         #endregion

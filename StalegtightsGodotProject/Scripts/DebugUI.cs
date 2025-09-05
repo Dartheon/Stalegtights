@@ -317,7 +317,7 @@ public partial class DebugUI : Control
         else
         {
             GetNode<VBoxContainer>("General/GeneralVBoxContainer").Visible = true;
-            generalBoxSize.Y = 225.0f;
+            generalBoxSize.Y = 145.0f;
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }
     }
@@ -329,6 +329,8 @@ public partial class DebugUI : Control
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer").Visible = false;
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer2").Visible = false;
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer3").Visible = false;
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer4").Visible = false;
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer5").Visible = false;
             animationBoxSize.Y = 40f;
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }
@@ -337,6 +339,8 @@ public partial class DebugUI : Control
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer").Visible = true;
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer2").Visible = true;
             GetNode<VBoxContainer>("Animation/AnimationVBoxContainer3").Visible = true;
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer4").Visible = true;
+            GetNode<VBoxContainer>("Animation/AnimationVBoxContainer5").Visible = true;
             animationBoxSize.Y = 300.0f;
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }

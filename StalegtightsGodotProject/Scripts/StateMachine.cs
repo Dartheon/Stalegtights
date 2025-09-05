@@ -19,8 +19,12 @@ public partial class StateMachine : Node
     public string SMPreviousState { get; set; } = "DEFAULT STATE";
 
     //Movement
-    public float smGravity { get; set; }
-    public float RunAcceleration { get; set; } = 20.0f;
+    public float BaseGravity { get; set; } = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
+    public float GravityModifier { get; set; } = 1.0f;
+    public float smGravity => BaseGravity * GravityModifier;
+    public float BaseAcceleration { get; set; } = 20.0f;
+    public float RunAccelerationModifier { get; set; } = 1.0f;
+    public float RunAcceleration => BaseAcceleration * RunAccelerationModifier;
 
     #endregion
 
@@ -38,7 +42,9 @@ public partial class StateMachine : Node
 
     #region Movement
     public Vector2 smPlayerVelocity; //The Variable for storing and changing the Players Velocity
-    [Export] public float smPlayerJumpVelocity { get; set; } = -500.0f; //Temp variable for jumping
+    [Export] public float BaseJumpVelocity { get; set; } = -500.0f;
+    public float JumpModifier { get; set; } = 1.0f;
+    public float smPlayerJumpVelocity => BaseJumpVelocity * JumpModifier;
     #endregion
 
     #region Methods
@@ -47,8 +53,6 @@ public partial class StateMachine : Node
         //Initialization for all states
         smPlayerCB2D = GetNode<CharacterBody2D>("/root/Main/World/Player");
         smPlayerScript = GetNode<Player>("/root/Main/World/Player");
-
-        smGravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
         PlayerAnimTree = GetNode<AnimationTree>("/root/Main/World/Player/PlayerAnimationTree");
         PlayerCB2DAnimPlayer = GetNode<AnimationPlayer>("/root/Main/World/Player/AnimationPlayer");

@@ -123,13 +123,13 @@ public partial class AirState : States
         {
             if (StateMachineScript.smPlayerVelocity.X > 0)
             {
-                StateMachineScript.RunAcceleration = 10.0f;
+                StateMachineScript.BaseAcceleration = 10.0f;
                 StateMachineScript.smPlayerVelocity.X = Mathf.Max(0, StateMachineScript.smPlayerVelocity.X - StateMachineScript.RunAcceleration);
             }
 
             else if (StateMachineScript.smPlayerVelocity.X < 0)
             {
-                StateMachineScript.RunAcceleration = 10.0f;
+                StateMachineScript.BaseAcceleration = 10.0f;
                 StateMachineScript.smPlayerVelocity.X = Mathf.Min(0, StateMachineScript.smPlayerVelocity.X + StateMachineScript.RunAcceleration);
             }
         }
@@ -138,12 +138,12 @@ public partial class AirState : States
         {
             if (StateMachineScript.smPlayerVelocity.X >= -inAirMoveSpeed)
             {
-                StateMachineScript.RunAcceleration = 20.0f;
+                StateMachineScript.BaseAcceleration = 20.0f;
                 StateMachineScript.smPlayerVelocity.X -= StateMachineScript.RunAcceleration;
             }
             else if (StateMachineScript.smPlayerVelocity.X < -inAirMoveSpeed)
             {
-                StateMachineScript.RunAcceleration = 0f;
+                StateMachineScript.BaseAcceleration = 0f;
             }
         }
 
@@ -151,25 +151,25 @@ public partial class AirState : States
         {
             if (StateMachineScript.smPlayerVelocity.X <= inAirMoveSpeed)
             {
-                StateMachineScript.RunAcceleration = 20.0f;
+                StateMachineScript.BaseAcceleration = 20.0f;
                 StateMachineScript.smPlayerVelocity.X += StateMachineScript.RunAcceleration;
             }
             else if (StateMachineScript.smPlayerVelocity.X > inAirMoveSpeed)
             {
-                StateMachineScript.RunAcceleration = 0f;
+                StateMachineScript.BaseAcceleration = 0f;
             }
 
         }
 
         else if (StateMachineScript.smPlayerVelocity.X > 0)
         {
-            StateMachineScript.RunAcceleration = 20.0f;
+            StateMachineScript.BaseAcceleration = 20.0f;
             StateMachineScript.smPlayerVelocity.X = Mathf.Max(0, StateMachineScript.smPlayerVelocity.X - StateMachineScript.RunAcceleration);
         }
 
         else if (StateMachineScript.smPlayerVelocity.X < 0)
         {
-            StateMachineScript.RunAcceleration = 20.0f;
+            StateMachineScript.BaseAcceleration = 20.0f;
             StateMachineScript.smPlayerVelocity.X = Mathf.Min(0, StateMachineScript.smPlayerVelocity.X + StateMachineScript.RunAcceleration);
         }
         #endregion

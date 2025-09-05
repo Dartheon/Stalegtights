@@ -10,6 +10,10 @@ public partial class Pickup : Area2D
 
     #region General
     private string nodeName;
+    private static float SPEEDMODIFIER = 1.0f;
+    private static float ACCELMODIFIER = 1.0f;
+    private static float JUMPMODIFIER = 1.0f;
+    private static float GRAVITYMODIFIER = 1.0f;
     #endregion
 
     #region Pickup Effects
@@ -23,11 +27,12 @@ public partial class Pickup : Area2D
     private float startY; //initializing the variable to set the starting point of the coin
     #endregion
 
-    #region Percentage Modifiers
-    private float speedChangePercent;
-    private float accelerationChangePercent;
-    private float jumpChangePercent;
-    private float gravityChangePercent;
+    #region Pickup Modifiers
+    //Positive
+    private float speedChange = 0.1f;
+    private float accelerationChange = 0.1f;
+    private float jumpChange = 0.1f;
+    private float gravityChange = 0.1f;
     #endregion
     #endregion
 
@@ -41,13 +46,6 @@ public partial class Pickup : Area2D
 
         //Gets the Current Node's name and sets the Variable
         nodeName = Name;
-        GD.Print(nodeName);
-
-        //Setting the Percents the Variables will be changed by
-        speedChangePercent = 10.0f;
-        accelerationChangePercent = 10.0f;
-        jumpChangePercent = 10.0f;
-        gravityChangePercent = 10.0f;
 
         //Setting up Pickup Effects Variables
         pos = Position;//setting the position of the object to a variable to make future changes
@@ -87,39 +85,46 @@ public partial class Pickup : Area2D
             {
                 //Changes Player Speed
                 case "SpeedPickupUp":
-                    groundStateScript.GroundMoveSpeed *= 1 + speedChangePercent / 100f;
+                    SPEEDMODIFIER += speedChange;
+                    groundStateScript.MoveSpeedModifier = SPEEDMODIFIER;
                     break;
                 case "SpeedPickupDown":
-                    groundStateScript.GroundMoveSpeed *= 1 - speedChangePercent / 100f;
+                    SPEEDMODIFIER -= speedChange;
+                    groundStateScript.MoveSpeedModifier = SPEEDMODIFIER;
                     break;
 
                 //Changes Player Acceleration
                 case "AccelerationPickupUp":
-                    stateMachine.RunAcceleration *= 1 + accelerationChangePercent / 100f;
+                    ACCELMODIFIER += accelerationChange;
+                    stateMachine.RunAccelerationModifier = ACCELMODIFIER;
                     break;
                 case "AccelerationPickupDown":
-                    stateMachine.RunAcceleration *= 1 - accelerationChangePercent / 100f;
+                    ACCELMODIFIER -= accelerationChange;
+                    stateMachine.RunAccelerationModifier = ACCELMODIFIER;
                     break;
 
                 //Changes Player Jump Height
                 case "JumpHeightPickupUp":
-                    stateMachine.smPlayerJumpVelocity *= 1 + jumpChangePercent / 100f;
+                    JUMPMODIFIER += jumpChange;
+                    stateMachine.JumpModifier = JUMPMODIFIER;
                     break;
                 case "JumpHeightPickupDown":
-                    stateMachine.smPlayerJumpVelocity *= 1 - jumpChangePercent / 100f;
+                    JUMPMODIFIER -= jumpChange;
+                    stateMachine.JumpModifier = JUMPMODIFIER;
                     break;
 
                 //Changes Player Gravity
                 case "GravityPickupUp":
-                    stateMachine.smGravity *= 1 + gravityChangePercent / 100f;
+                    GRAVITYMODIFIER += gravityChange;
+                    stateMachine.GravityModifier = GRAVITYMODIFIER;
                     break;
                 case "GravityPickupDown":
-                    stateMachine.smGravity *= 1 - gravityChangePercent / 100f; ;
+                    GRAVITYMODIFIER -= gravityChange;
+                    stateMachine.GravityModifier = GRAVITYMODIFIER;
                     break;
 
                 case "PickupTemplate":
                     GD.PushWarning("Default Node Used. Please Use Different Named Pickup Node");
-                    QueueFree();
                     return;
             }
 

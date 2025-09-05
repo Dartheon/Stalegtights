@@ -1,8 +1,16 @@
-[gd_scene load_steps=9 format=4 uid="uid://ctir3pmx1amd3"]
+[gd_scene load_steps=17 format=4 uid="uid://ctir3pmx1amd3"]
 
 [ext_resource type="Texture2D" uid="uid://cne7x2h4teo8n" path="res://Sprites/tiles_packed.png" id="1_b5ayd"]
 [ext_resource type="Texture2D" uid="uid://cxfeokshmca7a" path="res://Sprites/TileSheetFlat3264128256.png" id="2_5lt6y"]
 [ext_resource type="Texture2D" uid="uid://dyjjdk63d4gre" path="res://Sprites/TileSheetFlat1010010010.png" id="3_8k7wh"]
+[ext_resource type="PackedScene" uid="uid://c4rnh22qcmp4o" path="res://Scenes/Pickups/AccelerationPickupDown.tscn" id="4_xjl2p"]
+[ext_resource type="PackedScene" uid="uid://cogg5cx0g3uww" path="res://Scenes/Pickups/AccelerationPickupUp.tscn" id="5_ytmxh"]
+[ext_resource type="PackedScene" uid="uid://c73x45wy5ad2s" path="res://Scenes/Pickups/GravityPickupDown.tscn" id="6_hctok"]
+[ext_resource type="PackedScene" uid="uid://beoa5th5lnklo" path="res://Scenes/Pickups/GravityPickupUp.tscn" id="7_t2vuu"]
+[ext_resource type="PackedScene" uid="uid://cd13jttiohem0" path="res://Scenes/Pickups/JumpHeightPickupDown.tscn" id="8_lp1f3"]
+[ext_resource type="PackedScene" uid="uid://kdp6dgoaih7t" path="res://Scenes/Pickups/JumpHeightPickupUp.tscn" id="9_p30di"]
+[ext_resource type="PackedScene" uid="uid://by1g75dksq3mm" path="res://Scenes/Pickups/SpeedPickupDown.tscn" id="10_8c81w"]
+[ext_resource type="PackedScene" uid="uid://w364ju6siog6" path="res://Scenes/Pickups/SpeedPickupUp.tscn" id="11_fi7j4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_b5ayd"]
 texture = ExtResource("1_b5ayd")
@@ -299,3 +307,27 @@ tile_set = SubResource("TileSet_0r02p")
 position = Vector2(-4, 26)
 tile_map_data = PackedByteArray("AAAAAAcAAAAOAAAAAAAQAAcAAAAOAAAAAADw/wcAAAAOAAAAAADo//z/AgAAAAAAAADo//b/AgAAAAAAAAAYAPz/AgABAAAAAAAYAPb/AgABAAAAAAAYAPD/AgABAAAAAADo//D/AgAAAAAAAAAOAPv/AAAGAAAAAAATAP7/AAAAAAAAAAATAPz/AAAAAAAAAAAJAP7/AAAAAAAAAAAJAPz/AAAAAAAAAADs//v/AAAGAAAAAADs//X/AAACAAAAAADv//b/AAAAAAAAAADy//3/AAACAAAAAADy//n/AAACAAAAAAD1//7/AAAAAAAAAAAHAP7/AAAAAAAAAAAQAPX/AAACAAAAAAA=")
 tile_set = SubResource("TileSet_iufkg")
+
+[node name="AccelerationPickupDown" parent="." instance=ExtResource("4_xjl2p")]
+position = Vector2(261, -203)
+
+[node name="JumpHeightPickupDown" parent="." instance=ExtResource("8_lp1f3")]
+position = Vector2(65, -23)
+
+[node name="GravityPickupDown" parent="." instance=ExtResource("6_hctok")]
+position = Vector2(192, -142)
+
+[node name="SpeedPickupDown" parent="." instance=ExtResource("10_8c81w")]
+position = Vector2(126, -76)
+
+[node name="AccelerationPickupUp" parent="." instance=ExtResource("5_ytmxh")]
+position = Vector2(-314, -212)
+
+[node name="GravityPickupUp" parent="." instance=ExtResource("7_t2vuu")]
+position = Vector2(-248, -175)
+
+[node name="SpeedPickupUp" parent="." instance=ExtResource("11_fi7j4")]
+position = Vector2(-98, -15)
+
+[node name="JumpHeightPickupUp" parent="." instance=ExtResource("9_p30di")]
+position = Vector2(-156, -61)
