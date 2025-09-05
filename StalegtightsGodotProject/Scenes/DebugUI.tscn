@@ -267,6 +267,57 @@ layout_mode = 2
 text = "Max FPS:"
 label_settings = SubResource("LabelSettings_5xmph")
 
+[node name="Pickup" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PickupColorRect" type="ColorRect" parent="Pickup"]
+offset_left = 1664.0
+offset_top = 166.0
+offset_right = 1900.0
+offset_bottom = 346.0
+color = Color(0, 0, 0, 1)
+
+[node name="PickupCheckButton" type="CheckButton" parent="Pickup"]
+custom_minimum_size = Vector2(100, 0)
+offset_left = 1661.0
+offset_top = 157.0
+offset_right = 1902.0
+offset_bottom = 199.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+button_pressed = true
+keep_pressed_outside = true
+text = "Pickup Modifiers"
+
+[node name="PickupVBoxContainer" type="VBoxContainer" parent="Pickup"]
+offset_left = 1670.0
+offset_top = 192.0
+offset_right = 1899.0
+offset_bottom = 340.0
+
+[node name="Gravity" type="Label" parent="Pickup/PickupVBoxContainer"]
+layout_mode = 2
+text = "Gravity: "
+label_settings = SubResource("LabelSettings_swdn5")
+
+[node name="PlayerSpeed" type="Label" parent="Pickup/PickupVBoxContainer"]
+layout_mode = 2
+text = "Speed:"
+label_settings = SubResource("LabelSettings_33s7u")
+
+[node name="Acceleration" type="Label" parent="Pickup/PickupVBoxContainer"]
+layout_mode = 2
+text = "Accel:"
+label_settings = SubResource("LabelSettings_5xmph")
+
+[node name="JumpHeight" type="Label" parent="Pickup/PickupVBoxContainer"]
+layout_mode = 2
+text = "Jump:"
+label_settings = SubResource("LabelSettings_5xmph")
+
 [connection signal="toggled" from="General/GeneralCheckButton" to="." method="GeneralCheckBoxToggled"]
 [connection signal="toggled" from="Animation/AnimationCheckButton" to="." method="AnimationCheckBoxToggled"]
 [connection signal="toggled" from="Engine/EngineCheckButton" to="." method="EngineCheckBoxToggled"]
+[connection signal="toggled" from="Pickup/PickupCheckButton" to="." method="PickupCheckBoxToggled"]

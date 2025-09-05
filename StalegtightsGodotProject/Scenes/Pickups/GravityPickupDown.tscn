@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c73x45wy5ad2s"]
+
+[ext_resource type="PackedScene" uid="uid://pufv05s1ocpj" path="res://Scenes/Pickups/PickupTemplate.tscn" id="1_gxeha"]
+
+[node name="GravityPickupDown" instance=ExtResource("1_gxeha")]
+
+[node name="PickupSprite2D" parent="." index="0"]
+region_rect = Rect2(264, 0, 33, 33)

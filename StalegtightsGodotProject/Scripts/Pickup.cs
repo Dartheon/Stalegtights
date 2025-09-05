@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PickupTemplate : Area2D
+public partial class Pickup : Area2D
 {
     #region Variables
     #region Class Scripts
@@ -41,6 +41,7 @@ public partial class PickupTemplate : Area2D
 
         //Gets the Current Node's name and sets the Variable
         nodeName = Name;
+        GD.Print(nodeName);
 
         //Setting the Percents the Variables will be changed by
         speedChangePercent = 10.0f;
@@ -116,8 +117,9 @@ public partial class PickupTemplate : Area2D
                     stateMachine.smGravity *= 1 - gravityChangePercent / 100f; ;
                     break;
 
-                case "Pickup":
+                case "PickupTemplate":
                     GD.PushWarning("Default Node Used. Please Use Different Named Pickup Node");
+                    QueueFree();
                     return;
             }
 

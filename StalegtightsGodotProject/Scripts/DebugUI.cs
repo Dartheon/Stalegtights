@@ -12,6 +12,7 @@ public partial class DebugUI : Control
     private SaveLoadManager slManager;
     private SoundManager soundManager;
     private StateMachine stateMachine;
+    private GroundState groundStateScript;
     #endregion
 
     #region ColorRect Boxes
@@ -22,6 +23,7 @@ public partial class DebugUI : Control
     private Vector2 wallBoxSize;
     private Vector2 climbingBoxSize;
     private Vector2 soundBoxSize;*/
+    private Vector2 pickupBoxSize;
     private Vector2 engineBoxSize;
     #endregion
 
@@ -101,6 +103,13 @@ public partial class DebugUI : Control
     private Label playerDistance;*/
     #endregion
 
+    #region Pickup Modifiers
+    private Label gravity;
+    private Label playerSpeed;
+    private Label acceleration;
+    private Label jumpHeight;
+    #endregion
+
     #region Engine
     private Label engineScale;
     private Label fpsCounter;
@@ -116,6 +125,7 @@ public partial class DebugUI : Control
         soundManager = GetNode<SoundManager>("/root/SoundManager");
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
         stateMachine = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
+        groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
 
         bgmMenu = slManager.BGMMenu;
 
@@ -144,6 +154,7 @@ public partial class DebugUI : Control
         wallBoxSize = GetNode<ColorRect>("Wall/WallColorRect").Size;
         climbingBoxSize = GetNode<ColorRect>("Climbing/ClimbingColorRect").Size;
         soundBoxSize = GetNode<ColorRect>("Sounds/SoundsColorRect").Size;*/
+        pickupBoxSize = GetNode<ColorRect>("Pickup/PickupColorRect").Size;
         engineBoxSize = GetNode<ColorRect>("Engine/EngineColorRect").Size;
 
         //General Labels
@@ -197,6 +208,12 @@ public partial class DebugUI : Control
         playerVolume = GetNode<Label>("SoundsVBoxContainer/SoundVolume");
         playerDistance = GetNode<Label>("SoundsVBoxContainer/SoundDistance");*/
 
+        //Pickup Labels
+        gravity = GetNode<Label>("Pickup/PickupVBoxContainer/Gravity");
+        playerSpeed = GetNode<Label>("Pickup/PickupVBoxContainer/PlayerSpeed");
+        acceleration = GetNode<Label>("Pickup/PickupVBoxContainer/Acceleration");
+        jumpHeight = GetNode<Label>("Pickup/PickupVBoxContainer/JumpHeight");
+
         //Engine Labels
         engineScale = GetNode<Label>("Engine/EngineVBoxContainer/EngineScale");
         fpsCounter = GetNode<Label>("Engine/EngineVBoxContainer/FPSCounter");
@@ -215,6 +232,7 @@ public partial class DebugUI : Control
         GetNode<ColorRect>("WallColorRect").Size = wallBoxSize;
         GetNode<ColorRect>("ClimbingColorRect").Size = climbingBoxSize;
         GetNode<ColorRect>("SoundsColorRect").Size = soundBoxSize;*/
+        GetNode<ColorRect>("Pickup/PickupColorRect").Size = pickupBoxSize;
         GetNode<ColorRect>("Engine/EngineColorRect").Size = engineBoxSize;
 
         //General Text
@@ -272,6 +290,13 @@ public partial class DebugUI : Control
             playerVolume.Text = ("Volume: " + soundManager.debugPlayer.VolumeDb);
             playerDistance.Text = "Position: " + soundManager.Call("GetObjectPosition", soundManager.nextRequestSFX);
         }*/
+
+        //Pickup Text
+        //Engine Text
+        gravity.Text = $"Gravity: {stateMachine.smGravity}";
+        playerSpeed.Text = $"Speed: {groundStateScript.GroundMoveSpeed}";
+        acceleration.Text = $"Accel: {stateMachine.RunAcceleration}";
+        jumpHeight.Text = $"Jump: {stateMachine.smPlayerJumpVelocity}";
 
         //Engine Text
         engineScale.Text = $"Engine Scale: {Engine.TimeScale}";
@@ -392,6 +417,22 @@ public partial class DebugUI : Control
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }
     }*/
+
+    private void PickupCheckBoxToggled(bool toggle)
+    {
+        if (!toggle)
+        {
+            GetNode<VBoxContainer>("Pickup/PickupVBoxContainer").Visible = false;
+            pickupBoxSize.Y = 40f;
+            soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
+        }
+        else
+        {
+            GetNode<VBoxContainer>("Pickup/PickupVBoxContainer").Visible = true;
+            pickupBoxSize.Y = 180.0f;
+            soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
+        }
+    }
 
     private void EngineCheckBoxToggled(bool toggle)
     {
