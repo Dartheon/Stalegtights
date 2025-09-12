@@ -1,4 +1,4 @@
-[gd_scene load_steps=88 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=89 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
@@ -564,12 +564,14 @@ nodes/TimeScale/position = Vector2(600, 100)
 nodes/output/position = Vector2(900, 150)
 node_connections = [&"TimeScale", 0, &"PlayerStateMachine", &"output", 0, &"TimeScale"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bhhdu"]
+size = Vector2(85, 95)
+
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 script = ExtResource("1_rpqav")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_bhhdu")
-flip_h = true
 hframes = 24
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
@@ -591,6 +593,12 @@ anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position" = 0
 parameters/TimeScale/scale = 1.0
 
+[node name="InteractArea2D" type="Area2D" parent="." groups=["Interactable"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea2D"]
+position = Vector2(-0.5, 30)
+shape = SubResource("RectangleShape2D_bhhdu")
+
 [node name="PLAYERSTATEMACHINE" type="Node" parent="."]
 script = ExtResource("2_52ee3")
 InitialState = NodePath("AIR STATE")
@@ -611,3 +619,4 @@ script = ExtResource("6_ksbbd")
 script = ExtResource("7_glx4g")
 
 [connection signal="animation_started" from="PlayerAnimationTree" to="PLAYERSTATEMACHINE" method="CurrentAnimationStartPlaying"]
+[connection signal="body_entered" from="InteractArea2D" to="." method="OnInteractBodyEntered"]

@@ -85,5 +85,19 @@ public partial class Player : CharacterBody2D
         return GlobalPosition;
     }
     #endregion
+
+    #region Player Signals
+    public void OnInteractBodyEntered(Node node)
+    {
+        if (node != null && node.IsInGroup("Interactable"))
+        {
+            //Will need to change action once InputManager is created
+            if (Input.IsActionJustPressed("Interact"))
+            {
+                GD.Print("Interactable Object Interacted With");
+            }
+        }
+    }
+    #endregion
     #endregion
 }
