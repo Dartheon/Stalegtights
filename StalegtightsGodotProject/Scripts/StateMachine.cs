@@ -5,12 +5,14 @@ public partial class StateMachine : Node
 {
     #region DEBUG
     //DEBUG Variables Go Here...
+
     #endregion
 
     #region General
     //References to Other Components
     public CharacterBody2D smPlayerCB2D { get; set; }
     public Player smPlayerScript { get; set; }
+    public InputManager smInputManager { get; set; }
 
     //State Machine
     public States CurrentState { get; private set; }
@@ -53,6 +55,7 @@ public partial class StateMachine : Node
         //Initialization for all states
         smPlayerCB2D = GetNode<CharacterBody2D>("/root/Main/World/Player");
         smPlayerScript = GetNode<Player>("/root/Main/World/Player");
+        smInputManager = GetNode<InputManager>("/root/InputManager");
 
         PlayerAnimTree = GetNode<AnimationTree>("/root/Main/World/Player/PlayerAnimationTree");
         PlayerCB2DAnimPlayer = GetNode<AnimationPlayer>("/root/Main/World/Player/AnimationPlayer");
@@ -81,6 +84,8 @@ public partial class StateMachine : Node
 
     public override void _PhysicsProcess(double delta)
     {
+        CurrentState.InputBuffer(delta);
+
         // Call current state for continuous input handling (first)
         CurrentState.HandleContinuousInput(delta);
 

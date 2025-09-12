@@ -14,13 +14,14 @@ public partial class GroundState : States
     Gravity             - Float
     */
     /*Variables from StateMachine that need direct Referenece
-    StateMachineScript.smPlayerVelocity     - Vector2
-    StateMachineScript.hasWeapon            - bool
-    StateMachineScript.hasStalag            - bool
-    StateMachineScript.LastFacingDirection  - float
-    StateMachineScript.PlayerAnimIdle       - bool
-    StateMachineScript.PlayerAnimTree       - AnimationTree
-    StateMachineScript.isJumping            - bool
+    StateMachineScript.smPlayerVelocity                          - Vector2
+    StateMachineScript.hasWeapon                                 - bool
+    StateMachineScript.hasStalag                                 - bool
+    StateMachineScript.LastFacingDirection                       - float
+    StateMachineScript.PlayerAnimIdle                            - bool
+    StateMachineScript.PlayerAnimTree                            - AnimationTree
+    StateMachineScript.isJumping                                 - bool
+    StateMachineScript.smInputManager.PlayerInputBuffers[string] - bool
     */
     #endregion
 
@@ -91,7 +92,6 @@ public partial class GroundState : States
     {
         #region DEBUG
         //DEBUG Variables Go Here...
-        //
         #endregion
 
         #region Animations
@@ -116,6 +116,29 @@ public partial class GroundState : States
     }
     #endregion
 
+    #region InputBuffer
+    public override void InputBuffer(double delta)
+    {
+        #region DEBUG
+        //DEBUG Variables Go Here...
+        #endregion
+
+        #region General
+        //
+        #endregion
+
+        #region Movement
+        #region Detect any Jump and keep track of the type of jump used
+        if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
+        {
+            StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
+            NewStateChange = AIRSTATESTRING;
+        }
+        #endregion
+        #endregion
+    }
+    #endregion
+
     #region HandleContinuousInput
     /*HandleContinuousinput Tasks
      CIPU* detect input for ducking
@@ -136,15 +159,15 @@ public partial class GroundState : States
 
         #region Movement
         #region Detect Input for Ducking - need to add code
-        if (Input.IsActionPressed("duck"))
+        if (StateMachineScript.smInputManager.PlayerContinuousInputs["duck"])
         {
             //add code for ducking
             GD.Print("Ducking");
         }
         #endregion
 
-        #region Detect Input for Crawling - need to add code and turn off regular ducking input if crawling is true. maybe bool?
-        if (Input.IsActionPressed("duck") && Input.IsActionPressed("move_left") || Input.IsActionPressed("duck") && Input.IsActionPressed("move_right"))
+        #region Detect Input for Crawling - need to add code
+        if (StateMachineScript.smInputManager.PlayerContinuousInputs["crawling_left"] || StateMachineScript.smInputManager.PlayerContinuousInputs["crawling_right"])
         {
             //add code for crawling
             GD.Print("Crawling");
@@ -152,7 +175,7 @@ public partial class GroundState : States
         #endregion
 
         #region Detect Input for Moving Right or Left
-        if (Input.IsActionPressed("move_left"))
+        if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"])
         {
             if (StateMachineScript.smPlayerVelocity.X > 0)
             {
@@ -170,13 +193,13 @@ public partial class GroundState : States
                 StateMachineScript.BaseAcceleration = 0f;
             }
 
-            if (Input.IsActionPressed("move_left") && Input.IsActionPressed("move_right"))
+            if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] && StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
             {
                 StateMachineScript.smPlayerVelocity.X = 0;
             }
         }
 
-        else if (Input.IsActionPressed("move_right"))
+        else if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
         {
             if (StateMachineScript.smPlayerVelocity.X < 0)
             {
@@ -296,14 +319,6 @@ public partial class GroundState : States
         #endregion
 
         #region Movement
-        #region Detect any Jump and keep track of the type of jump used
-        if (Input.IsActionJustPressed("jump"))
-        {
-            StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
-            NewStateChange = AIRSTATESTRING;
-        }
-        #endregion
-
         #region Check for Braking input - add code
         //
         #endregion

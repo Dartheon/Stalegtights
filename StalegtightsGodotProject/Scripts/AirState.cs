@@ -5,6 +5,7 @@ public partial class AirState : States
     #region Variables
     #region DEBUG
     //DEBUG Variables Go Here...
+    bool firsttime = false;
     #endregion
 
     #region General
@@ -15,10 +16,11 @@ public partial class AirState : States
     */
 
     /*Variables from StateMachine that need direct Referenece
-    StateMachineScript.smPlayerVelocity     - Vector2
-    StateMachineScript.PlayerAnimTree       - AnimationTree
-    StateMachineScript.LastFacingDirection  - float
-    StateMachineScript.isJumping            - bool
+    StateMachineScript.smPlayerVelocity                          - Vector2
+    StateMachineScript.PlayerAnimTree                            - AnimationTree
+    StateMachineScript.LastFacingDirection                       - float
+    StateMachineScript.isJumping                                 - bool
+    StateMachineScript.smInputManager.PlayerInputBuffers[string] - bool
     */
     #endregion
 
@@ -92,6 +94,23 @@ public partial class AirState : States
         #endregion
     }
 
+    #region InputBuffer
+    public override void InputBuffer(double delta)
+    {
+        #region DEBUG
+        //DEBUG Variables Go Here...
+        #endregion
+
+        #region General
+        //
+        #endregion
+
+        #region Movement
+        //
+        #endregion
+    }
+    #endregion
+
     public override void HandleContinuousInput(double delta)
     {
         #region DEBUG
@@ -119,7 +138,7 @@ public partial class AirState : States
         #endregion
 
         #region Check Input for Moving Right/Left
-        if (Input.IsActionPressed("move_left") && Input.IsActionPressed("move_right"))
+        if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] && StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
         {
             if (StateMachineScript.smPlayerVelocity.X > 0)
             {
@@ -134,7 +153,7 @@ public partial class AirState : States
             }
         }
 
-        else if (Input.IsActionPressed("move_left"))
+        else if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"])
         {
             if (StateMachineScript.smPlayerVelocity.X >= -inAirMoveSpeed)
             {
@@ -147,7 +166,7 @@ public partial class AirState : States
             }
         }
 
-        else if (Input.IsActionPressed("move_right"))
+        else if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
         {
             if (StateMachineScript.smPlayerVelocity.X <= inAirMoveSpeed)
             {
@@ -197,6 +216,7 @@ public partial class AirState : States
         #endregion
 
         #region Check if the Character is Grounded
+
         if (PlayerCB2D.IsOnFloor())
         {
             IsLanding = false;

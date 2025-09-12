@@ -80,6 +80,23 @@ public partial class ClimbingState : States
         #endregion
     }
 
+    #region InputBuffer
+    public override void InputBuffer(double delta)
+    {
+        #region DEBUG
+        //DEBUG Variables Go Here...
+        #endregion
+
+        #region General
+        //
+        #endregion
+
+        #region Movement
+        //
+        #endregion
+    }
+    #endregion
+
     public override void HandleContinuousInput(double delta)
     {
         #region DEBUG

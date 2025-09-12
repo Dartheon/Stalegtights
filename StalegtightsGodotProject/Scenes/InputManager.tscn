@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwglunjop38vg"]
+
+[ext_resource type="Script" uid="uid://drqyw4katxy88" path="res://Scripts/InputManager.cs" id="1_pskt2"]
+
+[node name="InputManager" type="Node"]
+script = ExtResource("1_pskt2")
+
+[node name="JumpTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.25
+one_shot = true
+
+[connection signal="timeout" from="JumpTimer" to="." method="OnJumpTimerTimeout"]

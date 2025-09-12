@@ -46,6 +46,8 @@ public partial class States : Node
 
     public virtual void Update(double delta) { }
 
+    public virtual void InputBuffer(double delta) { }
+
     //Use HandleContinuousInput for ongoing actions while keys are held down (e.g., walking, dashing).
     public virtual void HandleContinuousInput(double delta) { }
 

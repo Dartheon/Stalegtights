@@ -273,6 +273,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="PickupColorRect" type="ColorRect" parent="Pickup"]
+layout_mode = 0
 offset_left = 1664.0
 offset_top = 166.0
 offset_right = 1900.0
@@ -281,6 +282,7 @@ color = Color(0, 0, 0, 1)
 
 [node name="PickupCheckButton" type="CheckButton" parent="Pickup"]
 custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
 offset_left = 1661.0
 offset_top = 157.0
 offset_right = 1902.0
@@ -292,6 +294,7 @@ keep_pressed_outside = true
 text = "Pickup Modifiers"
 
 [node name="PickupVBoxContainer" type="VBoxContainer" parent="Pickup"]
+layout_mode = 0
 offset_left = 1670.0
 offset_top = 192.0
 offset_right = 1899.0
