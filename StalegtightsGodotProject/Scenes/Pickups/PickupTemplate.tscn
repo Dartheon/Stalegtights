@@ -8,6 +8,7 @@ radius = 16.0
 
 [node name="PickupTemplate" type="Area2D"]
 script = ExtResource("1_t8agl")
+metadata/PickupType = ""
 
 [node name="PickupSprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -2.6226e-06)

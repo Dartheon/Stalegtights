@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Godot;
 
 public partial class Pickup : Area2D
@@ -45,7 +46,7 @@ public partial class Pickup : Area2D
         groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
 
         //Gets the Current Node's name and sets the Variable
-        nodeName = Name;
+        nodeName = (string)GetMeta("PickupType");
 
         //Setting up Pickup Effects Variables
         pos = Position;//setting the position of the object to a variable to make future changes
@@ -123,7 +124,7 @@ public partial class Pickup : Area2D
                     stateMachine.GravityModifier = GRAVITYMODIFIER;
                     break;
 
-                case "PickupTemplate":
+                case "":
                     GD.PushWarning("Default Node Used. Please Use Different Named Pickup Node");
                     return;
             }

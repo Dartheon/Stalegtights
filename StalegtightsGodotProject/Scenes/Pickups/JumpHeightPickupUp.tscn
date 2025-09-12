@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://pufv05s1ocpj" path="res://Scenes/Pickups/PickupTemplate.tscn" id="1_3sfbf"]
 
 [node name="JumpHeightPickupUp" instance=ExtResource("1_3sfbf")]
+metadata/PickupType = "JumpHeightPickupUp"
 
 [node name="PickupSprite2D" parent="." index="0"]
 region_rect = Rect2(99, 0, 33, 33)
