@@ -115,6 +115,9 @@ public partial class DebugUI : Control
     private Label fpsCounter;
     private Label maxFPS;
     #endregion
+
+    #region Teleport Nodes
+    private Dictionary<string, Node2D> teleporterDictionary = new();
     #endregion
 
     #region Methods
@@ -218,6 +221,9 @@ public partial class DebugUI : Control
         engineScale = GetNode<Label>("Engine/EngineVBoxContainer/EngineScale");
         fpsCounter = GetNode<Label>("Engine/EngineVBoxContainer/FPSCounter");
         maxFPS = GetNode<Label>("Engine/EngineVBoxContainer/MaxFPS");
+
+        //Teleporters
+        CreateTeleporterButtons();
     }
     #endregion
 
@@ -302,6 +308,12 @@ public partial class DebugUI : Control
         engineScale.Text = $"Engine Scale: {Engine.TimeScale}";
         fpsCounter.Text = $"FPS: {Engine.GetFramesPerSecond()}";
         maxFPS.Text = $"Max FPS: {Engine.MaxFps}";
+    }
+    #endregion
+
+    public void CreateTeleporterButtons()
+    {
+        //
     }
     #endregion
 
