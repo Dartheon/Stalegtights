@@ -9,6 +9,7 @@ height = 64.0
 
 [node name="Teleporter" type="Area2D"]
 script = ExtResource("1_jdjlm")
+metadata/TeleporterType = ""
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_lrpa0")
@@ -23,3 +24,5 @@ position = Vector2(-50, 0)
 
 [node name="RightMarker" type="Marker2D" parent="."]
 position = Vector2(50, 0)
+
+[connection signal="body_entered" from="." to="." method="OnPlayerBodyEntered"]

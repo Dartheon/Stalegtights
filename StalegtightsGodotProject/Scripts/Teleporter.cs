@@ -19,8 +19,8 @@ public partial class Teleporter : Area2D
         playerCB2D = GetNode<CharacterBody2D>("root/Main/World/Player");
         stateMachineScript = GetNode<StateMachine>("root/Main/World/Player/STATEMACHINE");
 
-        rightMarker = GetNode<Marker2D>("MarkerRight");
-        leftMarker = GetNode<Marker2D>("MarkerLeft");
+        rightMarker = GetNode<Marker2D>("RightMarker");
+        leftMarker = GetNode<Marker2D>("LeftMarker");
 
         switch (teleporterType)
         {

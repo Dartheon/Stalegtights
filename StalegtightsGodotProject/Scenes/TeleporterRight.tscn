@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnpeed0olraoy"]
+
+[ext_resource type="PackedScene" uid="uid://bkm3v2ydk5ori" path="res://Scenes/Teleporter.tscn" id="1_8besc"]
+
+[node name="TeleporterRight" instance=ExtResource("1_8besc")]
+metadata/TeleporterType = "TeleporterRight"
