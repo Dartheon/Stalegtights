@@ -312,13 +312,13 @@ tile_set = SubResource("TileSet_iufkg")
 
 [node name="Teleporters" type="Node" parent="."]
 
-[node name="TeleporterLeft" parent="Teleporters" node_paths=PackedStringArray("linkedPortalLocation") instance=ExtResource("12_n83yj")]
+[node name="TeleporterThatsOnTheRight" parent="Teleporters" node_paths=PackedStringArray("linkedPortalLocation") instance=ExtResource("12_n83yj")]
 position = Vector2(813, 515)
-linkedPortalLocation = NodePath("../TeleporterRight")
+linkedPortalLocation = NodePath("../TeleporterThatsOnTheLeft")
 
-[node name="TeleporterRight" parent="Teleporters" node_paths=PackedStringArray("linkedPortalLocation") instance=ExtResource("13_5t6hh")]
+[node name="TeleporterThatsOnTheLeft" parent="Teleporters" node_paths=PackedStringArray("linkedPortalLocation") instance=ExtResource("13_5t6hh")]
 position = Vector2(-76, 520)
-linkedPortalLocation = NodePath("../TeleporterLeft")
+linkedPortalLocation = NodePath("../TeleporterThatsOnTheRight")
 
 [node name="AccelerationPickupDown" parent="." instance=ExtResource("4_xjl2p")]
 position = Vector2(261, -203)
