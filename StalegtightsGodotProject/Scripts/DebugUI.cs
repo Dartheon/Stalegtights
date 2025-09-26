@@ -11,6 +11,7 @@ public partial class DebugUI : Control
     private Player playerScript;
     private SaveLoadManager slManager;
     private SoundManager soundManager;
+    private GameManager gameManager;
     private StateMachine stateMachine;
     private GroundState groundStateScript;
     #endregion
@@ -24,6 +25,7 @@ public partial class DebugUI : Control
     private Vector2 climbingBoxSize;
     private Vector2 soundBoxSize;*/
     private Vector2 pickupBoxSize;
+    private Vector2 teleporterBoxSize;
     private Vector2 engineBoxSize;
     #endregion
 
@@ -103,6 +105,10 @@ public partial class DebugUI : Control
     private Label playerDistance;*/
     #endregion
 
+    #region Teleporters
+    private VBoxContainer teleportContainer;
+    #endregion
+
     #region Pickup Modifiers
     private Label gravity;
     private Label playerSpeed;
@@ -116,10 +122,6 @@ public partial class DebugUI : Control
     private Label maxFPS;
     #endregion
 
-    #region Teleport Nodes
-    private Dictionary<string, Node2D> teleporterDictionary = new();
-    #endregion
-
     #region Methods
     #region Ready
     public override void _Ready()
@@ -127,6 +129,7 @@ public partial class DebugUI : Control
         playerScript = GetNode<Player>("/root/Main/World/Player");
         soundManager = GetNode<SoundManager>("/root/SoundManager");
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
+        gameManager = GetNode<GameManager>("/root/GameManager");
         stateMachine = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
         groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
 
@@ -157,6 +160,7 @@ public partial class DebugUI : Control
         wallBoxSize = GetNode<ColorRect>("Wall/WallColorRect").Size;
         climbingBoxSize = GetNode<ColorRect>("Climbing/ClimbingColorRect").Size;
         soundBoxSize = GetNode<ColorRect>("Sounds/SoundsColorRect").Size;*/
+        teleporterBoxSize = GetNode<ColorRect>("Teleporter/TeleporterColorRect").Size;
         pickupBoxSize = GetNode<ColorRect>("Pickup/PickupColorRect").Size;
         engineBoxSize = GetNode<ColorRect>("Engine/EngineColorRect").Size;
 
@@ -211,6 +215,9 @@ public partial class DebugUI : Control
         playerVolume = GetNode<Label>("SoundsVBoxContainer/SoundVolume");
         playerDistance = GetNode<Label>("SoundsVBoxContainer/SoundDistance");*/
 
+        //Teleporter
+        teleportContainer = GetNode<VBoxContainer>("Teleporter/TeleporterScrollContainer/TeleporterVBoxContainer");
+
         //Pickup Labels
         gravity = GetNode<Label>("Pickup/PickupVBoxContainer/Gravity");
         playerSpeed = GetNode<Label>("Pickup/PickupVBoxContainer/PlayerSpeed");
@@ -221,9 +228,6 @@ public partial class DebugUI : Control
         engineScale = GetNode<Label>("Engine/EngineVBoxContainer/EngineScale");
         fpsCounter = GetNode<Label>("Engine/EngineVBoxContainer/FPSCounter");
         maxFPS = GetNode<Label>("Engine/EngineVBoxContainer/MaxFPS");
-
-        //Teleporters
-        CreateTeleporterButtons();
     }
     #endregion
 
@@ -238,6 +242,7 @@ public partial class DebugUI : Control
         GetNode<ColorRect>("WallColorRect").Size = wallBoxSize;
         GetNode<ColorRect>("ClimbingColorRect").Size = climbingBoxSize;
         GetNode<ColorRect>("SoundsColorRect").Size = soundBoxSize;*/
+        GetNode<ColorRect>("Teleporter/TeleporterColorRect").Size = teleporterBoxSize;
         GetNode<ColorRect>("Pickup/PickupColorRect").Size = pickupBoxSize;
         GetNode<ColorRect>("Engine/EngineColorRect").Size = engineBoxSize;
 
@@ -297,8 +302,10 @@ public partial class DebugUI : Control
             playerDistance.Text = "Position: " + soundManager.Call("GetObjectPosition", soundManager.nextRequestSFX);
         }*/
 
+        //Teleporters
+        CreateTeleporterButtons();
+
         //Pickup Text
-        //Engine Text
         gravity.Text = $"Gravity: {stateMachine.smGravity}";
         playerSpeed.Text = $"Speed: {groundStateScript.GroundMoveSpeed}";
         acceleration.Text = $"Accel: {stateMachine.RunAcceleration}";
@@ -313,7 +320,23 @@ public partial class DebugUI : Control
 
     public void CreateTeleporterButtons()
     {
-        //
+        if (teleportContainer.GetChildCount() < gameManager.TeleporterDictionary.Count)
+        {
+            foreach (Teleporter teleporter in gameManager.TeleporterDictionary.Values)
+            {
+                Button teleporterButton = new()
+                {
+                    Name = teleporter.Name,
+                    Text = teleporter.Name,
+                    KeepPressedOutside = true,
+                    FocusMode = FocusModeEnum.None,
+                };
+
+                teleporterButton.Pressed += () => teleporter.TeleportPlayer();
+
+                teleportContainer.AddChild(teleporterButton);
+            }
+        }
     }
     #endregion
 
@@ -433,6 +456,22 @@ public partial class DebugUI : Control
             soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
         }
     }*/
+
+    private void TeleporterCheckBoxToggled(bool toggle)
+    {
+        if (!toggle)
+        {
+            GetNode<VBoxContainer>("Teleporter/TeleporterScrollContainer/TeleporterVBoxContainer").Visible = false;
+            teleporterBoxSize.Y = 40f;
+            soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
+        }
+        else
+        {
+            GetNode<VBoxContainer>("Teleporter/TeleporterScrollContainer/TeleporterVBoxContainer").Visible = true;
+            teleporterBoxSize.Y = 312.0f;
+            soundManager.PlayBGMMenu(bgmMenu.GetValueOrDefault("MenuClick").Source, bgmMenu.GetValueOrDefault("MenuClick").SoundName);
+        }
+    }
 
     private void PickupCheckBoxToggled(bool toggle)
     {

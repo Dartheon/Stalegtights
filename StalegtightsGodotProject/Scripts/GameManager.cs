@@ -20,6 +20,10 @@ public partial class GameManager : Node
     [Export] private string[] startScenes;
     #endregion
 
+    #region Teleport Nodes
+    public Dictionary<string, Teleporter> TeleporterDictionary { get; set; } = new();
+    #endregion
+
     #region Sounds
     #region Sound Queues
     private Dictionary<string, SoundRequestSFX> sfxPlayer;
