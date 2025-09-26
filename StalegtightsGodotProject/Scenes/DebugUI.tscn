@@ -221,12 +221,51 @@ layout_mode = 2
 text = "ClimbStalag:"
 label_settings = SubResource("LabelSettings_33s7u")
 
+[node name="Teleporter" type="Control" parent="."]
+anchors_preset = 0
+offset_left = -217.0
+offset_top = -164.0
+offset_right = -177.0
+offset_bottom = -124.0
+
+[node name="TeleporterColorRect" type="ColorRect" parent="Teleporter"]
+layout_mode = 0
+offset_left = 1669.0
+offset_top = 173.0
+offset_right = 1905.0
+offset_bottom = 485.0
+color = Color(0, 0, 0, 1)
+
+[node name="TeleporterCheckButton" type="CheckButton" parent="Teleporter"]
+layout_mode = 0
+offset_left = 1666.0
+offset_top = 167.0
+offset_right = 1847.0
+offset_bottom = 209.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+button_pressed = true
+keep_pressed_outside = true
+text = "Teleporters"
+
+[node name="TeleporterScrollContainer" type="ScrollContainer" parent="Teleporter"]
+layout_mode = 0
+offset_left = 1670.0
+offset_top = 206.0
+offset_right = 1904.0
+offset_bottom = 485.0
+
+[node name="TeleporterVBoxContainer" type="VBoxContainer" parent="Teleporter/TeleporterScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="Engine" type="Control" parent="."]
 anchors_preset = 0
 
 [node name="EngineColorRect" type="ColorRect" parent="Engine"]
 layout_mode = 0
-offset_left = 1663.0
+offset_left = 1689.0
 offset_top = 9.0
 offset_right = 1899.0
 offset_bottom = 164.0
@@ -235,10 +274,10 @@ color = Color(0, 0, 0, 1)
 [node name="EngineCheckButton" type="CheckButton" parent="Engine"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
-offset_left = 1664.0
-offset_top = 7.0
-offset_right = 1790.0
-offset_bottom = 49.0
+offset_left = 1686.0
+offset_top = 8.0
+offset_right = 1812.0
+offset_bottom = 50.0
 focus_mode = 0
 theme_override_font_sizes/font_size = 24
 button_pressed = true
@@ -247,14 +286,14 @@ text = "Engine	"
 
 [node name="EngineVBoxContainer" type="VBoxContainer" parent="Engine"]
 layout_mode = 0
-offset_left = 1668.0
+offset_left = 1692.0
 offset_top = 44.0
-offset_right = 1899.0
+offset_right = 1906.0
 offset_bottom = 164.0
 
 [node name="EngineScale" type="Label" parent="Engine/EngineVBoxContainer"]
 layout_mode = 2
-text = "Engine Scale:"
+text = "Engine Scale: 99.9"
 label_settings = SubResource("LabelSettings_swdn5")
 
 [node name="FPSCounter" type="Label" parent="Engine/EngineVBoxContainer"]
@@ -274,7 +313,7 @@ offset_bottom = 40.0
 
 [node name="PickupColorRect" type="ColorRect" parent="Pickup"]
 layout_mode = 0
-offset_left = 1664.0
+offset_left = 1689.0
 offset_top = 166.0
 offset_right = 1900.0
 offset_bottom = 346.0
@@ -283,19 +322,19 @@ color = Color(0, 0, 0, 1)
 [node name="PickupCheckButton" type="CheckButton" parent="Pickup"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
-offset_left = 1661.0
-offset_top = 157.0
-offset_right = 1902.0
-offset_bottom = 199.0
+offset_left = 1690.0
+offset_top = 159.0
+offset_right = 1827.0
+offset_bottom = 201.0
 focus_mode = 0
 theme_override_font_sizes/font_size = 24
 button_pressed = true
 keep_pressed_outside = true
-text = "Pickup Modifiers"
+text = "Pickups"
 
 [node name="PickupVBoxContainer" type="VBoxContainer" parent="Pickup"]
 layout_mode = 0
-offset_left = 1670.0
+offset_left = 1693.0
 offset_top = 192.0
 offset_right = 1899.0
 offset_bottom = 340.0
@@ -322,5 +361,6 @@ label_settings = SubResource("LabelSettings_5xmph")
 
 [connection signal="toggled" from="General/GeneralCheckButton" to="." method="GeneralCheckBoxToggled"]
 [connection signal="toggled" from="Animation/AnimationCheckButton" to="." method="AnimationCheckBoxToggled"]
+[connection signal="toggled" from="Teleporter/TeleporterCheckButton" to="." method="TeleporterCheckBoxToggled"]
 [connection signal="toggled" from="Engine/EngineCheckButton" to="." method="EngineCheckBoxToggled"]
 [connection signal="toggled" from="Pickup/PickupCheckButton" to="." method="PickupCheckBoxToggled"]

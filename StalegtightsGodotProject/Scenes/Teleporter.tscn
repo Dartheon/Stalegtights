@@ -20,9 +20,9 @@ region_enabled = true
 region_rect = Rect2(0, 0, 35, 67)
 
 [node name="LeftMarker" type="Marker2D" parent="."]
-position = Vector2(-50, 0)
+position = Vector2(-150, 0)
 
 [node name="RightMarker" type="Marker2D" parent="."]
-position = Vector2(50, 0)
+position = Vector2(150, 0)
 
 [connection signal="body_entered" from="." to="." method="OnPlayerBodyEntered"]

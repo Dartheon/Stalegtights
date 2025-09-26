@@ -4,6 +4,7 @@ public partial class Teleporter : Area2D
 {
     private CharacterBody2D playerCB2D;
     private StateMachine stateMachineScript;
+    private GameManager gameManager;
 
     private Marker2D rightMarker;
     private Marker2D leftMarker;
@@ -16,11 +17,16 @@ public partial class Teleporter : Area2D
 
     public override void _Ready()
     {
-        playerCB2D = GetNode<CharacterBody2D>("root/Main/World/Player");
-        stateMachineScript = GetNode<StateMachine>("root/Main/World/Player/STATEMACHINE");
+        playerCB2D = GetNode<CharacterBody2D>("/root/Main/World/Player");
+        stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
+        gameManager = GetNode<GameManager>("/root/GameManager");
 
         rightMarker = GetNode<Marker2D>("RightMarker");
         leftMarker = GetNode<Marker2D>("LeftMarker");
+
+        teleporterType = (string)GetMeta("TeleporterType");
+
+        gameManager.TeleporterDictionary.Add(Name, this);
 
         switch (teleporterType)
         {
@@ -38,7 +44,7 @@ public partial class Teleporter : Area2D
         }
     }
 
-    public void PlayerTeleport()
+    public void TeleportPlayer()
     {
         stateMachineScript.LastFacingDirection = playerFacingDirection;
         playerCB2D.GlobalPosition = teleportLocation;
@@ -46,7 +52,7 @@ public partial class Teleporter : Area2D
 
     public void OnPlayerBodyEntered(Node2D body)
     {
-        if (linkedPortalLocation.teleportLocation != new Vector2())
+        if (linkedPortalLocation.teleportLocation == new Vector2())
         {
             GD.PushWarning($"Linked Portal Is Not Set Up In Export Window: {Name}");
             return;
