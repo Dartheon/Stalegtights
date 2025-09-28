@@ -8,6 +8,7 @@ public partial class Player : CharacterBody2D
     private SaveLoadManager slManager;
     private SoundManager soundManager;
     private GameManager gameManager;
+    private InputManager inputManager;
     #endregion
 
     #region Sound Queue
@@ -17,6 +18,11 @@ public partial class Player : CharacterBody2D
 
     #region Position
     [Export] public Vector2 spawnPosition;
+    #endregion
+
+    #region Interactables
+    private bool interactAreaEntered = false;
+    private Area2D interactArea;
     #endregion
     #endregion
 
@@ -28,12 +34,23 @@ public partial class Player : CharacterBody2D
     }
     #endregion
 
+    public override void _PhysicsProcess(double delta)
+    {
+        if (inputManager.PlayerContinuousInputs["interact"] && interactAreaEntered)
+        {
+            InteractActivate();
+            inputManager.PlayerContinuousInputs["interact"] = false;
+        }
+    }
+
+
     #region Initialize Nodes and Variables
     private void InitGrabNodes()
     {
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
         soundManager = GetNode<SoundManager>("/root/SoundManager");
         gameManager = GetNode<GameManager>("/root/GameManager");
+        inputManager = GetNode<InputManager>("/root/InputManager");
 
         Position = spawnPosition;
 
@@ -86,16 +103,29 @@ public partial class Player : CharacterBody2D
     }
     #endregion
 
-    #region Player Signals
-    public void OnInteractBodyEntered(Node node)
+    #region Interactables
+    public void InteractActivate()
     {
-        if (node != null && node.IsInGroup("Interactable"))
+        interactArea?.Call("PlayerInteract"); //Checks for null area then calls the Interact Method from the specific Pickup
+    }
+    #endregion
+
+    #region Player Signals
+    public void OnInteractBodyEntered(Area2D area)
+    {
+        if (area != null && area.IsInGroup("Interactable"))
         {
-            //Will need to change action once InputManager is created
-            if (Input.IsActionJustPressed("Interact"))
-            {
-                GD.Print("Interactable Object Interacted With");
-            }
+            interactArea = area;
+            interactAreaEntered = true;
+        }
+    }
+
+    public void OnInteractBodyExited(Area2D area)
+    {
+        if (area != null && area.IsInGroup("Interactable"))
+        {
+            interactAreaEntered = false;
+            interactArea = null;
         }
     }
     #endregion

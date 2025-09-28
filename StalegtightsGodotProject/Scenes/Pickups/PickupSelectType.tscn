@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://b58rjw4clilt"]
+
+[ext_resource type="Script" uid="uid://dw5hp54l7xv3w" path="res://Scripts/PickupAllType.cs" id="1_clw0w"]
+[ext_resource type="Texture2D" uid="uid://b8i3spiwosuoj" path="res://Sprites/Pickup Sprites.png" id="2_yv4pe"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5amg0"]
+radius = 17.0
+
+[node name="PickupAllType" type="Area2D" groups=["Interactable"]]
+input_pickable = false
+script = ExtResource("1_clw0w")
+
+[node name="PickupSprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.209, 1)
+texture = ExtResource("2_yv4pe")
+hframes = 9
+region_enabled = true
+region_rect = Rect2(0, 0, 297, 33)
+
+[node name="PickupCollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_5amg0")
+
+[connection signal="body_entered" from="." to="." method="OnPickupBodyEntered"]

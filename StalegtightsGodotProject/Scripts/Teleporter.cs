@@ -5,7 +5,7 @@ public partial class Teleporter : Area2D
     //TO DO LIST:
     /*
     - after teleporting, disable teleporter collider until Player exits the area2D then signal (Timer or teleporter) to reenable the collider
-    - create a variant that reacts to interact input instead of player entering (use switch statment to determine if it is variant or not, in checking for player also check variant bool)
+    - In future will need to incorperate loading areas/having areas loaded before teleporting player through and reevaluating loaded areas after teleporting
     */
     #region Variables
     #region Class Scripts
@@ -33,6 +33,7 @@ public partial class Teleporter : Area2D
     private Vector2 teleportLocation = new();
     //To Update the Facing Position of the Player after Teleporting through the Portal and having the Player Face away from the Portal
     private float playerFacingDirection;
+    private bool teleporterVariant;
     #endregion
     #endregion
 
@@ -50,6 +51,7 @@ public partial class Teleporter : Area2D
 
         //Assigning the MetaData for Determining Left or Right Teleporter
         teleporterType = (string)GetMeta("TeleporterType");
+        teleporterVariant = (bool)GetMeta("TeleporterVariant");
 
         //Adding the Teleporter to the TeleporterDictionary to use in the DebugUI
         gameManager.TeleporterDictionary.Add(Name, this);
@@ -66,7 +68,7 @@ public partial class Teleporter : Area2D
                 playerFacingDirection = -1.0f;
                 break;
             default:
-                GD.PushWarning("Invald Teleporter Type, Default Scene Used. Choose Teleporter Left or Right Instead");
+                GD.PushWarning("Invald Teleporter Type, Default Scene Used. Choose Teleporter Left, Right, or Variant Instead");
                 break;
         }
     }
@@ -88,11 +90,21 @@ public partial class Teleporter : Area2D
             return;
         }
 
-        if (body != null && body.IsInGroup("Player"))
+        if (body != null && body.IsInGroup("Player") && !teleporterVariant)
         {
             stateMachineScript.LastFacingDirection = playerFacingDirection;
             body.GlobalPosition = linkedPortalLocation.teleportLocation;
             GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name}");
+        }
+    }
+
+    public void PlayerInteract()
+    {
+        if (teleporterVariant)
+        {
+            stateMachineScript.LastFacingDirection = playerFacingDirection;
+            playerCB2D.GlobalPosition = linkedPortalLocation.teleportLocation;
+            GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name} using an Interactive Teleporter");
         }
     }
     #endregion

@@ -1,4 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
 using Godot;
 
 public partial class Pickup : Area2D

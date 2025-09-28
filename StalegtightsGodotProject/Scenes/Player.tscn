@@ -593,7 +593,8 @@ anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position" = 0
 parameters/TimeScale/scale = 1.0
 
-[node name="InteractArea2D" type="Area2D" parent="." groups=["Interactable"]]
+[node name="InteractArea2D" type="Area2D" parent="."]
+input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea2D"]
 position = Vector2(-0.5, 30)
@@ -619,4 +620,5 @@ script = ExtResource("6_ksbbd")
 script = ExtResource("7_glx4g")
 
 [connection signal="animation_started" from="PlayerAnimationTree" to="PLAYERSTATEMACHINE" method="CurrentAnimationStartPlaying"]
-[connection signal="body_entered" from="InteractArea2D" to="." method="OnInteractBodyEntered"]
+[connection signal="area_entered" from="InteractArea2D" to="." method="OnInteractBodyEntered"]
+[connection signal="area_exited" from="InteractArea2D" to="." method="OnInteractBodyExited"]

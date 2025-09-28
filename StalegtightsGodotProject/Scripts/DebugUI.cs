@@ -278,7 +278,6 @@ public partial class DebugUI : Control
         playerAnimPlaybackClimbNormal.Text = $"ClimbNormal: {statemachinePlaybackClimbNormal.GetCurrentNode()}";
         playerAnimPlaybackClimbWeapon.Text = $"ClimbWeapon: {statemachinePlaybackClimbWeapon.GetCurrentNode()}";
         playerAnimPlaybackClimbStalag.Text = $"ClimbStalag: {statemachinePlaybackClimbStalag.GetCurrentNode()}";*/
-
         //Ground State Text
 
 
@@ -306,10 +305,10 @@ public partial class DebugUI : Control
         CreateTeleporterButtons();
 
         //Pickup Text
-        gravity.Text = $"Gravity: {stateMachine.smGravity}";
-        playerSpeed.Text = $"Speed: {groundStateScript.GroundMoveSpeed}";
-        acceleration.Text = $"Accel: {stateMachine.RunAcceleration}";
-        jumpHeight.Text = $"Jump: {stateMachine.smPlayerJumpVelocity}";
+        gravity.Text = $"Gravity: {stateMachine.smGravity:F0}";
+        playerSpeed.Text = $"Speed: {groundStateScript.GroundMoveSpeed:F0}";
+        acceleration.Text = $"Accel: {stateMachine.RunAcceleration:F0}";
+        jumpHeight.Text = $"Jump: {stateMachine.smPlayerJumpVelocity:F0}";
 
         //Engine Text
         engineScale.Text = $"Engine Scale: {Engine.TimeScale}";
