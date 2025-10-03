@@ -97,7 +97,7 @@ public partial class InputManager : Node
         //Player Interact
         PlayerContinuousInputs["engine_scale_down"] = Input.IsActionJustPressed("engine_scale_down");
         //Player Interact
-        PlayerContinuousInputs["endgine_scale_reset"] = Input.IsActionJustPressed("engine_scale_reset");
+        PlayerContinuousInputs["engine_scale_reset"] = Input.IsActionJustPressed("engine_scale_reset");
         #endregion
 
         #region Movement

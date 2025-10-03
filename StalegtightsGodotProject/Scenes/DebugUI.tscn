@@ -75,7 +75,7 @@ layout_mode = 0
 offset_left = 395.0
 offset_top = 9.0
 offset_right = 1451.0
-offset_bottom = 309.0
+offset_bottom = 49.0
 color = Color(0, 0, 0, 1)
 
 [node name="AnimationCheckButton" type="CheckButton" parent="Animation"]
@@ -87,11 +87,11 @@ offset_right = 564.0
 offset_bottom = 49.0
 focus_mode = 0
 theme_override_font_sizes/font_size = 24
-button_pressed = true
 keep_pressed_outside = true
 text = "Animation"
 
 [node name="AnimationVBoxContainer" type="VBoxContainer" parent="Animation"]
+visible = false
 layout_mode = 0
 offset_left = 400.0
 offset_top = 42.0
@@ -134,6 +134,7 @@ text = "ClimbState:"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="AnimationVBoxContainer2" type="VBoxContainer" parent="Animation"]
+visible = false
 layout_mode = 0
 offset_left = 780.0
 offset_top = 20.0
@@ -156,6 +157,7 @@ text = "GroundStalag:"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="AnimationVBoxContainer3" type="VBoxContainer" parent="Animation"]
+visible = false
 layout_mode = 0
 offset_left = 782.0
 offset_top = 150.0
@@ -178,6 +180,7 @@ text = "AirStalag:"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="AnimationVBoxContainer4" type="VBoxContainer" parent="Animation"]
+visible = false
 layout_mode = 0
 offset_left = 1115.0
 offset_top = 20.0
@@ -200,6 +203,7 @@ text = "WallStalag:"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="AnimationVBoxContainer5" type="VBoxContainer" parent="Animation"]
+visible = false
 layout_mode = 0
 offset_left = 1115.0
 offset_top = 150.0

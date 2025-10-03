@@ -8,7 +8,10 @@ public partial class GameManager : Node
     #region Class Scripts
     private SaveLoadManager slManager;
     private SoundManager soundManager;
+    private InputManager inputManager;
     private World world;
+    private StateMachine stateMachineScript;
+    private GroundState groundStateScript;
     #endregion
 
     #region General
@@ -58,7 +61,10 @@ public partial class GameManager : Node
     {
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
         soundManager = GetNode<SoundManager>("/root/SoundManager");
+        inputManager = GetNode<InputManager>("/root/InputManager");
         world = GetNode<World>("/root/Main/World");
+        stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
+        groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
 
         //Assign to new variables to shorten code
         sfxPlayer = slManager.SFXPlayer;
@@ -73,14 +79,16 @@ public partial class GameManager : Node
     {
         #region EngineScale 
         //Changing the EngineScale Faster
-        if (Input.IsActionJustPressed("engine_scale_up"))
+        if (inputManager.PlayerContinuousInputs["engine_scale_up"])
         {
             Engine.TimeScale += engineTimeScale;
             Engine.TimeScale = Mathf.Round(Engine.TimeScale * 10f) / 10f; // Round to one decimal place
+
+            inputManager.PlayerContinuousInputs["engine_scale_up"] = false; //ensures only one statement is called for button input
         }
 
         //Changing the EngineScale Slower
-        if (Input.IsActionJustPressed("engine_scale_down"))
+        if (inputManager.PlayerContinuousInputs["engine_scale_down"])
         {
             Engine.TimeScale -= engineTimeScale;
             if (Engine.TimeScale <= 0)
@@ -88,12 +96,26 @@ public partial class GameManager : Node
                 Engine.TimeScale = engineTimeScale;
             }
             Engine.TimeScale = Mathf.Round(Engine.TimeScale * 10f) / 10f; // Round to one decimal place
+
+            inputManager.PlayerContinuousInputs["engine_scale_down"] = false; //ensures only one statement is called for button input
         }
 
         //Changing the EngineScale back to normal
-        if (Input.IsActionJustPressed("engine_scale_reset"))
+        if (inputManager.PlayerContinuousInputs["engine_scale_reset"])
         {
             Engine.TimeScale = 1.0;
+
+            PickupAllType.SPEEDMODIFIER = 1.0f;
+            PickupAllType.ACCELMODIFIER = 1.0f;
+            PickupAllType.GRAVITYMODIFIER = 1.0f;
+            PickupAllType.JUMPMODIFIER = 1.0f;
+
+            groundStateScript.MoveSpeedModifier = PickupAllType.SPEEDMODIFIER;
+            stateMachineScript.RunAccelerationModifier = PickupAllType.ACCELMODIFIER;
+            stateMachineScript.GravityModifier = PickupAllType.GRAVITYMODIFIER;
+            stateMachineScript.JumpModifier = PickupAllType.JUMPMODIFIER;
+
+            inputManager.PlayerContinuousInputs["engine_scale_reset"] = false; //ensures only one statement is called for button input
         }
         #endregion
     }

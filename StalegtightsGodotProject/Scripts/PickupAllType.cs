@@ -26,16 +26,16 @@ public partial class PickupAllType : Area2D
 
     #region General
     //Sets the modifier before changing the main modifier in the StateMachineScript
-    private static float SPEEDMODIFIER = 1.0f;
-    private static float ACCELMODIFIER = 1.0f;
-    private static float JUMPMODIFIER = 1.0f;
-    private static float GRAVITYMODIFIER = 1.0f;
+    public static float SPEEDMODIFIER { get; set; } = 1.0f;
+    public static float ACCELMODIFIER { get; set; } = 1.0f;
+    public static float JUMPMODIFIER { get; set; } = 1.0f;
+    public static float GRAVITYMODIFIER { get; set; } = 1.0f;
 
     [ExportSubgroup("Pickup Selection")]
-    //[Export] public PickupType PickupSelected { get; set; } = PickupType.DEFAULT; //Used by the switch statments to determine the nature of the pickup
     [Export]
     public PickupType PickupSelected
     {
+        //This is for getting the editor to change pickup related stuff when it happens
         get => _pickupSelected;
         set
         {
@@ -49,7 +49,7 @@ public partial class PickupAllType : Area2D
     private int pickupSpriteFrame = 0; //sets the frame for the sprite for the specific powerup choosen
     [Export] public bool Interactable { get; set; } = false; //sets if the pickup needs the Interact Input to be used
     [Export] public bool Consumable { get; set; } = false; //sets if the pickup will dissapear once used
-    private string newName;
+    private string newName; //For setting the Pickups name after PickupType is selected
     #endregion
 
     #region Pickup Modifiers
