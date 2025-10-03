@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://kdp6dgoaih7t"]
 
-[ext_resource type="PackedScene" uid="uid://pufv05s1ocpj" path="res://Scenes/Pickups/PickupTemplate.tscn" id="1_3sfbf"]
+[ext_resource type="PackedScene" uid="uid://pufv05s1ocpj" path="res://Scenes/Replaced Old Scenes/PickupTemplate.tscn" id="1_3sfbf"]
 
 [node name="JumpHeightPickupUp" instance=ExtResource("1_3sfbf")]
 metadata/PickupType = "JumpHeightPickupUp"

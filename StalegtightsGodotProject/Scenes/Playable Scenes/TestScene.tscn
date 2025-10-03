@@ -1,19 +1,11 @@
-[gd_scene load_steps=22 format=4 uid="uid://ctir3pmx1amd3"]
+[gd_scene load_steps=14 format=4 uid="uid://ctir3pmx1amd3"]
 
 [ext_resource type="Texture2D" uid="uid://cne7x2h4teo8n" path="res://Sprites/tiles_packed.png" id="1_b5ayd"]
 [ext_resource type="Texture2D" uid="uid://cxfeokshmca7a" path="res://Sprites/TileSheetFlat3264128256.png" id="2_5lt6y"]
 [ext_resource type="Texture2D" uid="uid://dyjjdk63d4gre" path="res://Sprites/TileSheetFlat1010010010.png" id="3_8k7wh"]
-[ext_resource type="PackedScene" uid="uid://c4rnh22qcmp4o" path="res://Scenes/Pickups/AccelerationPickupDown.tscn" id="4_xjl2p"]
-[ext_resource type="PackedScene" uid="uid://cogg5cx0g3uww" path="res://Scenes/Pickups/AccelerationPickupUp.tscn" id="5_ytmxh"]
 [ext_resource type="PackedScene" uid="uid://ckwg6733ylvuu" path="res://Scenes/Teleporters/TeleporterInteractLeft.tscn" id="6_2uhkr"]
-[ext_resource type="PackedScene" uid="uid://c73x45wy5ad2s" path="res://Scenes/Pickups/GravityPickupDown.tscn" id="6_hctok"]
 [ext_resource type="PackedScene" uid="uid://c7mxjp3om70fo" path="res://Scenes/Teleporters/TeleporterInteractRight.tscn" id="7_jaygc"]
-[ext_resource type="PackedScene" uid="uid://beoa5th5lnklo" path="res://Scenes/Pickups/GravityPickupUp.tscn" id="7_t2vuu"]
 [ext_resource type="PackedScene" uid="uid://b58rjw4clilt" path="res://Scenes/Pickups/PickupSelectType.tscn" id="8_jaygc"]
-[ext_resource type="PackedScene" uid="uid://cd13jttiohem0" path="res://Scenes/Pickups/JumpHeightPickupDown.tscn" id="8_lp1f3"]
-[ext_resource type="PackedScene" uid="uid://kdp6dgoaih7t" path="res://Scenes/Pickups/JumpHeightPickupUp.tscn" id="9_p30di"]
-[ext_resource type="PackedScene" uid="uid://by1g75dksq3mm" path="res://Scenes/Pickups/SpeedPickupDown.tscn" id="10_8c81w"]
-[ext_resource type="PackedScene" uid="uid://w364ju6siog6" path="res://Scenes/Pickups/SpeedPickupUp.tscn" id="11_fi7j4"]
 [ext_resource type="PackedScene" uid="uid://cv15qwixxcvfs" path="res://Scenes/Teleporters/TeleporterLeft.tscn" id="12_n83yj"]
 [ext_resource type="PackedScene" uid="uid://bnpeed0olraoy" path="res://Scenes/Teleporters/TeleporterRight.tscn" id="13_5t6hh"]
 
@@ -335,83 +327,8 @@ position = Vector2(89, 517)
 input_pickable = true
 linkedPortalLocation = NodePath("../TeleporterInteractLeft")
 
-[node name="PickupSelectType" parent="Teleporters" instance=ExtResource("8_jaygc")]
-position = Vector2(342, 528)
+[node name="Pickups" type="Node" parent="."]
+
+[node name="Pickup_SpeedUp" parent="Pickups" instance=ExtResource("8_jaygc")]
+position = Vector2(112, -65)
 PickupSelected = 0
-Interactable = true
-Consumable = true
-
-[node name="AccelerationPickupDown" parent="." instance=ExtResource("4_xjl2p")]
-position = Vector2(277, -403)
-
-[node name="JumpHeightPickupDown" parent="." instance=ExtResource("8_lp1f3")]
-position = Vector2(81, -223)
-
-[node name="GravityPickupDown" parent="." instance=ExtResource("6_hctok")]
-position = Vector2(208, -342)
-
-[node name="SpeedPickupDown" parent="." instance=ExtResource("10_8c81w")]
-position = Vector2(142, -276)
-
-[node name="AccelerationPickupUp" parent="." instance=ExtResource("5_ytmxh")]
-position = Vector2(-298, -412)
-
-[node name="GravityPickupUp" parent="." instance=ExtResource("7_t2vuu")]
-position = Vector2(-232, -375)
-
-[node name="SpeedPickupUp" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(-82, -215)
-
-[node name="JumpHeightPickupUp" parent="." instance=ExtResource("9_p30di")]
-position = Vector2(-158, -264)
-
-[node name="JumpHeightPickupUp2" parent="." instance=ExtResource("9_p30di")]
-position = Vector2(-4217, 1923)
-
-[node name="SpeedPickupUp3" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(6577, 224)
-
-[node name="JumpHeightPickupUp3" parent="." instance=ExtResource("9_p30di")]
-position = Vector2(-4346, 1878)
-
-[node name="SpeedPickupUp4" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(10500, 301)
-
-[node name="JumpHeightPickupUp4" parent="." instance=ExtResource("9_p30di")]
-position = Vector2(-4106, 1936)
-
-[node name="SpeedPickupUp5" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(10251, 286)
-
-[node name="JumpHeightPickupUp5" parent="." instance=ExtResource("9_p30di")]
-position = Vector2(-4449, 1763)
-
-[node name="SpeedPickupUp6" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(9944, 217)
-
-[node name="JumpHeightPickupUp6" parent="." instance=ExtResource("9_p30di")]
-position = Vector2(-4621, 1892)
-
-[node name="SpeedPickupUp7" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(9770, 211)
-
-[node name="JumpHeightPickupUp7" parent="." instance=ExtResource("9_p30di")]
-position = Vector2(-4806, 1850)
-
-[node name="SpeedPickupUp8" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(9521, 203)
-
-[node name="SpeedPickupUp9" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(9138, 193)
-
-[node name="SpeedPickupUp10" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(8476, 170)
-
-[node name="SpeedPickupUp11" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(7948, 151)
-
-[node name="SpeedPickupUp12" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(7395, 161)
-
-[node name="SpeedPickupUp13" parent="." instance=ExtResource("11_fi7j4")]
-position = Vector2(7297, 146)

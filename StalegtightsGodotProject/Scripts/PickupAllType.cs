@@ -1,5 +1,6 @@
 using Godot;
 
+[Tool]
 public partial class PickupAllType : Area2D
 {
     #region Variables
@@ -31,11 +32,24 @@ public partial class PickupAllType : Area2D
     private static float GRAVITYMODIFIER = 1.0f;
 
     [ExportSubgroup("Pickup Selection")]
-    [Export] public PickupType PickupSelected { get; set; } = PickupType.DEFAULT; //Used by the switch statments to determine the nature of the pickup
+    //[Export] public PickupType PickupSelected { get; set; } = PickupType.DEFAULT; //Used by the switch statments to determine the nature of the pickup
+    [Export]
+    public PickupType PickupSelected
+    {
+        get => _pickupSelected;
+        set
+        {
+            _pickupSelected = value;
+            if (Engine.IsEditorHint())
+                UpdatePickupVisuals();
+        }
+    }
+    private PickupType _pickupSelected = PickupType.DEFAULT;
     private Sprite2D pickupSprite;
     private int pickupSpriteFrame = 0; //sets the frame for the sprite for the specific powerup choosen
     [Export] public bool Interactable { get; set; } = false; //sets if the pickup needs the Interact Input to be used
     [Export] public bool Consumable { get; set; } = false; //sets if the pickup will dissapear once used
+    private string newName;
     #endregion
 
     #region Pickup Modifiers
@@ -67,14 +81,37 @@ public partial class PickupAllType : Area2D
     public override void _Ready()
     {
         //Initilizes Scripts
-        stateMachine = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
-        groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
+        if (!Engine.IsEditorHint())
+        {
+            stateMachine = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
+            groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
+
+            //Setting up Pickup Effects Variables
+            pos = Position;//setting the position of the object to a variable to make future changes
+            startY = pos.Y; //setting up the starting point for the object to use later
+        }
 
         pickupSprite = GetNode<Sprite2D>("PickupSprite2D");
 
-        //Setting up Pickup Effects Variables
-        pos = Position;//setting the position of the object to a variable to make future changes
-        startY = pos.Y; //setting up the starting point for the object to use later
+        UpdatePickupVisuals();
+    }
+    #endregion
+
+    #region Process
+    public override void _PhysicsProcess(double delta)
+    {
+        if (Engine.IsEditorHint()) { return; }
+
+        PickupMovement(delta);
+    }
+    #endregion
+
+    #region Visual Changes
+    public void UpdatePickupVisuals()
+    {
+        newName = "Pickup_";
+
+        if (pickupSprite == null) { return; }
 
         //switch to set initial variables for selected pickup type
         switch (PickupSelected)
@@ -83,49 +120,56 @@ public partial class PickupAllType : Area2D
             //Player Speed
             case PickupType.SPEEDUP:
                 pickupSpriteFrame = 1;
+                newName += "SpeedUp";
                 break;
             case PickupType.SPEEDDOWN:
                 pickupSpriteFrame = 5;
+                newName += "SpeenDown";
                 break;
 
             //Player Acceleration
             case PickupType.ACCELERATIONUP:
                 pickupSpriteFrame = 2;
+                newName += "AccelUp";
                 break;
             case PickupType.ACCELERATIONDOWN:
                 pickupSpriteFrame = 6;
+                newName += "AccelDown";
                 break;
 
             //Player Jump Height
             case PickupType.JUMPHEIGHTUP:
                 pickupSpriteFrame = 3;
+                newName += "JumpHeightUp";
                 break;
             case PickupType.JUMPHEIGHTDOWN:
                 pickupSpriteFrame = 7;
+                newName += "JumpHeightDown";
                 break;
 
             //Player Gravity
             case PickupType.GRAVITYUP:
                 pickupSpriteFrame = 4;
+                newName += "GravityUp";
                 break;
             case PickupType.GRAVITYDOWN:
                 pickupSpriteFrame = 8;
+                newName += "GravityDown";
                 break;
 
             case PickupType.DEFAULT:
                 pickupSpriteFrame = 0;
+                newName = "PickupSelectType";
                 GD.PushWarning($"Default Pickup Selected for {Name}. Please Select PickupType In Export Window for {Name}");
-                return;
+                break;
         }
 
         pickupSprite.Frame = pickupSpriteFrame; //Changes the Sprite based on the pickup selected
-    }
-    #endregion
 
-    #region Process
-    public override void _PhysicsProcess(double delta)
-    {
-        PickupMovement(delta);
+        if (Engine.IsEditorHint())
+        {
+            Name = newName;
+        }
     }
     #endregion
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cogg5cx0g3uww"]
 
-[ext_resource type="PackedScene" uid="uid://pufv05s1ocpj" path="res://Scenes/Pickups/PickupTemplate.tscn" id="1_krfou"]
+[ext_resource type="PackedScene" uid="uid://pufv05s1ocpj" path="res://Scenes/Replaced Old Scenes/PickupTemplate.tscn" id="1_krfou"]
 
 [node name="AccelerationPickupUp" instance=ExtResource("1_krfou")]
 metadata/PickupType = "AccelerationPickupUp"
