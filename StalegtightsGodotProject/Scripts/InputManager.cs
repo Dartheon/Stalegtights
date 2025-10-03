@@ -88,7 +88,7 @@ public partial class InputManager : Node
     {
         #region General
         //Player Interact
-        PlayerContinuousInputs["interact"] = Input.IsActionJustPressed("interact");
+        PlayerContinuousInputs["interact"] = Input.IsActionJustPressed("interact") && (GameManager.InteractablesEntered?.Count > 0);
         #endregion
 
         #region Debug

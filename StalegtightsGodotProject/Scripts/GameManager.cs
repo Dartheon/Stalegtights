@@ -20,6 +20,10 @@ public partial class GameManager : Node
     [Export] private string[] startScenes;
     #endregion
 
+    #region Interactables Currently Entered
+    public static List<Area2D> InteractablesEntered { get; set; } = new();
+    #endregion
+
     #region Teleport Nodes
     public Dictionary<string, Teleporter> TeleporterDictionary { get; set; } = new();
     #endregion

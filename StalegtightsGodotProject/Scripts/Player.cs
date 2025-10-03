@@ -19,11 +19,6 @@ public partial class Player : CharacterBody2D
     #region Position
     [Export] public Vector2 spawnPosition;
     #endregion
-
-    #region Interactables
-    private bool interactAreaEntered = false;
-    private Area2D interactArea;
-    #endregion
     #endregion
 
     #region Methods
@@ -36,7 +31,7 @@ public partial class Player : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (inputManager.PlayerContinuousInputs["interact"] && interactAreaEntered)
+        if (inputManager.PlayerContinuousInputs["interact"])
         {
             InteractActivate();
             inputManager.PlayerContinuousInputs["interact"] = false;
@@ -106,7 +101,10 @@ public partial class Player : CharacterBody2D
     #region Interactables
     public void InteractActivate()
     {
-        interactArea?.Call("PlayerInteract"); //Checks for null area then calls the Interact Method from the specific Pickup
+        for (int i = 0; i < GameManager.InteractablesEntered.Count; i++)
+        {
+            GameManager.InteractablesEntered[i].Call("PlayerInteract"); //Checks for null area then calls the Interact Method from each Interactable
+        }
     }
     #endregion
 
@@ -115,8 +113,9 @@ public partial class Player : CharacterBody2D
     {
         if (area != null && area.IsInGroup("Interactable"))
         {
-            interactArea = area;
-            interactAreaEntered = true;
+            if (GameManager.InteractablesEntered.Contains(area)) { return; }
+
+            GameManager.InteractablesEntered?.Add(area);
         }
     }
 
@@ -124,8 +123,10 @@ public partial class Player : CharacterBody2D
     {
         if (area != null && area.IsInGroup("Interactable"))
         {
-            interactAreaEntered = false;
-            interactArea = null;
+            if (GameManager.InteractablesEntered.Contains(area))
+            {
+                GameManager.InteractablesEntered?.Remove(area);
+            }
         }
     }
     #endregion
