@@ -29,6 +29,7 @@ public partial class GameManager : Node
 
     #region Teleport Nodes
     public Dictionary<string, Teleporter> TeleporterDictionary { get; set; } = new();
+    public Dictionary<string, TeleporterAllType> TeleporterSelectDictionary { get; set; } = new();
     #endregion
 
     #region Sounds

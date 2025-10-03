@@ -103,7 +103,7 @@ public partial class Player : CharacterBody2D
     {
         for (int i = 0; i < GameManager.InteractablesEntered.Count; i++)
         {
-            GameManager.InteractablesEntered[i].Call("PlayerInteract"); //Checks for null area then calls the Interact Method from each Interactable
+            GameManager.InteractablesEntered[i].CallDeferred("PlayerInteract"); //Checks for null area then calls the Interact Method from each Interactable
         }
     }
     #endregion

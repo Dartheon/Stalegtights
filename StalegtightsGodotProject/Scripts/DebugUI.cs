@@ -319,9 +319,9 @@ public partial class DebugUI : Control
 
     public void CreateTeleporterButtons()
     {
-        if (teleportContainer.GetChildCount() < gameManager.TeleporterDictionary.Count)
+        if (teleportContainer.GetChildCount() < gameManager.TeleporterSelectDictionary.Count)
         {
-            foreach (Teleporter teleporter in gameManager.TeleporterDictionary.Values)
+            foreach (TeleporterAllType teleporter in gameManager.TeleporterSelectDictionary.Values)
             {
                 Button teleporterButton = new()
                 {

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bkm3v2ydk5ori"]
 
-[ext_resource type="Script" uid="uid://b3pkprotug08l" path="res://Scripts/Teleporter.cs" id="1_jdjlm"]
-[ext_resource type="Texture2D" uid="uid://dniijn8e1y6ut" path="res://Sprites/Teleporter Sprite.png" id="2_lrpa0"]
+[ext_resource type="Script" uid="uid://b3pkprotug08l" path="res://Scripts/Teleporter.cs" id="1_obigu"]
+[ext_resource type="Texture2D" uid="uid://dniijn8e1y6ut" path="res://Sprites/Teleporter Sprite.png" id="2_rrhyn"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lrpa0"]
 radius = 16.0
@@ -9,17 +9,17 @@ height = 64.0
 
 [node name="Teleporter" type="Area2D" groups=["Interactable"]]
 input_pickable = false
-script = ExtResource("1_jdjlm")
+script = ExtResource("1_obigu")
 metadata/TeleporterType = ""
 metadata/TeleporterVariant = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CapsuleShape2D_lrpa0")
-
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_lrpa0")
+texture = ExtResource("2_rrhyn")
 region_enabled = true
 region_rect = Rect2(0, 0, 35, 67)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_lrpa0")
 
 [node name="LeftMarker" type="Marker2D" parent="."]
 position = Vector2(-65, -45)

@@ -84,7 +84,7 @@ public partial class InputManager : Node
     #endregion
 
     #region Unhandled Input
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _UnhandledKeyInput(InputEvent @event)
     {
         #region General
         //Player Interact

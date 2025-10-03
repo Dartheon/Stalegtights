@@ -2,11 +2,6 @@ using Godot;
 
 public partial class Teleporter : Area2D
 {
-    //TO DO LIST:
-    /*
-    - after teleporting, disable teleporter collider until Player exits the area2D then signal (Timer or teleporter) to reenable the collider
-    - In future will need to incorperate loading areas/having areas loaded before teleporting player through and reevaluating loaded areas after teleporting
-    */
     #region Variables
     #region Class Scripts
     //For Assigning the Different Scripts Needed
