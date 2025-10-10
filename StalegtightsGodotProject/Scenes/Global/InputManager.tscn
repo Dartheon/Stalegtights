@@ -7,8 +7,6 @@ script = ExtResource("1_pskt2")
 
 [node name="JumpTimer" type="Timer" parent="."]
 process_callback = 0
-wait_time = 0.25
+wait_time = 0.05
 one_shot = true
 ignore_time_scale = true
-
-[connection signal="timeout" from="JumpTimer" to="." method="OnJumpTimerTimeout"]

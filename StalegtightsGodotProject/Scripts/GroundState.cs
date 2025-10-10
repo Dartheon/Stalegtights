@@ -132,6 +132,7 @@ public partial class GroundState : States
         if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
         {
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
+            StateMachineScript.smInputManager.PlayerInputBuffers["jump"] = false;
             NewStateChange = AIRSTATESTRING;
         }
         #endregion

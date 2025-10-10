@@ -106,7 +106,13 @@ public partial class AirState : States
         #endregion
 
         #region Movement
-        //
+        #region Detect any Jump and keep track of the type of jump used
+        if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
+        {
+            StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
+            StateMachineScript.smInputManager.PlayerInputBuffers["jump"] = false;
+        }
+        #endregion
         #endregion
     }
     #endregion

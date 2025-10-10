@@ -5,6 +5,7 @@ public partial class InputManager : Node
 {
     #region Variables
     private StateMachine stateMachineScript;
+    private Player playerCB2D;
 
     //These inputs are for one-time presses that need timers to reset the bool value
     public Dictionary<string, bool> PlayerInputBuffers { get; set; } = new()
@@ -29,14 +30,15 @@ public partial class InputManager : Node
         { "engine_scale_reset", false},
     };
 
-    private Timer jumpTimer;
+    public Timer JumpTimer { get; set; }
     #endregion
 
     #region Ready
     public override void _Ready()
     {
         stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
-        jumpTimer = GetNode<Timer>("JumpTimer");
+        playerCB2D = GetNode<Player>("/root/Main/World/Player");
+        JumpTimer = GetNode<Timer>("JumpTimer");
     }
     #endregion
 
@@ -102,21 +104,11 @@ public partial class InputManager : Node
 
         #region Movement
         //Player Jump
-        if (Input.IsActionJustPressed("jump"))
+        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || !JumpTimer.IsStopped()))
         {
             PlayerInputBuffers["jump"] = true;
-            jumpTimer.Start();
         }
         #endregion
     }
     #endregion
-
-    #region Timer Signals
-    //This is for all the Methods to deal with the Timers to reset the bools back to false
-    public void OnJumpTimerTimeout()
-    {
-        PlayerInputBuffers["jump"] = false;
-    }
-    #endregion
-
 }

@@ -92,11 +92,18 @@ public partial class StateMachine : Node
         // Call current state for physics-based updates (after input handling)
         CurrentState.PhysicsUpdate(delta);
 
+        bool wasOnFloor = smPlayerCB2D.IsOnFloor();
+
         smPlayerCB2D.Velocity = smPlayerVelocity;
         smPlayerCB2D.MoveAndSlide();
+
+        if (!smPlayerCB2D.IsOnFloor() && wasOnFloor)
+        {
+            smInputManager.JumpTimer.Start();
+        }
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _UnhandledKeyInput(InputEvent @event)
     {
         CurrentState.HandleInput(@event);
     }
@@ -119,5 +126,4 @@ public partial class StateMachine : Node
         CurrentAnimationPlaying = animName;
     }
     #endregion
-
 }
