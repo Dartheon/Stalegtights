@@ -124,14 +124,22 @@ public partial class TeleporterAllType : Area2D
                 leftMarker.Visible = true;
                 rightMarker.Visible = true;
                 teleportLocation = new();
-                newName = "TeleporterSelectType";
+                newName += "SelectType";
+                if (Engine.IsEditorHint())
+                {
+                    Name = newName;
+                }
                 GD.PushWarning($"Invald Teleporter Type for {Name}, Choose Teleporter Left or Right Instead");
                 break;
         }
 
         if (Engine.IsEditorHint())
         {
-            Name = newName;
+            // Allow automatic renaming only if name is default or matches our auto-generated pattern
+            if (Name.ToString().StartsWith("Teleporter_"))
+            {
+                Name = newName;
+            }
         }
     }
     #endregion

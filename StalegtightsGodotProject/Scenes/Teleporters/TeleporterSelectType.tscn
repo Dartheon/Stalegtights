@@ -7,7 +7,7 @@
 radius = 9.68703
 height = 58.0
 
-[node name="TeleporterSelectType" type="Area2D" groups=["Interactable"]]
+[node name="Teleporter_SelectType" type="Area2D" groups=["Interactable"]]
 input_pickable = false
 script = ExtResource("1_1nn60")
 

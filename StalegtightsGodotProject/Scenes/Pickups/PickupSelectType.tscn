@@ -6,7 +6,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_5amg0"]
 radius = 17.0
 
-[node name="PickupAllType" type="Area2D" groups=["Interactable"]]
+[node name="PickupSelectType" type="Area2D" groups=["Interactable"]]
 input_pickable = false
 script = ExtResource("1_clw0w")
 
