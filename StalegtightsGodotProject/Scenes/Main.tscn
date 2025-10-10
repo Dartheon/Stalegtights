@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cnhykp74l5agf"]
+[gd_scene load_steps=4 format=3 uid="uid://cnhykp74l5agf"]
 
 [ext_resource type="PackedScene" uid="uid://dg6nvqnpa8et1" path="res://Scenes/Player.tscn" id="2_idj7w"]
 [ext_resource type="PackedScene" uid="uid://d2qxlbhgbtge7" path="res://Scenes/World.tscn" id="2_kln2b"]
 [ext_resource type="PackedScene" uid="uid://b05i8umpsqyae" path="res://Scenes/DebugUI.tscn" id="3_kln2b"]
-[ext_resource type="Script" uid="uid://mkofsi0yohit" path="res://Scripts/PlayerCamera.cs" id="3_rgh2o"]
 
 [node name="Main" type="Node"]
 
@@ -11,17 +10,6 @@
 
 [node name="Player" parent="World" instance=ExtResource("2_idj7w")]
 spawnPosition = Vector2(0, -100)
-
-[node name="Camera2D" type="Camera2D" parent="World/Player"]
-zoom = Vector2(1.5, 1.5)
-position_smoothing_speed = 20.0
-drag_horizontal_enabled = true
-drag_vertical_enabled = true
-drag_top_margin = 0.5
-drag_bottom_margin = 0.5
-editor_draw_limits = true
-editor_draw_drag_margin = true
-script = ExtResource("3_rgh2o")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 

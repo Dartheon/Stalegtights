@@ -106,6 +106,7 @@ public partial class AirState : States
         #endregion
 
         #region Movement
+        //Possible tweek for jumping, if jump happens in buffer lessen the jump power
         #region Detect any Jump and keep track of the type of jump used
         if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
         {
