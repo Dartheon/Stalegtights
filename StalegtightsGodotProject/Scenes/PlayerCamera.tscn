@@ -12,10 +12,17 @@ drag_bottom_margin = 0.5
 editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource("1_1hkb3")
-MaxSpeedForZoom = 520.0
 
 [node name="tempplayer" type="Sprite2D" parent="."]
 visible = false
 texture = ExtResource("2_bjrvu")
 hframes = 24
 region_rect = Rect2(0, 0, 132, 158)
+
+[node name="ZoomInTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.5
+one_shot = true
+ignore_time_scale = true
+
+[connection signal="timeout" from="ZoomInTimer" to="." method="ZoomInTimer"]

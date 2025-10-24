@@ -5,6 +5,7 @@ public partial class PlayerCamera : Camera2D
     #region Variables
     // References
     private StateMachine stateMachineScript;
+    private GroundState groundStateScript;
     private Player playerCB2D;
 
     // Camera Limits
@@ -13,25 +14,164 @@ public partial class PlayerCamera : Camera2D
     public int PlayerCameraLimitLeft { get; set; }
     public int PlayerCameraLimitRight { get; set; }
 
-    // --- Configurable Settings ---
-    [Export] public Vector2 BaseZoom { get; set; } = new Vector2(1f, 1f);
-    [Export] public float ZoomOutMax = 1.3f;           // Maximum zoom-out factor
-    [Export] public float ZoomSpeed = 2f;              // How quickly the camera zooms
-    [Export] public float FollowOffset = 100f;         // How far ahead camera leads
-    [Export] public float FollowSmoothness = 5f;       // Smoothness of follow/offset
-    [Export] public float SpeedThreshold = 100f;       // Minimum speed before offset applies
-    [Export] public Vector2 CameraMargins = new Vector2(100f, 60f); // Margin box around player
-    [Export] public float ZoomStartPercent = 0.6f;     // % of velocity.X at which zoom-out begins (60%)
-    [Export] public float MaxSpeedForZoom = 600f;      // Speed at which full zoom-out is reached
+    // Camera Zoom
+    private Vector2 playerCameraZoom;
+    private Vector2 defaultZoom = new(1.0f, 1.0f);
+    private Vector2 zoomOutMax = new(0.9f, 0.9f); // how far camera can zoom out
 
-    // Internal state
-    private Vector2 smPlayerVelocity;
-    private Vector2 targetOffset;
-    private Vector2 currentOffset;
-    private Vector2 targetZoom;
-    private Vector2 currentZoom;
-    private Vector2 playerPosition;
-    private Vector2 cameraTargetPos;
+    // Camera Positioning
+    public Vector2 PlayerCameraPosition { get; set; }
+
+    // Player Movement
+    private Vector2 smPlayerVelocity => stateMachineScript.smPlayerVelocity;
+    private float maxPlayerSpeed;
+
+    // Drag Margins
+    [Export] public float MarginX = 80.0f;
+    [Export] public float MarginY = 60.0f;
+    [Export] public float CameraLerpSpeed = 5.0f;
+
+    //Zoom Properties
+    private float threshold; //sets the threshold for activation at 60% max ground speed
+    private Vector2 zoomLock = new();
+    private float zoomOutSpeed = 0f;
+    private float zoomInSpeed = 1f;
+
+    private Timer zoomInTimer;
+
+    [Export] public float zoomOutDuration = 1.5f; // seconds to fully zoom out
+    [Export] public float zoomInDuration = 0.8f;  // seconds to fully zoom in
+    #endregion
+
+    #region Methods
+    public override void _Ready()
+    {
+        stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
+        groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
+        playerCB2D = GetNode<Player>("/root/Main/World/Player");
+
+        maxPlayerSpeed = groundStateScript.GroundMoveSpeed;
+        threshold = maxPlayerSpeed * 0.9f;
+
+        zoomInTimer = GetNode<Timer>("ZoomInTimer");
+
+        PlayerCameraLimitTop = LimitTop;
+        PlayerCameraLimitBottom = LimitBottom;
+        PlayerCameraLimitLeft = LimitLeft;
+        PlayerCameraLimitRight = LimitRight;
+
+        // Sets the Player Zoom
+        playerCameraZoom = Zoom = defaultZoom;
+
+        // Sets the Camera Position
+        PlayerCameraPosition = Position;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        float velocityX = stateMachineScript.smPlayerVelocity.Length();
+
+        if (velocityX > threshold)
+        {
+            if (Zoom != zoomOutMax)
+            {
+                Tween zoomTween = CreateTween();
+                zoomTween.TweenProperty(this, "zoom", zoomOutMax, zoomOutDuration)
+                         .SetTrans(Tween.TransitionType.Sine)
+                         .SetEase(Tween.EaseType.Out);
+            }
+        }
+
+        if (velocityX == 0)
+        {
+            if (zoomInTimer.IsStopped())
+                zoomInTimer.Start();
+        }
+        else
+        {
+            if (!zoomInTimer.IsStopped())
+                zoomInTimer.Stop();
+        }
+        /*
+        //Two Systems working seperately
+        //Camera Movement
+        //Moving Ahead of Player happens after Player Drag Margin is Active
+        /*
+            - Idle - Centered on Player(Default Position)/ Lerp back to center when camera is not dragged
+            - Drag Margin Enabled
+                - Modify offset to move camera ahead of player when camera is dragged
+                - Based on Camera Movement X/Y
+                    - (-Left/+Right)
+                    - (-Up/+Down)
+        */
+
+        //Camera Zoom
+        //Works with Timers Before Zooming In
+        /*  
+            - Idle - Zoomed In (Default Position)
+            - Velocity < 60% Max Speed - No Change In Zoom/ Interrupt Zoom In Maintaining Current Position
+            - Velocity > 60% Max Speed - Start Zoom Out/ Zoom Back Out From Interrupt Position
+            - Back To Idle - Wait Timer - Zoom In Over Time
+                */
+    }
+
+    // Used to Set the Boundaries in an Area so the Camera doesn't Show Places it Shouldn't
+    public void SetCameraLimits(int top, int bottom, int left, int right)
+    {
+        PlayerCameraLimitTop = top;
+        PlayerCameraLimitBottom = bottom;
+        PlayerCameraLimitLeft = left;
+        PlayerCameraLimitRight = right;
+
+        LimitTop = PlayerCameraLimitTop;
+        LimitBottom = PlayerCameraLimitBottom;
+        LimitLeft = PlayerCameraLimitLeft;
+        LimitRight = PlayerCameraLimitRight;
+    }
+
+    #region Signals
+    // Timer used for code activate after Player is back to idle but can be interrupted if velocity is over threshold
+    public void ZoomInTimer()
+    {
+        if (Zoom != defaultZoom)
+        {
+            Tween zoomTween = CreateTween();
+            zoomTween.TweenProperty(this, "zoom", defaultZoom, zoomInDuration)
+                     .SetTrans(Tween.TransitionType.Sine)
+                     .SetEase(Tween.EaseType.InOut);
+        }
+        GD.Print(Zoom);
+    }
+    #endregion
+    #endregion
+}
+
+/*using Godot;
+
+public partial class PlayerCamera : Camera2D
+{
+    #region Variables
+    // References
+    private StateMachine stateMachineScript;
+    private Player playerCB2D;
+
+    // Camera Limits
+    public int PlayerCameraLimitTop { get; set; }
+    public int PlayerCameraLimitBottom { get; set; }
+    public int PlayerCameraLimitLeft { get; set; }
+    public int PlayerCameraLimitRight { get; set; }
+
+    //Camera Zoom
+    public Vector2 PlayerCameraZoom { get; set; }
+
+    //Camera Positioning
+    public Vector2 PlayerCameraPosition { get; set; }
+
+    //Player Movement
+    private Vector2 smPlayerVelocity => stateMachineScript.smPlayerVelocity;
+
+    //bool States
+    private bool zoomInTimer = false;
     #endregion
 
     #region Methods
@@ -45,72 +185,62 @@ public partial class PlayerCamera : Camera2D
         PlayerCameraLimitLeft = LimitLeft;
         PlayerCameraLimitRight = LimitRight;
 
-        currentZoom = Zoom;
-        targetZoom = BaseZoom;
+        //Sets the Player Zoom
+        PlayerCameraZoom = Zoom;
+
+        //Sets the Camera Positon
+        PlayerCameraPosition = Position;
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        smPlayerVelocity = stateMachineScript.smPlayerVelocity;
-        playerPosition = playerCB2D.GlobalPosition;
+        //Two Systems working seperately
+        //Camera Movement
+        //Moving Ahead of Player happens after Player Drag Margin is Active
+        /*
+            - Idle - Centered on Player(Default Position)/ Lerp back to center when camera is not dragged
+            - Drag Margin Enabled
+                - Modify offset to move camera ahead of player when camera is dragged
+                - Based on Camera Movement X/Y
+                    - (-Left/+Right)
+                    - (-Up/+Down)
+        */
 
-        float horizontalSpeed = Mathf.Abs(smPlayerVelocity.X);
-        float overallSpeed = smPlayerVelocity.Length();
+//Camera Zoom
+//Works with Timers Before Zooming In
+/*  
+    - Idle - Zoomed In (Default Position)
+    - Velocity < 60% Max Speed - No Change In Zoom/ Interrupt Zoom In Maintaining Current Position
+    - Velocity > 60% Max Speed - Start Zoom Out/ Zoom Back Out From Interrupt Position
+    - Back To Idle - Wait Timer - Zoom In Over Time
 
-        // ---- CAMERA FOLLOW WITH MARGIN ----
-        Vector2 cameraToPlayer = playerPosition - GlobalPosition;
-        Vector2 moveOffset = Vector2.Zero;
+}
 
-        if (Mathf.Abs(cameraToPlayer.X) > CameraMargins.X)
-            moveOffset.X = cameraToPlayer.X - Mathf.Sign(cameraToPlayer.X) * CameraMargins.X;
+//Used to Set the Boundaries in an Area so the Camera doesn't Show Places it Shouldn't
+public void SetCameraLimits(int top, int bottom, int left, int right)
+{
+PlayerCameraLimitTop = top;
+PlayerCameraLimitBottom = bottom;
+PlayerCameraLimitLeft = left;
+PlayerCameraLimitRight = right;
 
-        if (Mathf.Abs(cameraToPlayer.Y) > CameraMargins.Y)
-            moveOffset.Y = cameraToPlayer.Y - Mathf.Sign(cameraToPlayer.Y) * CameraMargins.Y;
+LimitTop = PlayerCameraLimitTop;
+LimitBottom = PlayerCameraLimitBottom;
+LimitLeft = PlayerCameraLimitLeft;
+LimitRight = PlayerCameraLimitRight;
+}
 
-        cameraTargetPos = GlobalPosition + moveOffset;
-        GlobalPosition = GlobalPosition.Lerp(cameraTargetPos, (float)delta * FollowSmoothness);
-
-        // ---- CAMERA OFFSET / LOOK-AHEAD ----
-        if (overallSpeed > SpeedThreshold)
-        {
-            targetOffset = smPlayerVelocity.Normalized() * FollowOffset;
-        }
-        else
-        {
-            targetOffset = Vector2.Zero;
-        }
-
-        currentOffset = currentOffset.Lerp(targetOffset, (float)delta * FollowSmoothness);
-        Offset = currentOffset;
-
-        // ---- CAMERA ZOOM ----
-        // Start zooming out when velocity.X exceeds 60% of threshold
-        float zoomStartSpeed = MaxSpeedForZoom * ZoomStartPercent;
-
-        float excessSpeed = Mathf.Max(0f, horizontalSpeed - zoomStartSpeed);
-        float zoomPercent = Mathf.Clamp(excessSpeed / (MaxSpeedForZoom - zoomStartSpeed), 0f, 1f);
-
-        // Smooth zoom factor
-        float zoomFactor = Mathf.Lerp(1f, ZoomOutMax, zoomPercent);
-        targetZoom = BaseZoom / zoomFactor;
-
-        currentZoom = currentZoom.Lerp(targetZoom, (float)delta * ZoomSpeed);
-        Zoom = currentZoom;
-    }
-
-    public void SetCameraLimits(int top, int bottom, int left, int right)
-    {
-        LimitTop = top;
-        LimitBottom = bottom;
-        LimitLeft = left;
-        LimitRight = right;
-
-        PlayerCameraLimitTop = top;
-        PlayerCameraLimitBottom = bottom;
-        PlayerCameraLimitLeft = left;
-        PlayerCameraLimitRight = right;
-    }
-    #endregion
+#region Signals
+//Timer used for code activate after Player is back to idle but can be interupted if velocity is over threshold
+public void ZoomInTimer()
+{
+if (zoomInTimer)
+{
+    //zoom the camera into the player using lerp
+}
+}
+#endregion
+#endregion
 }
 
 
@@ -118,47 +248,44 @@ public partial class PlayerCamera : Camera2D
 
 public partial class PlayerCamera : Camera2D
 {
-    #region Variables
-    #region Class Scripts
-    private StateMachine stateMachineScript;
-    #endregion
+#region Variables
+#region Class Scripts
+private StateMachine stateMachineScript;
+#endregion
 
-    //Camera Limits
-    public int PlayerCameraLimitTop { get; set; }
-    public int PlayerCameraLimitBottom { get; set; }
-    public int PlayerCameraLimitLeft { get; set; }
-    public int PlayerCameraLimitRight { get; set; }
+//Camera Limits
+public int PlayerCameraLimitTop { get; set; }
+public int PlayerCameraLimitBottom { get; set; }
+public int PlayerCameraLimitLeft { get; set; }
+public int PlayerCameraLimitRight { get; set; }
 
-    //Camera Zoom
-    public Vector2 PlayerCameraZoom { get; set; }
+//Camera Zoom
+public Vector2 PlayerCameraZoom { get; set; }
 
-    //Camera Positioning
-    public Vector2 PlayerCameraPosition { get; set; }
+//Camera Positioning
+public Vector2 PlayerCameraPosition { get; set; }
 
-    //Player Movement
-    private Vector2 smPlayerVelocity;
-    #endregion
+//Player Movement
+private Vector2 smPlayerVelocity => stateMachineScript.smPlayerVelocity;
+#endregion
 
-    #region Methods
-    public override void _Ready()
-    {
-        //Class Variables
-        stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
+#region Methods
+public override void _Ready()
+{
+//Class Variables
+stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
 
-        //Setting Camera Boundary Limits
-        PlayerCameraLimitTop = LimitTop;
-        PlayerCameraLimitBottom = LimitBottom;
-        PlayerCameraLimitLeft = LimitLeft;
-        PlayerCameraLimitRight = LimitRight;
+//Setting Camera Boundary Limits
+PlayerCameraLimitTop = LimitTop;
+PlayerCameraLimitBottom = LimitBottom;
+PlayerCameraLimitLeft = LimitLeft;
+PlayerCameraLimitRight = LimitRight;
 
-        //Sets the Player Zoom
-        PlayerCameraZoom = Zoom;
+//Sets the Player Zoom
+PlayerCameraZoom = Zoom;
 
-        //Sets the Camera Positon
-        PlayerCameraPosition = Position;
-
-        //Player Movement
-        smPlayerVelocity = stateMachineScript.smPlayerVelocity;
-    }
-    #endregion
+//Sets the Camera Positon
+PlayerCameraPosition = Position;
+}
+#endregion
 }*/
