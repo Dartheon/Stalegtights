@@ -26,21 +26,21 @@ public partial class PlayerCamera : Camera2D
     private Vector2 smPlayerVelocity => stateMachineScript.smPlayerVelocity;
     private float maxPlayerSpeed;
 
-    // Drag Margins
-    [Export] public float MarginX = 80.0f;
-    [Export] public float MarginY = 60.0f;
-    [Export] public float CameraLerpSpeed = 5.0f;
-
     //Zoom Properties
-    private float threshold; //sets the threshold for activation at 60% max ground speed
+    private float threshold;
     private Vector2 zoomLock = new();
     private float zoomOutSpeed = 0f;
     private float zoomInSpeed = 1f;
-
     private Timer zoomInTimer;
-
     [Export] public float zoomOutDuration = 1.5f; // seconds to fully zoom out
     [Export] public float zoomInDuration = 0.8f;  // seconds to fully zoom in
+
+    //Drag Properties
+    [Export] public float TweenTime = 2.0f; // how fast the offset happens
+    [Export] public float OffsetDistance = 0.5f;
+    private Vector2 _targetOffset = Vector2.Zero;
+    private Vector2 newTargetOffset = Vector2.Zero;
+
     #endregion
 
     #region Methods
@@ -55,13 +55,13 @@ public partial class PlayerCamera : Camera2D
 
         zoomInTimer = GetNode<Timer>("ZoomInTimer");
 
+        // Sets the Player Zoom
+        playerCameraZoom = Zoom = defaultZoom;
+
         PlayerCameraLimitTop = LimitTop;
         PlayerCameraLimitBottom = LimitBottom;
         PlayerCameraLimitLeft = LimitLeft;
         PlayerCameraLimitRight = LimitRight;
-
-        // Sets the Player Zoom
-        playerCameraZoom = Zoom = defaultZoom;
 
         // Sets the Camera Position
         PlayerCameraPosition = Position;
@@ -69,9 +69,14 @@ public partial class PlayerCamera : Camera2D
 
     public override void _PhysicsProcess(double delta)
     {
-        float velocityX = stateMachineScript.smPlayerVelocity.Length();
-
-        if (velocityX > threshold)
+        /*Camera Zoom - reentable after making movement work
+        //Works with Timers Before Zooming In
+            - Idle - Zoomed In (Default Position)
+            - Velocity < 60% Max Speed - No Change In Zoom
+            - Velocity > 60% Max Speed - Start Zoom Out
+            - Back To Idle - Wait Timer - Zoom In Over Time
+        */
+        if (stateMachineScript.smPlayerVelocity.Length() > threshold)
         {
             if (Zoom != zoomOutMax)
             {
@@ -82,7 +87,7 @@ public partial class PlayerCamera : Camera2D
             }
         }
 
-        if (velocityX == 0)
+        if (stateMachineScript.smPlayerVelocity.Length() == 0)
         {
             if (zoomInTimer.IsStopped())
                 zoomInTimer.Start();
@@ -97,7 +102,7 @@ public partial class PlayerCamera : Camera2D
         //Camera Movement
         //Moving Ahead of Player happens after Player Drag Margin is Active
         /*
-            - Idle - Centered on Player(Default Position)/ Lerp back to center when camera is not dragged
+            - Idle - Centered on Player(Default Position)/ Tween back to center when camera is not dragged
             - Drag Margin Enabled
                 - Modify offset to move camera ahead of player when camera is dragged
                 - Based on Camera Movement X/Y
@@ -105,14 +110,35 @@ public partial class PlayerCamera : Camera2D
                     - (-Up/+Down)
         */
 
-        //Camera Zoom
-        //Works with Timers Before Zooming In
-        /*  
-            - Idle - Zoomed In (Default Position)
-            - Velocity < 60% Max Speed - No Change In Zoom/ Interrupt Zoom In Maintaining Current Position
-            - Velocity > 60% Max Speed - Start Zoom Out/ Zoom Back Out From Interrupt Position
-            - Back To Idle - Wait Timer - Zoom In Over Time
-                */
+        if (stateMachineScript.smPlayerVelocity.Length() >= threshold)
+        {
+            newTargetOffset.X = stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed * OffsetDistance;
+        }
+        if (stateMachineScript.smPlayerVelocity.Length() == 0.0f)
+        {
+            newTargetOffset.X = 0;
+        }
+
+        // Tween only when offset changes
+        if (newTargetOffset != _targetOffset)
+        {
+            _targetOffset = newTargetOffset;
+            ApplyOffsetTween();
+        }
+    }
+
+    private void ApplyOffsetTween()
+    {
+        // Create new tweens for each axis
+        Tween _xTween = CreateTween();
+        _xTween.TweenProperty(this, "drag_horizontal_offset", _targetOffset.X, TweenTime)
+               .SetTrans(Tween.TransitionType.Sine)
+               .SetEase(Tween.EaseType.Out);
+
+        /*Tween _yTween = CreateTween();
+        _yTween.TweenProperty(this, "drag_vertical_offset", _targetOffset.Y, TweenTime)
+               .SetTrans(Tween.TransitionType.Sine)
+               .SetEase(Tween.EaseType.Out);*/
     }
 
     // Used to Set the Boundaries in an Area so the Camera doesn't Show Places it Shouldn't
@@ -146,6 +172,7 @@ public partial class PlayerCamera : Camera2D
     #endregion
 }
 
+//code to be deleted
 /*using Godot;
 
 public partial class PlayerCamera : Camera2D
