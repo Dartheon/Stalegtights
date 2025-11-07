@@ -7,8 +7,8 @@
 process_callback = 0
 limit_smoothed = true
 position_smoothing_speed = 20.0
+drag_vertical_enabled = true
 drag_top_margin = 0.5
-drag_bottom_margin = 0.5
 editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource("1_1hkb3")
@@ -21,8 +21,15 @@ region_rect = Rect2(0, 0, 132, 158)
 
 [node name="ZoomInTimer" type="Timer" parent="."]
 process_callback = 0
-wait_time = 0.5
+wait_time = 3.0
+one_shot = true
+ignore_time_scale = true
+
+[node name="RecenterTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 5.0
 one_shot = true
 ignore_time_scale = true
 
 [connection signal="timeout" from="ZoomInTimer" to="." method="ZoomInTimer"]
+[connection signal="timeout" from="RecenterTimer" to="." method="CameraRecenter"]
