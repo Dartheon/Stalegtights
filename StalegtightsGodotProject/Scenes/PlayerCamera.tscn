@@ -4,17 +4,21 @@
 [ext_resource type="Texture2D" uid="uid://b1lmax25tkkax" path="res://Sprites/Spike_Jump-To-Run_Test.png" id="2_bjrvu"]
 
 [node name="PlayerCamera" type="Camera2D"]
+position = Vector2(0, -150)
+zoom = Vector2(2, 2)
 process_callback = 0
 limit_smoothed = true
 position_smoothing_speed = 20.0
 drag_vertical_enabled = true
-drag_top_margin = 0.5
+drag_top_margin = 0.77
+drag_bottom_margin = 0.45
 editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource("1_1hkb3")
+ZoomOutMax = Vector2(1.25, 1.25)
 
 [node name="tempplayer" type="Sprite2D" parent="."]
-visible = false
+position = Vector2(0, 150)
 texture = ExtResource("2_bjrvu")
 hframes = 24
 region_rect = Rect2(0, 0, 132, 158)
@@ -32,4 +36,5 @@ one_shot = true
 ignore_time_scale = true
 
 [connection signal="timeout" from="ZoomInTimer" to="." method="ZoomInTimer"]
-[connection signal="timeout" from="RecenterTimer" to="." method="CameraRecenter"]
+[connection signal="timeout" from="RecenterTimer" to="." method="CameraRecenterX"]
+[connection signal="timeout" from="RecenterTimer" to="." method="CameraRecenterY"]
