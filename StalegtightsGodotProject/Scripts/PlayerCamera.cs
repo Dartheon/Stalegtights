@@ -37,7 +37,10 @@ public partial class PlayerCamera : Camera2D
     [Export] public float MoveDelayTimer { get; set; } = 3.0f; // time player must move before zooming out
     [Export] public float SpeedPercentageThreshold { get; set; } = 0.9f; //the percentage used for the threshold
     private Timer zoomInTimer; //hold the Timer child to reference
-    private float threshold; //used to determine the percentage of the max speed before starting the zoom
+
+    /*****UPDATE LATER*******
+    Set threshold to a hardcoded value so the behaviour of the camera is consistent at low speeds even as player increases max speed*/
+    private float threshold; //used to determine the percentage of the max speed before starting the zoom //
     private float moveTimer = 0f;
     private bool isZoomedOut = false;
     #endregion
@@ -52,7 +55,7 @@ public partial class PlayerCamera : Camera2D
     private Tween xTween;
     private const float HorizontalOffsetTweenTime = 2.0f; // how fast the offset happens in the applly offset tween method
     [Export] public float HorizontalOffsetStationaryTimer { get; set; } = 10.0f;
-    [Export] public float OffsetDistanceX { get; set; } = 1.0f; //how far the offset will go
+    [Export] public float OffsetDistanceX { get; set; } = 1.0f; //how far the offset will go. 1 Unit of Offset is equal to 1/10th of ScreenWidth. (5 will put the player at the edge of the sceen at Zoom = 1. At Zoom = 0.5, 10 will put the player at the edge of the screen.)
     private Vector2 xTargetOffset = Vector2.Zero;
     private Vector2 xNewTargetOffset = Vector2.Zero;
     private float xStopTimer = 0.0f;
@@ -174,14 +177,17 @@ public partial class PlayerCamera : Camera2D
         #endregion
 
         #region CameraMovement X
-        if (stateMachineScript.smPlayerVelocity.Length() > threshold)
+
+        //Check whether the player has changed direction
+        bool directionFlipped = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != Mathf.Sign(xTargetOffset.X) && xTargetOffset.X != 0;
+        // When moving quickly Camera adjusts with player directly according to speed
+           if (stateMachineScript.smPlayerVelocity.Length() >= threshold)
         {
             cameraRecenterTimer.Stop();
             startTimer = false;
             returningToCenter = false; // cancel any center return if movement resumes
 
-            bool directionFlipped = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != Mathf.Sign(xTargetOffset.X) && xTargetOffset.X != 0;
-
+            #region TweenManagement
             // Resume tween if paused and direction hasn’t changed
             if (xTween != null && IsInstanceValid(xTween) && !xTween.IsRunning() && !directionFlipped)
             {
@@ -198,21 +204,10 @@ public partial class PlayerCamera : Camera2D
 
                 xTween = null;
             }
+            #endregion
 
-            // Determine movement offset
-            if (!xReachedMaxOffset && Mathf.Abs((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) >= Mathf.Abs(OffsetDistanceX))
-            {
-                xNewTargetOffset.X = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) * Mathf.Abs(OffsetDistanceX);
-                xReachedMaxOffset = true;
-            }
-            else if (xReachedMaxOffset)
-            {
-                xNewTargetOffset.X = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) * Mathf.Abs(OffsetDistanceX);
-            }
-            else
-            {
-                xNewTargetOffset.X = (stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX;
-            }
+            // Determine offset according to player speed
+            xNewTargetOffset.X = (stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX; // Changes the max offset to a percentage of player speed.
 
             // Start tween if target changes
             if (xNewTargetOffset != xTargetOffset)
@@ -221,6 +216,8 @@ public partial class PlayerCamera : Camera2D
                 ApplyOffsetTweenX();
             }
         }
+        // TO DO: else if (stateMachineScript.smPlayerVelocity.Length() < threshold)
+        // camera slow recentering & quick recentering if direction flipped while moving
         else if (stateMachineScript.smPlayerVelocity.Length() == 0.0f)
         {
             // only pause normal tweens if camera is not returning to center
