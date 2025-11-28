@@ -131,6 +131,7 @@ public partial class GroundState : States
         #region Detect any Jump and keep track of the type of jump used
         if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
         {
+            //timer here as long as holding, reset on ground
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
             StateMachineScript.smInputManager.PlayerInputBuffers["jump"] = false;
             NewStateChange = AIRSTATESTRING;

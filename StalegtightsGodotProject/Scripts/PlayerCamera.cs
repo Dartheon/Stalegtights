@@ -64,6 +64,8 @@ public partial class PlayerCamera : Camera2D
     [Export] public float OffsetDistanceY { get; set; } = 1.0f; //how far the offset will go
     private Vector2 yTargetOffset = Vector2.Zero;
     private Vector2 yNewTargetOffset = Vector2.Zero;
+
+    private Vector2 restingVerticalOffset = new(0, -150.0f);
     #endregion
     #endregion
 
@@ -97,7 +99,6 @@ public partial class PlayerCamera : Camera2D
     #region Physics Process
     public override void _PhysicsProcess(double delta)
     {
-
         //Two Systems Working Seperately
         /*Camera Zoom
         //Works with Timers Before Zooming In
@@ -156,27 +157,20 @@ public partial class PlayerCamera : Camera2D
                     - (-Up/+Down)
         */
         #region CameraMovement Y
-        if (stateMachineScript.smPlayerVelocity.Y != 0)
-        {
-            cameraRecenterTimer.Stop();
+        /*
+        Position Down
+        Drag Margin Maintains 0.45
+        Idle: -150f
+        Moving Camera Down Max: 250f(400?)
+        Idle After Moving Down: 0f
 
-            int verticalSign = stateMachineScript.smPlayerVelocity.Y < 0 ? -1 : 1; //-1 = up, 1 = down
+        when camera moves down(1) tween camera offset vertical from default -150 to 250(400?)
 
-            /*
-            Position Down
-            Drag Margin Maintains 0.45
-            Idle: -150f
-            Moving Camera Down Max: 250f(400?)
-            Idle After Moving Down: 0f
+        When stationary, Timer, then tween offset vertical to 0
 
-            when camera moves down(1) tween camera offset vertical from default -150 to 250(400?)
-
-            When stationary, Timer, then tween offset vertical to 0
-
-            Vertical Offset Up
-            Top Margin 0.77 = Regular Jump without shifting camera
-            */
-        }
+        Vertical Offset Up
+        Top Margin 0.77 = Regular Jump without shifting camera
+        */
         #endregion
 
         #region CameraMovement X
@@ -296,7 +290,7 @@ public partial class PlayerCamera : Camera2D
             returningToCenter = false; // allow normal stationary logic again
         };
 
-        yTween.TweenProperty(this, "drag_vertical_offset", yTargetOffset.X, duration)
+        yTween.TweenProperty(this, "drag_vertical_offset", yTargetOffset.Y, duration)
                .SetTrans(Tween.TransitionType.Linear)
                .SetEase(Tween.EaseType.In);
     }

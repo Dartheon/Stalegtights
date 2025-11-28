@@ -91,6 +91,7 @@ interact={
 [physics]
 
 2d/run_on_separate_thread=true
+2d/default_gravity=1200.0
 
 [rendering]
 

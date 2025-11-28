@@ -211,6 +211,17 @@ public partial class AirState : States
 
         #region Movement
         #region Apply Gravity on Character
+        /*
+        two timers 
+        gravity variable - max time before gravity has to kick in
+        button pressed timer(button held timer)
+        time pressed is >= gravity timer
+        gravity timer = max jump
+        200,gt = max height
+        if button pressed timer < do short hop
+        else if how long held * max jump
+        bool set to true unless button pressed - apply gravity always
+        */
         StateMachineScript.smPlayerVelocity.Y += Gravity * (float)delta; //When in the air the Y Velocity is equal to the Gravity Value 
         #endregion
 

@@ -44,7 +44,7 @@ public partial class StateMachine : Node
 
     #region Movement
     public Vector2 smPlayerVelocity; //The Variable for storing and changing the Players Velocity
-    [Export] public float BaseJumpVelocity { get; set; } = -500.0f;
+    [Export] public float BaseJumpVelocity { get; set; } = -750.0f;
     public float JumpModifier { get; set; } = 1.0f;
     public float smPlayerJumpVelocity => BaseJumpVelocity * JumpModifier;
     #endregion
