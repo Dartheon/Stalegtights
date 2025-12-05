@@ -1,5 +1,6 @@
-[gd_scene load_steps=9 format=4 uid="uid://dda8gq1ka136i"]
+[gd_scene load_steps=10 format=4 uid="uid://dda8gq1ka136i"]
 
+[ext_resource type="Script" uid="uid://0518v7unqpad" path="res://Scripts/AreaSceneLoader.cs" id="1_5ltu8"]
 [ext_resource type="PackedScene" uid="uid://cychok5ryisps" path="res://Scenes/Teleporters/TeleporterSelectType.tscn" id="1_7idnh"]
 [ext_resource type="Texture2D" uid="uid://cxfeokshmca7a" path="res://Sprites/TileSheetFlat3264128256.png" id="1_ykemi"]
 [ext_resource type="PackedScene" uid="uid://b58rjw4clilt" path="res://Scenes/Pickups/PickupSelectType.tscn" id="2_5ltu8"]
@@ -44,6 +45,7 @@ sources/1 = SubResource("TileSetAtlasSource_5ltu8")
 pattern_0 = SubResource("TileMapPattern_7idnh")
 
 [node name="PlayerTestScene" type="Node2D"]
+script = ExtResource("1_5ltu8")
 
 [node name="Teleporters" type="Node" parent="."]
 
@@ -70,19 +72,19 @@ linkedPortalLocation = NodePath("../PowerDownToSpawn")
 TeleporterSelected = 1
 
 [node name="StairDown32ToHub" parent="Teleporters" node_paths=PackedStringArray("linkedPortalLocation") instance=ExtResource("1_7idnh")]
-position = Vector2(25, 1233)
+position = Vector2(-4032, 2538)
 linkedPortalLocation = NodePath("../HubToStairDown32")
 TeleporterSelected = 1
 Interactable = true
 
 [node name="StairDown64ToHub" parent="Teleporters" node_paths=PackedStringArray("linkedPortalLocation") instance=ExtResource("1_7idnh")]
-position = Vector2(174, 1234)
+position = Vector2(-3883, 2539)
 linkedPortalLocation = NodePath("../HubToStairDown64")
 TeleporterSelected = 1
 Interactable = true
 
 [node name="StairDown128ToHub" parent="Teleporters" node_paths=PackedStringArray("linkedPortalLocation") instance=ExtResource("1_7idnh")]
-position = Vector2(305, 1229)
+position = Vector2(-3752, 2534)
 linkedPortalLocation = NodePath("../HubToStairDown128")
 TeleporterSelected = 1
 Interactable = true
