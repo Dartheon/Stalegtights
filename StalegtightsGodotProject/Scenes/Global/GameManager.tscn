@@ -4,4 +4,4 @@
 
 [node name="GameManager" type="Node"]
 script = ExtResource("1_m2tc1")
-startScenes = PackedStringArray("TestScene")
+startScenes = PackedStringArray("PlayerTestScene")

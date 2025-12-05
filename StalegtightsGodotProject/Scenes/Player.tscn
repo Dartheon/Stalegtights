@@ -623,6 +623,7 @@ script = ExtResource("7_glx4g")
 
 [node name="PlayerCamera" parent="." instance=ExtResource("9_megsn")]
 top_level = false
+drag_vertical_enabled = true
 script = ExtResource("10_yoq75")
 ZoomOutMax = Vector2(1, 1)
 ZoomOutDuration = 1.5
@@ -630,6 +631,7 @@ ZoomInDuration = 1.5
 MoveDelayTimer = 3.0
 SpeedPercentageThreshold = 0.9
 HorizontalOffsetStationaryTimer = 10.0
+HorizontalOffsetUnderThresholdTimer = 20.0
 OffsetDistanceX = 1.0
 OffsetDistanceY = 1.0
 

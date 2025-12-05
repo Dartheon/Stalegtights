@@ -9,6 +9,7 @@
 [node name="World" parent="." instance=ExtResource("2_kln2b")]
 
 [node name="Player" parent="World" instance=ExtResource("2_idj7w")]
+position = Vector2(700, -425)
 spawnPosition = Vector2(0, -100)
 
 [node name="UILayer" type="CanvasLayer" parent="."]

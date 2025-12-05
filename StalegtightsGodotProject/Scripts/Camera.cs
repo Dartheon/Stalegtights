@@ -227,8 +227,6 @@ public partial class Camera : Camera2D
                 (float)GD.RandRange(-magnitude, magnitude)
             );
 
-            GD.RandRange(elapsed, elapsed);
-
             await ToSignal(GetTree().CreateTimer(interval), "timeout");
             elapsed += interval;
         }
