@@ -55,6 +55,7 @@ public partial class PlayerCamera : Camera2D
     private Tween xTween;
     private const float HorizontalOffsetTweenTime = 2.0f; // how fast the offset happens in the applly offset tween method
     [Export] public float HorizontalOffsetStationaryTimer { get; set; } = 10.0f;
+    [Export] public float HorizontalOffsetUnderThresholdTimer { get; set; } = 20.0f;
     [Export] public float OffsetDistanceX { get; set; } = 1.0f; //how far the offset will go. 1 Unit of Offset is equal to 1/10th of ScreenWidth. (5 will put the player at the edge of the sceen at Zoom = 1. At Zoom = 0.5, 10 will put the player at the edge of the screen.)
     private Vector2 xTargetOffset = Vector2.Zero;
     private Vector2 xNewTargetOffset = Vector2.Zero;
@@ -63,7 +64,7 @@ public partial class PlayerCamera : Camera2D
 
     //Drag Properties Y
     private Tween yTween;
-    private const float VerticalOffsetTweenTime = 2.0f; // how fast the offset happens in the applly offset tween method
+    private const float VerticalOffsetTweenTime = 2.0f; // how fast the offset happens in the apply offset tween method
     [Export] public float OffsetDistanceY { get; set; } = 1.0f; //how far the offset will go
     private Vector2 yTargetOffset = Vector2.Zero;
     private Vector2 yNewTargetOffset = Vector2.Zero;
@@ -181,7 +182,7 @@ public partial class PlayerCamera : Camera2D
         //Check whether the player has changed direction
         bool directionFlipped = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != Mathf.Sign(xTargetOffset.X) && xTargetOffset.X != 0;
         // When moving quickly Camera adjusts with player directly according to speed
-           if (stateMachineScript.smPlayerVelocity.Length() >= threshold)
+        if (stateMachineScript.smPlayerVelocity.Length() >= threshold)
         {
             cameraRecenterTimer.Stop();
             startTimer = false;
@@ -218,6 +219,17 @@ public partial class PlayerCamera : Camera2D
         }
         // TO DO: else if (stateMachineScript.smPlayerVelocity.Length() < threshold)
         // camera slow recentering & quick recentering if direction flipped while moving
+        else if (stateMachineScript.smPlayerVelocity.Length() < threshold)
+        {
+            xNewTargetOffset.X = 0.0f;
+
+            // Start tween if target changes
+            if (xNewTargetOffset != xTargetOffset)
+            {
+                xTargetOffset = xNewTargetOffset;
+                ApplyOffsetTweenX(HorizontalOffsetUnderThresholdTimer);
+            }
+        }
         else if (stateMachineScript.smPlayerVelocity.Length() == 0.0f)
         {
             // only pause normal tweens if camera is not returning to center
