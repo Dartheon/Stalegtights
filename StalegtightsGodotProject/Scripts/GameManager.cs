@@ -49,7 +49,7 @@ public partial class GameManager : Node
     {
         InitGrabNodes();
 
-        GameStartScenes();
+        //GameStartScenes();
 
         //Sets the BGM to play at the game start
         //Currently off for testing//
@@ -123,7 +123,36 @@ public partial class GameManager : Node
     #endregion
 
     #region Scenes
-    //finds what scenes to start the game loaded with
+    //finds what scenes to start the game loaded with when called upon
+    private void GameLoadScenes(string loadSceneName)
+    {
+        if (loadSceneName != null)
+        {
+            // Update scene states based on whether the scene is in the list to load
+            foreach (string sceneName in slManager.ScenesLoaded.Keys.ToList())
+            {
+                if (sceneName == loadSceneName)
+                {
+                    //The line assigns true if the scene is in sceneNamesToLoad and false otherwise
+                    slManager.ScenesLoaded[sceneName].SceneState = true;
+                }
+                else
+                {
+                    slManager.ScenesLoaded[sceneName].SceneState = false;
+                }
+            }
+
+            // If any scene was loaded, call the world loading method
+            //This is a shorthand form of a lambda expression. It means: "For each state, return true if the state is true."
+            if (slManager.ScenesLoaded.Values.Any(state => state.SceneState))
+            {
+                //CallDeferred is used here to avoid errors when Initializing new nodes rapidly
+                world.CallDeferred("LoadSceneWorld");
+            }
+        }
+    }
+
+    //Used for loading scenes at game start, more for debugging purposes
     private void GameStartScenes()
     {
         if (startScenes != null)
@@ -146,24 +175,6 @@ public partial class GameManager : Node
     }
 
     //Call this method and the name off the scene to load it into the game world
-    public void ScenesManager(string sceneNamesToLoad)
-    {
-        // Update scene states based on whether the scene is in the list to load
-        foreach (string sceneName in slManager.ScenesLoaded.Keys.ToList())
-        {
-            //The line assigns true if the scene is in sceneNamesToLoad and false otherwise
-            slManager.ScenesLoaded[sceneName].SceneState = sceneNamesToLoad.Contains(sceneName);
-        }
-
-        // If any scene was loaded, call the world loading method
-        //This is a shorthand form of a lambda expression. It means: "For each state, return true if the state is true."
-        if (slManager.ScenesLoaded.Values.Any(state => state.SceneState))
-        {
-            //CallDeferred is used here to avoid errors when Initializing new nodes rapidly
-            world.CallDeferred("LoadSceneWorld");
-        }
-    }
-
     public void ScenesManager(string[] sceneNamesToLoad)
     {
         // Update scene states based on whether the scene is in the list to load

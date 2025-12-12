@@ -6,12 +6,16 @@ public partial class MenuUI : Control
     private Control pauseMenu;
     private Control startMenu;
     private Control mainMenu;
+
+    private GameManager gameManager;
     #endregion
 
     #region Methods
     #region Start
     public override void _Ready()
     {
+        gameManager = GetNode<GameManager>("/root/GameManager");
+
         pauseMenu = GetNode<Control>("%PauseMenu");
         startMenu = GetNode<Control>("%StartMenu");
         mainMenu = GetNode<Control>("%MainMenu");
@@ -62,8 +66,10 @@ public partial class MenuUI : Control
     #region Start Menu Button Signals
     public void OnNewGamePressed()
     {
-        //Add code here...
         GD.Print("Pressed 'NewGame' Button");
+
+        gameManager.CallDeferred("GameLoadScenes", "PlayerTestScene");
+
         startMenu.Visible = false;
     }
 
