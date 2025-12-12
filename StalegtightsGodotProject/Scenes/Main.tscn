@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cnhykp74l5agf"]
+[gd_scene load_steps=5 format=3 uid="uid://cnhykp74l5agf"]
 
 [ext_resource type="PackedScene" uid="uid://dg6nvqnpa8et1" path="res://Scenes/Player.tscn" id="2_idj7w"]
 [ext_resource type="PackedScene" uid="uid://d2qxlbhgbtge7" path="res://Scenes/World.tscn" id="2_kln2b"]
 [ext_resource type="PackedScene" uid="uid://b05i8umpsqyae" path="res://Scenes/DebugUI.tscn" id="3_kln2b"]
+[ext_resource type="PackedScene" uid="uid://dmv4auoivmm13" path="res://Scenes/MenuUI.tscn" id="4_rgh2o"]
 
 [node name="Main" type="Node"]
 
@@ -15,3 +16,6 @@ spawnPosition = Vector2(0, -100)
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="DebugUI" parent="UILayer" instance=ExtResource("3_kln2b")]
+
+[node name="MenuUI" parent="UILayer" instance=ExtResource("4_rgh2o")]
+visible = false

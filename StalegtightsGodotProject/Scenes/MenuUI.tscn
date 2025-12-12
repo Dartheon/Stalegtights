@@ -1,0 +1,254 @@
+[gd_scene load_steps=2 format=3 uid="uid://dmv4auoivmm13"]
+
+[ext_resource type="Script" uid="uid://rwa52fswbgu8" path="res://Scripts/MenuUI.cs" id="1_jkpkg"]
+
+[node name="MenuUI" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jkpkg")
+
+[node name="PauseMenu" type="Control" parent="."]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PMBackgroundColorRect" type="ColorRect" parent="PauseMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.41369, 0.141992, 0.517122, 1)
+
+[node name="PauseMenuLabel" type="Label" parent="PauseMenu"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 100
+text = "Pause Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PMButtonsVBoxContainer" type="VBoxContainer" parent="PauseMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="InventoryButton" type="Button" parent="PauseMenu/PMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Inventory"
+icon_alignment = 1
+expand_icon = true
+
+[node name="MapButton" type="Button" parent="PauseMenu/PMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Map
+"
+icon_alignment = 1
+expand_icon = true
+
+[node name="CodexButton" type="Button" parent="PauseMenu/PMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Codex"
+icon_alignment = 1
+expand_icon = true
+
+[node name="BackButton" type="Button" parent="PauseMenu/PMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Back"
+icon_alignment = 1
+expand_icon = true
+
+[node name="StartMenu" type="Control" parent="."]
+process_mode = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SMBackgroundColorRect" type="ColorRect" parent="StartMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="GameTitle" type="Label" parent="StartMenu"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 128
+text = "Stalag Game Main Menu"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SMButtonsVBoxContainer" type="VBoxContainer" parent="StartMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="NewGameButton" type="Button" parent="StartMenu/SMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "New Game"
+icon_alignment = 1
+expand_icon = true
+
+[node name="LoadGameButton" type="Button" parent="StartMenu/SMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Load Game"
+icon_alignment = 1
+expand_icon = true
+
+[node name="OptionsButton" type="Button" parent="StartMenu/SMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Options"
+icon_alignment = 1
+expand_icon = true
+
+[node name="QuitToDesktopButton" type="Button" parent="StartMenu/SMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Quit To Desktop"
+icon_alignment = 1
+expand_icon = true
+
+[node name="MainMenu" type="Control" parent="."]
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MMBackgroundColorRect" type="ColorRect" parent="MainMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.224379, 0.31678, 0.272295, 1)
+
+[node name="MainMenuLabel" type="Label" parent="MainMenu"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 100
+text = "Main Menu"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MMButtonsVBoxContainer" type="VBoxContainer" parent="MainMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+
+[node name="OptionsButton" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Options"
+icon_alignment = 1
+expand_icon = true
+
+[node name="QuitToMainMenuButton" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Quit To Main Menu"
+icon_alignment = 1
+expand_icon = true
+
+[node name="QuitToDesktopButton" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Quit To Desktop
+"
+icon_alignment = 1
+expand_icon = true
+
+[node name="BackButton" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Back"
+icon_alignment = 1
+expand_icon = true
