@@ -13,8 +13,8 @@ grow_vertical = 2
 script = ExtResource("1_jkpkg")
 
 [node name="PauseMenu" type="Control" parent="."]
+unique_name_in_owner = true
 process_mode = 3
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -85,16 +85,17 @@ text = "Codex"
 icon_alignment = 1
 expand_icon = true
 
-[node name="BackButton" type="Button" parent="PauseMenu/PMButtonsVBoxContainer"]
+[node name="CloseMenuButton" type="Button" parent="PauseMenu/PMButtonsVBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
 theme_override_font_sizes/font_size = 64
-text = "Back"
+text = "Close Menu"
 icon_alignment = 1
 expand_icon = true
 
 [node name="StartMenu" type="Control" parent="."]
+unique_name_in_owner = true
 process_mode = 3
 layout_mode = 1
 anchors_preset = 15
@@ -172,8 +173,8 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="MainMenu" type="Control" parent="."]
+unique_name_in_owner = true
 process_mode = 3
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -225,12 +226,12 @@ text = "Options"
 icon_alignment = 1
 expand_icon = true
 
-[node name="QuitToMainMenuButton" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
+[node name="QuitToStartMenuButton" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
 theme_override_font_sizes/font_size = 64
-text = "Quit To Main Menu"
+text = "Quit To Start Menu"
 icon_alignment = 1
 expand_icon = true
 
@@ -244,11 +245,24 @@ text = "Quit To Desktop
 icon_alignment = 1
 expand_icon = true
 
-[node name="BackButton" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
+[node name="CloseMenuButton" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
 theme_override_font_sizes/font_size = 64
-text = "Back"
+text = "Close Menu"
 icon_alignment = 1
 expand_icon = true
+
+[connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/InventoryButton" to="." method="OnInventoryPressed"]
+[connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/MapButton" to="." method="OnMapPressed"]
+[connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/CodexButton" to="." method="OnCodexPressed"]
+[connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/CloseMenuButton" to="." method="OnCloseMenuPressed"]
+[connection signal="pressed" from="StartMenu/SMButtonsVBoxContainer/NewGameButton" to="." method="OnNewGamePressed"]
+[connection signal="pressed" from="StartMenu/SMButtonsVBoxContainer/LoadGameButton" to="." method="OnLoadGamePressed"]
+[connection signal="pressed" from="StartMenu/SMButtonsVBoxContainer/OptionsButton" to="." method="OnOptionsPressed"]
+[connection signal="pressed" from="StartMenu/SMButtonsVBoxContainer/QuitToDesktopButton" to="." method="OnQuitToDesktopPressed"]
+[connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/OptionsButton" to="." method="OnOptionsPressed"]
+[connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/QuitToStartMenuButton" to="." method="OnQuitToStartMenuPressed"]
+[connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/QuitToDesktopButton" to="." method="OnQuitToDesktopPressed"]
+[connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/CloseMenuButton" to="." method="OnCloseMenuPressed"]

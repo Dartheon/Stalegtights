@@ -18,4 +18,3 @@ spawnPosition = Vector2(0, -100)
 [node name="DebugUI" parent="UILayer" instance=ExtResource("3_kln2b")]
 
 [node name="MenuUI" parent="UILayer" instance=ExtResource("4_rgh2o")]
-visible = false
