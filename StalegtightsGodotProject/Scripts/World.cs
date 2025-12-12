@@ -7,6 +7,7 @@ public partial class World : Node2D
     #region Variables
     #region Class Scripts
     private SaveLoadManager slManager;
+    private CharacterBody2D playerCB2D;
 
     #endregion
     #endregion
@@ -23,6 +24,7 @@ public partial class World : Node2D
     private void InitGrabNodes()
     {
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
+        playerCB2D = GetNode<CharacterBody2D>("/root/Main/World/Player");
     }
     #endregion
 
@@ -58,6 +60,9 @@ public partial class World : Node2D
                     slManager.ScenesLoaded[sceneName].SceneNode = null;
                 }
             }
+
+            //TO DO: prevent Player Teleport if multiple scenes are loaded at once
+            playerCB2D.GlobalPosition = slManager.ScenesLoaded[sceneName].PlayerPosition;
         }
     }
     #endregion

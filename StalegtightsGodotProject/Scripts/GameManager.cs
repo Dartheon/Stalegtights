@@ -49,6 +49,8 @@ public partial class GameManager : Node
     {
         InitGrabNodes();
 
+        PauseManager(true);
+
         //GameStartScenes();
 
         //Sets the BGM to play at the game start
@@ -119,6 +121,16 @@ public partial class GameManager : Node
             inputManager.PlayerContinuousInputs["engine_scale_reset"] = false; //ensures only one statement is called for button input
         }
         #endregion
+    }
+    #endregion
+
+    #region Pause Manager
+    public void PauseManager(bool pauseState)
+    {
+        if (GetTree().Paused != pauseState)
+        {
+            GetTree().Paused = pauseState;
+        }
     }
     #endregion
 

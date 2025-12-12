@@ -18,13 +18,17 @@ public partial class SceneLoading : Node
     //The Scenes Node, to be assigned when creating a new node that gets Instantiated in the game world
     public Node SceneNode { get; set; }
 
+    //The Player Position holds the exported value used to teleport the Player to the correct part of the level when loaded
+    public Vector2 PlayerPosition { get; set; }
+
     public SceneLoading() { }
-    public SceneLoading(string sceneName, bool sceneState, PackedScene scenePackedLoaded, Node sceneNode)
+    public SceneLoading(string sceneName, bool sceneState, PackedScene scenePackedLoaded, Node sceneNode, Vector2 playerPosition)
     {
         SceneName = sceneName;
         SceneState = sceneState;
         ScenePackedLoaded = scenePackedLoaded;
         SceneNode = sceneNode;
+        PlayerPosition = playerPosition;
     }
 }
 
@@ -90,8 +94,8 @@ public partial class SaveLoadManager : Node
         {
             //Example//
             //["Area1"] = new("Area1", false, (PackedScene)ResourceLoader.Load("res://Areas/Area1.tscn"), null),
-            ["TestScene"] = new("TestScene", false, (PackedScene)ResourceLoader.Load("res://Scenes/Playable Scenes/TestScene.tscn"), null),
-            ["PlayerTestScene"] = new("TestScene", false, (PackedScene)ResourceLoader.Load("res://Scenes/Playable Scenes/PlayerTestScene.tscn"), null)
+            ["TestScene"] = new("TestScene", false, (PackedScene)ResourceLoader.Load("res://Scenes/Playable Scenes/TestScene.tscn"), null, new()),
+            ["PlayerTestScene"] = new("TestScene", false, (PackedScene)ResourceLoader.Load("res://Scenes/Playable Scenes/PlayerTestScene.tscn"), null, new())
             // Add more scenes if needed...
         };
     }

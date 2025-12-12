@@ -8,6 +8,7 @@ public partial class MenuUI : Control
     private Control mainMenu;
 
     private GameManager gameManager;
+    private CharacterBody2D playerCB2D;
     #endregion
 
     #region Methods
@@ -71,6 +72,8 @@ public partial class MenuUI : Control
         gameManager.CallDeferred("GameLoadScenes", "PlayerTestScene");
 
         startMenu.Visible = false;
+
+        gameManager.PauseManager(false);
     }
 
     public void OnLoadGamePressed()

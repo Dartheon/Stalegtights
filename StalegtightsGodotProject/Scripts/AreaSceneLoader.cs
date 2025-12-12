@@ -5,10 +5,12 @@ public partial class AreaSceneLoader : Node2D
     #region Variables
     #region Position
     [Export] private Vector2 startLocation; //sets the starting position of the area so it is in place when game starts
+    [Export] public Vector2 PlayerTeleportPosition { get; set; }
     #endregion
 
     #region Class Scripts
     private GameManager gameManager;
+    private SaveLoadManager slManager;
     #endregion
 
     #region Scenes
@@ -29,9 +31,12 @@ public partial class AreaSceneLoader : Node2D
     private void InitGrabNodes()
     {
         gameManager = GetNode<GameManager>("/root/GameManager");
+        slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
 
         //Setting the start location for the area
         Position = startLocation;
+
+        slManager.ScenesLoaded[Name].PlayerPosition = PlayerTeleportPosition;
     }
     #endregion
 
