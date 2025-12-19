@@ -6,7 +6,7 @@ public partial class MenuUI : Control
 {
     #region Variables
     private Control pauseMenu;
-    private Control startMenu;
+    public Control StartMenu { get; set; }
     private Control mainMenu;
 
     private GameManager gameManager;
@@ -22,12 +22,12 @@ public partial class MenuUI : Control
         inputManager = GetNode<InputManager>("/root/InputManager");
 
         pauseMenu = GetNode<Control>("%PauseMenu");
-        startMenu = GetNode<Control>("%StartMenu");
+        StartMenu = GetNode<Control>("%StartMenu");
         mainMenu = GetNode<Control>("%MainMenu");
 
         //Setting Initial Visibility
         pauseMenu.Visible = false;
-        startMenu.Visible = true;
+        StartMenu.Visible = true;
         mainMenu.Visible = false;
     }
     #endregion
@@ -54,7 +54,7 @@ public partial class MenuUI : Control
                 //If Keyboard:   Pause -> Main -> Main = Close Main Menu
                 mainMenu.Visible = false;
 
-                if (!mainMenu.Visible && !pauseMenu.Visible && !startMenu.Visible)
+                if (!mainMenu.Visible && !pauseMenu.Visible && !StartMenu.Visible)
                 {
                     gameManager.PauseManager(false);
                 }
@@ -62,7 +62,7 @@ public partial class MenuUI : Control
         }
 
         //Pause Menu Logic
-        if (inputManager.PlayerContinuousInputs["pause_menu"])
+        if (inputManager.PlayerContinuousInputs["pause_menu"] && !StartMenu.Visible)
         {
             inputManager.PlayerContinuousInputs["pause_menu"] = false;
 
@@ -114,22 +114,31 @@ public partial class MenuUI : Control
         GD.Print("Pressed 'Options' Button");
     }
 
-    public void OnCloseMenuPressed()
+    public void OnCloseMenuPressed(int menuType)
     {
         //Add code here...
         //Have some way to close all menus
-        //MainMenu
-        //PauseMenu
+        //MainMenu = 0
+        //PauseMenu = 1
         GD.Print("Pressed 'CloseMenu' Button");
 
-        if (mainMenu.Visible)
+        switch (menuType)
         {
-            mainMenu.Visible = false;
-        }
-
-        if (pauseMenu.Visible)
-        {
-            pauseMenu.Visible = false;
+            case 0:
+                if (mainMenu.Visible)
+                {
+                    mainMenu.Visible = false;
+                }
+                break;
+            case 1:
+                if (pauseMenu.Visible)
+                {
+                    pauseMenu.Visible = false;
+                }
+                break;
+            default:
+                GD.PushWarning("Unknown MenuType sent in signal for Close Menu");
+                return;
         }
 
         if (!mainMenu.Visible && !pauseMenu.Visible)
@@ -146,7 +155,7 @@ public partial class MenuUI : Control
 
         gameManager.CallDeferred("GameLoadScenes", "PlayerTestScene");
 
-        startMenu.Visible = false;
+        StartMenu.Visible = false;
 
         gameManager.PauseManager(false);
     }
@@ -163,6 +172,12 @@ public partial class MenuUI : Control
     {
         //Add code here...
         GD.Print("Pressed 'QuitToStartMenu' Button");
+
+        StartMenu.Visible = true;
+        pauseMenu.Visible = false;
+        mainMenu.Visible = false;
+
+        gameManager.PauseManager(true);
     }
     #endregion
 

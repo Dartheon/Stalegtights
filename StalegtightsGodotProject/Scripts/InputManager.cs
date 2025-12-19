@@ -6,6 +6,7 @@ public partial class InputManager : Node
     #region Variables
     private StateMachine stateMachineScript;
     private Player playerCB2D;
+    private MenuUI menuUI;
 
     //These inputs are for one-time presses that need timers to reset the bool value
     public Dictionary<string, bool> PlayerInputBuffers { get; set; } = new()
@@ -28,7 +29,7 @@ public partial class InputManager : Node
         //Menu
         { "pause_menu", false },
         { "main_menu",false },
-        
+
         //Debug Inputs
         { "engine_scale_up", false },
         { "engine_scale_down", false },
@@ -43,6 +44,7 @@ public partial class InputManager : Node
     {
         stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
         playerCB2D = GetNode<Player>("/root/Main/World/Player");
+        menuUI = GetNode<MenuUI>("/root/Main/UILayer/MenuUI");
         JumpTimer = GetNode<Timer>("JumpTimer");
     }
     #endregion
@@ -101,7 +103,7 @@ public partial class InputManager : Node
         PlayerContinuousInputs["main_menu"] = Input.IsActionJustPressed("main_menu");
 
         //Pause Menu
-        PlayerContinuousInputs["pause_menu"] = Input.IsActionJustPressed("pause_menu");
+        PlayerContinuousInputs["pause_menu"] = Input.IsActionJustPressed("pause_menu") && !menuUI.StartMenu.Visible;
         #endregion
 
         #region Debug
