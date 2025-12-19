@@ -240,6 +240,12 @@ public partial class MenuUI : Control
         pauseMenu.Visible = false;
         mainMenu.Visible = false;
     }
+
+    public void OnMainMenuToPauseMenu()
+    {
+        pauseMenu.Visible = true;
+        mainMenu.Visible = false;
+    }
     #endregion
 
     #region Pause Menu Button Signals
@@ -256,6 +262,12 @@ public partial class MenuUI : Control
     public void OnCodexPressed()
     {
         codexMenu.Visible = true; //open codex menu
+    }
+
+    public void OnPauseMenuToMainMenu()
+    {
+        mainMenu.Visible = true;
+        pauseMenu.Visible = false;
     }
     #endregion
     #endregion

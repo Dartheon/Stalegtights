@@ -97,6 +97,15 @@ text = "Close Menu"
 icon_alignment = 1
 expand_icon = true
 
+[node name="PMMainMenu" type="Button" parent="PauseMenu/PMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Main Menu"
+icon_alignment = 1
+expand_icon = true
+
 [node name="CodexMenu" type="Control" parent="PauseMenu"]
 unique_name_in_owner = true
 process_mode = 3
@@ -473,6 +482,15 @@ text = "Close Menu"
 icon_alignment = 1
 expand_icon = true
 
+[node name="MMPauseMenu" type="Button" parent="MainMenu/MMButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Pause Menu"
+icon_alignment = 1
+expand_icon = true
+
 [node name="OptionsMenu" type="Control" parent="."]
 unique_name_in_owner = true
 process_mode = 3
@@ -530,6 +548,7 @@ expand_icon = true
 [connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/MapButton" to="." method="OnMapPressed"]
 [connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/CodexButton" to="." method="OnCodexPressed"]
 [connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/CloseMenuButton" to="." method="OnCloseMenuPressed" binds= ["PauseMenu"]]
+[connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/PMMainMenu" to="." method="OnPauseMenuToMainMenu"]
 [connection signal="pressed" from="PauseMenu/CodexMenu/CodexButtonsVBoxContainer/CodexBackButton" to="." method="OnMenuBackButton" binds= ["Codex"]]
 [connection signal="pressed" from="PauseMenu/InventoryMenu/InventoryButtonsVBoxContainer/InventoryBackButton" to="." method="OnMenuBackButton" binds= ["Inventory"]]
 [connection signal="pressed" from="PauseMenu/MapMenu/MapButtonsVBoxContainer/MapBackButton" to="." method="OnMenuBackButton" binds= ["Map"]]
@@ -542,4 +561,5 @@ expand_icon = true
 [connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/QuitToStartMenuButton" to="." method="OnQuitToStartMenuPressed"]
 [connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/QuitToDesktopButton" to="." method="OnQuitToDesktopPressed"]
 [connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/CloseMenuButton" to="." method="OnCloseMenuPressed" binds= ["MainMenu"]]
+[connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/MMPauseMenu" to="." method="OnMainMenuToPauseMenu"]
 [connection signal="pressed" from="OptionsMenu/OptionsButtonsVBoxContainer/OptionsBackButton" to="." method="OnMenuBackButton" binds= ["Options"]]
