@@ -5,9 +5,21 @@ using Godot;
 public partial class MenuUI : Control
 {
     #region Variables
-    private Control pauseMenu;
+    //Start Menu
     public Control StartMenu { get; set; }
+    private Control loadGame;
+
+    //Main Menu
     private Control mainMenu;
+
+    //Pause Menu
+    private Control pauseMenu;
+    private Control inventoryMenu;
+    private Control mapMenu;
+    private Control codexMenu;
+
+    //Options Menu
+    private Control optionsMenu;
 
     private GameManager gameManager;
     private InputManager inputManager;
@@ -21,14 +33,32 @@ public partial class MenuUI : Control
         gameManager = GetNode<GameManager>("/root/GameManager");
         inputManager = GetNode<InputManager>("/root/InputManager");
 
-        pauseMenu = GetNode<Control>("%PauseMenu");
+        //Start Menu
         StartMenu = GetNode<Control>("%StartMenu");
+        loadGame = GetNode<Control>("%LoadGame");
+        //Main Menu
         mainMenu = GetNode<Control>("%MainMenu");
+        //Pause Menu
+        pauseMenu = GetNode<Control>("%PauseMenu");
+        inventoryMenu = GetNode<Control>("%InventoryMenu");
+        mapMenu = GetNode<Control>("%MapMenu");
+        codexMenu = GetNode<Control>("%CodexMenu");
+        //Options Menu
+        optionsMenu = GetNode<Control>("%OptionsMenu");
 
         //Setting Initial Visibility
-        pauseMenu.Visible = false;
+        //Start Menu
         StartMenu.Visible = true;
+        loadGame.Visible = false;
+        //Main Menu
         mainMenu.Visible = false;
+        //Pause Menu
+        pauseMenu.Visible = false;
+        inventoryMenu.Visible = false;
+        mapMenu.Visible = false;
+        codexMenu.Visible = false;
+        //Options Menu
+        optionsMenu.Visible = false;
     }
     #endregion
 
@@ -99,7 +129,6 @@ public partial class MenuUI : Control
     #region General Buttons Signals
     public void OnQuitToDesktopPressed()
     {
-        //Add code here...
         //StartMenu
         //MainMenu
         GD.Print("Pressed 'QuitToDesktop' Button");
@@ -108,29 +137,28 @@ public partial class MenuUI : Control
 
     public void OnOptionsPressed()
     {
-        //Add code here...
         //StartMenu
         //MainMenu
         GD.Print("Pressed 'Options' Button");
+        optionsMenu.Visible = true;
     }
 
-    public void OnCloseMenuPressed(int menuType)
+    public void OnCloseMenuPressed(string menuType)
     {
-        //Add code here...
-        //Have some way to close all menus
-        //MainMenu = 0
-        //PauseMenu = 1
+        //Have some way to close individual menus
+        //MainMenu
+        //PauseMenu
         GD.Print("Pressed 'CloseMenu' Button");
 
         switch (menuType)
         {
-            case 0:
+            case "MainMenu":
                 if (mainMenu.Visible)
                 {
                     mainMenu.Visible = false;
                 }
                 break;
-            case 1:
+            case "PauseMenu":
                 if (pauseMenu.Visible)
                 {
                     pauseMenu.Visible = false;
@@ -144,6 +172,35 @@ public partial class MenuUI : Control
         if (!mainMenu.Visible && !pauseMenu.Visible)
         {
             gameManager.PauseManager(false);
+        }
+    }
+
+    public void OnMenuBackButton(string menuName)
+    {
+        switch (menuName)
+        {
+            case "LoadGame":
+                loadGame.Visible = false;
+                break;
+            case "Options":
+                //code for hitting back in the options menu back to the start menu
+                optionsMenu.Visible = false;
+                break;
+            case "Inventory":
+                //code for hitting back in the options menu back to the start menu
+                inventoryMenu.Visible = false;
+                break;
+            case "Map":
+                //code for hitting back in the options menu back to the start menu
+                mapMenu.Visible = false;
+                break;
+            case "Codex":
+                //code for hitting back in the options menu back to the start menu
+                codexMenu.Visible = false;
+                break;
+            default:
+                GD.PushWarning("Incorrect Back Button Name for MenuBackButton signal");
+                return;
         }
     }
     #endregion
@@ -162,8 +219,8 @@ public partial class MenuUI : Control
 
     public void OnLoadGamePressed()
     {
-        //Add code here...
         GD.Print("Pressed 'LoadGame' Button");
+        loadGame.Visible = true;
     }
     #endregion
 
@@ -184,20 +241,20 @@ public partial class MenuUI : Control
     #region Pause Menu Button Signals
     public void OnInventoryPressed()
     {
-        //Add code here...
         GD.Print("Pressed 'Inventory' Button");
+        inventoryMenu.Visible = true;
     }
 
     public void OnMapPressed()
     {
-        //Add code here...
         GD.Print("Pressed 'Map' Button");
+        mapMenu.Visible = true;
     }
 
     public void OnCodexPressed()
     {
-        //Add code here...
         GD.Print("Pressed 'Codex' Button");
+        codexMenu.Visible = true;
     }
     #endregion
     #endregion

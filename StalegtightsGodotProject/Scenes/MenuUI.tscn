@@ -16,6 +16,7 @@ script = ExtResource("1_jkpkg")
 [node name="PauseMenu" type="Control" parent="."]
 unique_name_in_owner = true
 process_mode = 3
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -96,9 +97,169 @@ text = "Close Menu"
 icon_alignment = 1
 expand_icon = true
 
+[node name="CodexMenu" type="Control" parent="PauseMenu"]
+unique_name_in_owner = true
+process_mode = 3
+visible = false
+layout_mode = 2
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CodexBackgroundColorRect" type="ColorRect" parent="PauseMenu/CodexMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.430701, 0.303734, 0.0857193, 1)
+
+[node name="CodexLabel" type="Label" parent="PauseMenu/CodexMenu"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 128
+text = "Codex"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CodexButtonsVBoxContainer" type="VBoxContainer" parent="PauseMenu/CodexMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="CodexBackButton" type="Button" parent="PauseMenu/CodexMenu/CodexButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Back"
+icon_alignment = 1
+expand_icon = true
+
+[node name="InventoryMenu" type="Control" parent="PauseMenu"]
+unique_name_in_owner = true
+process_mode = 3
+visible = false
+layout_mode = 2
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="InventoryBackgroundColorRect" type="ColorRect" parent="PauseMenu/InventoryMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.795049, 0.484836, 0.295625, 1)
+
+[node name="InventoryLabel" type="Label" parent="PauseMenu/InventoryMenu"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 128
+text = "Inventory"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InventoryButtonsVBoxContainer" type="VBoxContainer" parent="PauseMenu/InventoryMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="InventoryBackButton" type="Button" parent="PauseMenu/InventoryMenu/InventoryButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Back"
+icon_alignment = 1
+expand_icon = true
+
+[node name="MapMenu" type="Control" parent="PauseMenu"]
+unique_name_in_owner = true
+process_mode = 3
+visible = false
+layout_mode = 2
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MapBackgroundColorRect" type="ColorRect" parent="PauseMenu/MapMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.486004, 0.237967, 0.837341, 1)
+
+[node name="MapLabel" type="Label" parent="PauseMenu/MapMenu"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 128
+text = "Map"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MapButtonsVBoxContainer" type="VBoxContainer" parent="PauseMenu/MapMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="MapBackButton" type="Button" parent="PauseMenu/MapMenu/MapButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Back"
+icon_alignment = 1
+expand_icon = true
+
 [node name="StartMenu" type="Control" parent="."]
 unique_name_in_owner = true
 process_mode = 3
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -116,7 +277,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="GameTitle" type="Label" parent="StartMenu"]
+[node name="GameTitleLabel" type="Label" parent="StartMenu"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -172,6 +333,59 @@ size_flags_vertical = 3
 focus_mode = 0
 theme_override_font_sizes/font_size = 64
 text = "Quit To Desktop"
+icon_alignment = 1
+expand_icon = true
+
+[node name="LoadGame" type="Control" parent="StartMenu"]
+unique_name_in_owner = true
+process_mode = 3
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LGBackgroundColorRect" type="ColorRect" parent="StartMenu/LoadGame"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.28318, 0.5097, 0.681295, 1)
+
+[node name="LoadGameLabel" type="Label" parent="StartMenu/LoadGame"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 128
+text = "Load Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LGButtonsVBoxContainer" type="VBoxContainer" parent="StartMenu/LoadGame"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="LGBackButton" type="Button" parent="StartMenu/LoadGame/LGButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Back"
 icon_alignment = 1
 expand_icon = true
 
@@ -259,15 +473,73 @@ text = "Close Menu"
 icon_alignment = 1
 expand_icon = true
 
+[node name="OptionsMenu" type="Control" parent="."]
+unique_name_in_owner = true
+process_mode = 3
+visible = false
+layout_mode = 2
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="OptionsBackgroundColorRect" type="ColorRect" parent="OptionsMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.551017, 0.666616, 0, 1)
+
+[node name="OptionsLabel" type="Label" parent="OptionsMenu"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 128
+text = "Game Options"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OptionsButtonsVBoxContainer" type="VBoxContainer" parent="OptionsMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+alignment = 1
+
+[node name="OptionsBackButton" type="Button" parent="OptionsMenu/OptionsButtonsVBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+theme_override_font_sizes/font_size = 64
+text = "Back"
+icon_alignment = 1
+expand_icon = true
+
 [connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/InventoryButton" to="." method="OnInventoryPressed"]
 [connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/MapButton" to="." method="OnMapPressed"]
 [connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/CodexButton" to="." method="OnCodexPressed"]
-[connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/CloseMenuButton" to="." method="OnCloseMenuPressed" binds= [1]]
+[connection signal="pressed" from="PauseMenu/PMButtonsVBoxContainer/CloseMenuButton" to="." method="OnCloseMenuPressed" binds= ["PauseMenu"]]
+[connection signal="pressed" from="PauseMenu/CodexMenu/CodexButtonsVBoxContainer/CodexBackButton" to="." method="OnMenuBackButton" binds= ["Codex"]]
+[connection signal="pressed" from="PauseMenu/InventoryMenu/InventoryButtonsVBoxContainer/InventoryBackButton" to="." method="OnMenuBackButton" binds= ["Inventory"]]
+[connection signal="pressed" from="PauseMenu/MapMenu/MapButtonsVBoxContainer/MapBackButton" to="." method="OnMenuBackButton" binds= ["Map"]]
 [connection signal="pressed" from="StartMenu/SMButtonsVBoxContainer/NewGameButton" to="." method="OnNewGamePressed"]
 [connection signal="pressed" from="StartMenu/SMButtonsVBoxContainer/LoadGameButton" to="." method="OnLoadGamePressed"]
 [connection signal="pressed" from="StartMenu/SMButtonsVBoxContainer/OptionsButton" to="." method="OnOptionsPressed"]
 [connection signal="pressed" from="StartMenu/SMButtonsVBoxContainer/QuitToDesktopButton" to="." method="OnQuitToDesktopPressed"]
+[connection signal="pressed" from="StartMenu/LoadGame/LGButtonsVBoxContainer/LGBackButton" to="." method="OnMenuBackButton" binds= ["LoadGame"]]
 [connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/OptionsButton" to="." method="OnOptionsPressed"]
 [connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/QuitToStartMenuButton" to="." method="OnQuitToStartMenuPressed"]
 [connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/QuitToDesktopButton" to="." method="OnQuitToDesktopPressed"]
-[connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/CloseMenuButton" to="." method="OnCloseMenuPressed" binds= [0]]
+[connection signal="pressed" from="MainMenu/MMButtonsVBoxContainer/CloseMenuButton" to="." method="OnCloseMenuPressed" binds= ["MainMenu"]]
+[connection signal="pressed" from="OptionsMenu/OptionsButtonsVBoxContainer/OptionsBackButton" to="." method="OnMenuBackButton" binds= ["Options"]]
