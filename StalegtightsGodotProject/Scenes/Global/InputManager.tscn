@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://drqyw4katxy88" path="res://Scripts/InputManager.cs" id="1_pskt2"]
 
 [node name="InputManager" type="Node"]
+process_mode = 3
 script = ExtResource("1_pskt2")
 
 [node name="JumpTimer" type="Timer" parent="."]
