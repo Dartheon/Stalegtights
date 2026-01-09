@@ -16,6 +16,7 @@ public partial class TeleporterAllType : Area2D
     private CharacterBody2D playerCB2D;
     private StateMachine stateMachineScript;
     private GameManager gameManager;
+    private PlayerCamera playerCamera;
     #endregion
 
     #region Enum
@@ -74,6 +75,7 @@ public partial class TeleporterAllType : Area2D
             playerCB2D = GetNode<CharacterBody2D>("/root/Main/World/Player");
             stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
             gameManager = GetNode<GameManager>("/root/GameManager");
+            playerCamera = GetNode<PlayerCamera>("/root/Main/World/Player/PlayerCamera");
 
             //Adding the Teleporter to the TeleporterDictionary to use in the DebugUI
             if (!gameManager.TeleporterSelectDictionary.ContainsKey(Name))
@@ -95,6 +97,7 @@ public partial class TeleporterAllType : Area2D
     public void TeleportPlayer()
     {
         playerCB2D.GlobalPosition = teleportLocation;
+        playerCamera.ForceRecenterY(playerCB2D);
         stateMachineScript.LastFacingDirection = playerFacingDirection;
         GD.Print($"Teleported to {Name} using DebugUI facing {playerFacingDirection}");
     }
@@ -156,6 +159,7 @@ public partial class TeleporterAllType : Area2D
         }
 
         playerCB2D.GlobalPosition = linkedPortalLocation.teleportLocation;
+        playerCamera.ForceRecenterY(playerCB2D);
         stateMachineScript.LastFacingDirection = playerFacingDirection;
         GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name} using an Interactive Teleporter");
     }
@@ -175,6 +179,7 @@ public partial class TeleporterAllType : Area2D
         if (body != null && body.IsInGroup("Player") && !Interactable)
         {
             body.GlobalPosition = linkedPortalLocation.teleportLocation;
+            playerCamera.ForceRecenterY(playerCB2D);
             stateMachineScript.LastFacingDirection = playerFacingDirection;
             GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name}");
         }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=90 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
@@ -9,7 +9,6 @@
 [ext_resource type="Script" uid="uid://s2akdqcbw637" path="res://Scripts/ClimbingState.cs" id="6_ksbbd"]
 [ext_resource type="Script" uid="uid://m61immn8iknm" path="res://Scripts/DeathState.cs" id="7_glx4g"]
 [ext_resource type="PackedScene" uid="uid://dj4sgt4tnpydc" path="res://Scenes/PlayerCamera.tscn" id="9_megsn"]
-[ext_resource type="Script" uid="uid://mkofsi0yohit" path="res://Scripts/PlayerCamera.cs" id="10_yoq75"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qbkls"]
 radius = 29.0
@@ -622,18 +621,6 @@ script = ExtResource("6_ksbbd")
 script = ExtResource("7_glx4g")
 
 [node name="PlayerCamera" parent="." instance=ExtResource("9_megsn")]
-top_level = false
-drag_vertical_enabled = true
-script = ExtResource("10_yoq75")
-ZoomOutMax = Vector2(1, 1)
-ZoomOutDuration = 1.5
-ZoomInDuration = 1.5
-MoveDelayTimer = 3.0
-SpeedPercentageThreshold = 0.9
-HorizontalOffsetStationaryTimer = 10.0
-HorizontalOffsetUnderThresholdTimer = 20.0
-OffsetDistanceX = 1.0
-OffsetDistanceY = 1.0
 
 [connection signal="animation_started" from="PlayerAnimationTree" to="PLAYERSTATEMACHINE" method="CurrentAnimationStartPlaying"]
 [connection signal="area_entered" from="InteractArea2D" to="." method="OnInteractBodyEntered"]

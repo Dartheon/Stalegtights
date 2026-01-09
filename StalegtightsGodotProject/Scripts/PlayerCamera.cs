@@ -65,11 +65,14 @@ public partial class PlayerCamera : Camera2D
     //Drag Properties Y
     private Tween yTween;
     private const float VerticalOffsetTweenTime = 2.0f; // how fast the offset happens in the apply offset tween method
-    [Export] public float OffsetDistanceY { get; set; } = 1.0f; //how far the offset will go
+    [Export] public float OffsetDistanceY { get; set; } = 0.4f; //how far the offset will go. Vertical Offset +/-0.4 is good resting place for movement. 0 is default.
     private Vector2 yTargetOffset = Vector2.Zero;
     private Vector2 yNewTargetOffset = Vector2.Zero;
 
-    private Vector2 restingVerticalOffset = new(0, -150.0f);
+    [Export] private float LookAheadDistanceY = 60f;
+    [Export] private float VerticalResetTweenTime = 0.12f;
+    [Export] private float VerticalVelocityThreshold = 5f;
+    private float defaultOffsetY = 0f;
     #endregion
     #endregion
 
@@ -161,8 +164,7 @@ public partial class PlayerCamera : Camera2D
                     - (-Up/+Down)
         */
         #region CameraMovement Y
-        /*
-        Position Down
+        /*Position Down
         Drag Margin Maintains 0.45
         Idle: -150f
         Moving Camera Down Max: 250f(400?)
@@ -173,16 +175,35 @@ public partial class PlayerCamera : Camera2D
         When stationary, Timer, then tween offset vertical to 0
 
         Vertical Offset Up
-        Top Margin 0.77 = Regular Jump without shifting camera
-        */
+        Top Margin 0.77 = Regular Jump without shifting camera*/
+        // Player is moving vertically enough to matter
+        if (Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) > VerticalVelocityThreshold)
+        {
+            float direction = Mathf.Sign(stateMachineScript.smPlayerVelocity.Y);
+
+            // Look ahead UP when jumping, DOWN when falling
+            float targetOffsetY = direction * LookAheadDistanceY;
+
+            if (!Mathf.IsEqualApprox(Offset.Y, targetOffsetY))
+            {
+                ApplyOffsetTweenY(targetOffsetY, VerticalOffsetTweenTime);
+            }
+        }
+        else
+        {
+            // Player stopped vertical movement → reset camera quickly
+            if (!Mathf.IsEqualApprox(Offset.Y, defaultOffsetY))
+            {
+                ApplyOffsetTweenY(defaultOffsetY, VerticalResetTweenTime);
+            }
+        }
         #endregion
 
         #region CameraMovement X
-
         //Check whether the player has changed direction
         bool directionFlipped = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != Mathf.Sign(xTargetOffset.X) && xTargetOffset.X != 0;
         // When moving quickly Camera adjusts with player directly according to speed
-        if (stateMachineScript.smPlayerVelocity.Length() >= threshold)
+        if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) >= threshold)
         {
             cameraRecenterTimer.Stop();
             startTimer = false;
@@ -219,7 +240,7 @@ public partial class PlayerCamera : Camera2D
         }
         // TO DO: else if (stateMachineScript.smPlayerVelocity.Length() < threshold)
         // camera slow recentering & quick recentering if direction flipped while moving
-        else if (stateMachineScript.smPlayerVelocity.Length() < threshold)
+        else if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) < threshold)
         {
             xNewTargetOffset.X = 0.0f;
 
@@ -230,7 +251,7 @@ public partial class PlayerCamera : Camera2D
                 ApplyOffsetTweenX(HorizontalOffsetUnderThresholdTimer);
             }
         }
-        else if (stateMachineScript.smPlayerVelocity.Length() == 0.0f)
+        else if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) == 0.0f)
         {
             // only pause normal tweens if camera is not returning to center
             if (!returningToCenter && xTween != null && IsInstanceValid(xTween) && xTween.IsRunning())
@@ -280,28 +301,27 @@ public partial class PlayerCamera : Camera2D
                .SetEase(Tween.EaseType.In);
     }
 
-    private void ApplyOffsetTweenY(float duration = VerticalOffsetTweenTime)
+    private void ApplyOffsetTweenY(float targetY, float duration = VerticalOffsetTweenTime)
     {
-        // If a tween is active, stop and clear it
-        if (yTween != null && IsInstanceValid(yTween) && yTween.IsRunning())
+        if (yTween != null && IsInstanceValid(yTween))
         {
             yTween.Kill();
             yTween = null;
         }
 
-        // Create new tween safely
         yTween = CreateTween();
 
-        // Ensure we clear reference when finished to avoid "freed object" calls
         yTween.Finished += () =>
         {
             yTween = null;
-            returningToCenter = false; // allow normal stationary logic again
         };
 
-        yTween.TweenProperty(this, "drag_vertical_offset", yTargetOffset.Y, duration)
-               .SetTrans(Tween.TransitionType.Linear)
-               .SetEase(Tween.EaseType.In);
+        Vector2 newOffset = Offset;
+        newOffset.Y = targetY;
+
+        yTween.TweenProperty(this, "offset", newOffset, duration)
+              .SetTrans(Tween.TransitionType.Cubic)
+              .SetEase(Tween.EaseType.In);
     }
     #endregion
 
@@ -360,11 +380,32 @@ public partial class PlayerCamera : Camera2D
         }
     }
 
-    public void CameraRecenterY()
-    {
-        //
-    }
     #endregion
+
+    public async void ForceRecenterY(CharacterBody2D player)
+    {
+        // Disable drag so margins don't block recentering
+        DragVerticalEnabled = false;
+
+        // Clear any tween that could fight us
+        if (yTween != null && IsInstanceValid(yTween))
+        {
+            yTween.Kill();
+            yTween = null;
+        }
+
+        // Reset offset
+        Offset = new Vector2(Offset.X, 0f);
+
+        // Snap camera to player Y immediately
+        GlobalPosition = new Vector2(GlobalPosition.X, player.GlobalPosition.Y);
+
+        // Wait one frame so Godot updates internals
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        // Re-enable drag
+        DragVerticalEnabled = true;
+    }
     #endregion
     #endregion
 }
