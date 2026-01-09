@@ -5,7 +5,6 @@
 
 [node name="PlayerCamera" type="Camera2D"]
 top_level = true
-zoom = Vector2(2, 2)
 process_callback = 0
 limit_smoothed = true
 position_smoothing_speed = 20.0
@@ -35,5 +34,5 @@ one_shot = true
 ignore_time_scale = true
 
 [connection signal="timeout" from="ZoomInTimer" to="." method="ZoomInTimer"]
-[connection signal="timeout" from="RecenterTimer" to="." method="CameraRecenterX"]
 [connection signal="timeout" from="RecenterTimer" to="." method="CameraRecenterY"]
+[connection signal="timeout" from="RecenterTimer" to="." method="CameraRecenterX"]
