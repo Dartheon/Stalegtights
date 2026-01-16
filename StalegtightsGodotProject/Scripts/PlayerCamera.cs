@@ -64,6 +64,7 @@ public partial class PlayerCamera : Camera2D
 
     //Drag Properties Y
     private Tween yTween;
+
     private const float VerticalOffsetTweenTime = 2.0f; // how fast the offset happens in the apply offset tween method
     [Export] public float OffsetDistanceY { get; set; } = 0.4f; //how far the offset will go. Vertical Offset +/-0.4 is good resting place for movement. 0 is default.
     private Vector2 yTargetOffset = Vector2.Zero;
@@ -73,6 +74,20 @@ public partial class PlayerCamera : Camera2D
     [Export] private float VerticalResetTweenTime = 0.12f;
     [Export] private float VerticalVelocityThreshold = 5f;
     private float defaultOffsetY = 0f;
+
+    private float verticalOffset;
+    private float verticalOffsetModifier = 1000.0f;
+
+
+    private float _currentTargetY;
+    private bool cameraWasMovedByMargin = false;
+    private bool fallingCameraActive = false;
+
+    private const float DefaultCenterOffsetY = -10f;
+    private const float FallingLookAheadY = 96f;
+
+    private const float RecenterSpeed = 0.18f;
+    private const float FallSpeed = 0.12f;
     #endregion
     #endregion
 
@@ -89,6 +104,8 @@ public partial class PlayerCamera : Camera2D
 
         zoomInTimer = GetNode<Timer>("ZoomInTimer");
         cameraRecenterTimer = GetNode<Timer>("RecenterTimer");
+
+        _currentTargetY = Offset.Y;
 
         // Sets the Player Zoom
         defaultZoom = Zoom;
@@ -164,12 +181,7 @@ public partial class PlayerCamera : Camera2D
                     - (-Up/+Down)
         */
         #region CameraMovement Y
-        /*Position Down
-        Drag Margin Maintains 0.45
-        Idle: -150f
-        Moving Camera Down Max: 250f(400?)
-        Idle After Moving Down: 0f
-
+        /*
         when camera moves down(1) tween camera offset vertical from default -150 to 250(400?)
 
         When stationary, Timer, then tween offset vertical to 0
@@ -177,7 +189,7 @@ public partial class PlayerCamera : Camera2D
         Vertical Offset Up
         Top Margin 0.77 = Regular Jump without shifting camera*/
         // Player is moving vertically enough to matter
-        if (Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) > VerticalVelocityThreshold)
+        /*if (Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) > VerticalVelocityThreshold)
         {
             float direction = Mathf.Sign(stateMachineScript.smPlayerVelocity.Y);
 
@@ -194,8 +206,40 @@ public partial class PlayerCamera : Camera2D
             // Player stopped vertical movement → reset camera quickly
             if (!Mathf.IsEqualApprox(Offset.Y, defaultOffsetY))
             {
-                ApplyOffsetTweenY(defaultOffsetY, VerticalResetTweenTime);
+                //ApplyOffsetTweenY(defaultOffsetY, VerticalResetTweenTime);
             }
+        }*/
+        //float vY = stateMachineScript.smPlayerVelocity.Y;
+
+        //Check notes and try implementing logic from previous talks. Move Camera Method Works, needs tweeking. Falling treats all positive velocity as falling, even after jumps. DetectMarginMovement might not work at all
+
+        //Use this method
+        /****try using verticaloffset, detecting whether player is climbing or falling and move camera ahead based on that*/
+
+        verticalOffset = Mathf.Clamp(verticalOffset + Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) - (float)delta * verticalOffsetModifier, 0f, Mathf.Abs(stateMachineScript.smPlayerJumpVelocity));
+        GD.Print(verticalOffset);
+
+        // ================= FALLING =================
+        if (stateMachineScript.smPlayerVelocity.Y > 0f && verticalOffset > 0f)
+        {
+            fallingCameraActive = true;
+            TweenCameraOffsetY(FallingLookAheadY, FallSpeed);
+            return;
+        }
+
+        // Falling stopped → recenter
+        if (fallingCameraActive && playerCB2D.IsOnFloor())
+        {
+            fallingCameraActive = false;
+            TweenCameraOffsetY(DefaultCenterOffsetY, RecenterSpeed);
+            return;
+        }
+
+        // ================= MARGIN RECENTER =================
+        if (verticalOffset == 0 && playerCB2D.IsOnFloor())
+        {
+            cameraWasMovedByMargin = false;
+            TweenCameraOffsetY(DefaultCenterOffsetY, RecenterSpeed);
         }
         #endregion
 
@@ -277,6 +321,7 @@ public partial class PlayerCamera : Camera2D
     #endregion
 
     #region Apply Tween Offsets
+    #region X Offset
     private void ApplyOffsetTweenX(float duration = HorizontalOffsetTweenTime)
     {
         // If a tween is active, stop and clear it
@@ -300,8 +345,31 @@ public partial class PlayerCamera : Camera2D
                .SetTrans(Tween.TransitionType.Linear)
                .SetEase(Tween.EaseType.In);
     }
+    #endregion
 
-    private void ApplyOffsetTweenY(float targetY, float duration = VerticalOffsetTweenTime)
+    #region Y Offset
+    private void TweenCameraOffsetY(float targetY, float duration)
+    {
+        if (yTween != null && IsInstanceValid(yTween))
+        {
+            yTween.Kill();
+            yTween = null;
+        }
+
+        yTween = CreateTween();
+
+        yTween.Finished += () =>
+        {
+            yTween = null;
+        };
+
+        yTween.TweenProperty(this, "offset:y", targetY, duration)
+                .SetTrans(Tween.TransitionType.Cubic)
+                .SetEase(Tween.EaseType.In);
+
+    }
+
+    /*private void ApplyOffsetTweenY(float targetY, float duration = VerticalOffsetTweenTime)
     {
         if (yTween != null && IsInstanceValid(yTween))
         {
@@ -322,7 +390,8 @@ public partial class PlayerCamera : Camera2D
         yTween.TweenProperty(this, "offset", newOffset, duration)
               .SetTrans(Tween.TransitionType.Cubic)
               .SetEase(Tween.EaseType.In);
-    }
+    }*/
+    #endregion
     #endregion
 
     #region Camera Boundary
