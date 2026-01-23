@@ -9,6 +9,7 @@ public partial class PlayerCamera : Camera2D
     private StateMachine stateMachineScript;
     private GroundState groundStateScript;
     private Player playerCB2D;
+    private AirState airState;
     #endregion
 
     #region Camera Limits
@@ -70,24 +71,15 @@ public partial class PlayerCamera : Camera2D
     private Vector2 yTargetOffset = Vector2.Zero;
     private Vector2 yNewTargetOffset = Vector2.Zero;
 
-    [Export] private float LookAheadDistanceY = 60f;
-    [Export] private float VerticalResetTweenTime = 0.12f;
-    [Export] private float VerticalVelocityThreshold = 5f;
-    private float defaultOffsetY = 0f;
-
+    [Export] private float LookAheadDistanceY = 250f;
+    [Export] private float VerticalResetTweenTime = 0.5f;
+    [Export] private float VerticalLookAheadTweenTime = 0.5f;
+    [Export] private float VerticalVelocityThreshold = 150f;
+    private float defaultOffsetY = 60f;
     private float verticalOffset;
-    private float verticalOffsetModifier = 1000.0f;
-
-
-    private float _currentTargetY;
-    private bool cameraWasMovedByMargin = false;
+    private float verticalOffsetModifier = 750.0f;
     private bool fallingCameraActive = false;
-
-    private const float DefaultCenterOffsetY = -10f;
-    private const float FallingLookAheadY = 96f;
-
-    private const float RecenterSpeed = 0.18f;
-    private const float FallSpeed = 0.12f;
+    private bool jumpLookActive = false;
     #endregion
     #endregion
 
@@ -98,14 +90,13 @@ public partial class PlayerCamera : Camera2D
         stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
         groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
         playerCB2D = GetNode<Player>("/root/Main/World/Player");
+        airState = GetNode<AirState>("/root/Main/World/Player/PLAYERSTATEMACHINE/AIR STATE");
 
         maxPlayerSpeed = groundStateScript.GroundMoveSpeed;
         threshold = maxPlayerSpeed * SpeedPercentageThreshold;
 
         zoomInTimer = GetNode<Timer>("ZoomInTimer");
         cameraRecenterTimer = GetNode<Timer>("RecenterTimer");
-
-        _currentTargetY = Offset.Y;
 
         // Sets the Player Zoom
         defaultZoom = Zoom;
@@ -117,6 +108,8 @@ public partial class PlayerCamera : Camera2D
 
         // Sets the Camera Position
         PlayerCameraPosition = Position;
+
+        TweenCameraOffsetY(defaultOffsetY, VerticalResetTweenTime);
     }
     #endregion
 
@@ -217,30 +210,32 @@ public partial class PlayerCamera : Camera2D
         /****try using verticaloffset, detecting whether player is climbing or falling and move camera ahead based on that*/
 
         verticalOffset = Mathf.Clamp(verticalOffset + Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) - (float)delta * verticalOffsetModifier, 0f, Mathf.Abs(stateMachineScript.smPlayerJumpVelocity));
-        GD.Print(verticalOffset);
+
+        GD.Print("OffsetY: ", Offset.Y, " VerticalOffset: ", verticalOffset);
 
         // ================= FALLING =================
-        if (stateMachineScript.smPlayerVelocity.Y > 0f && verticalOffset > 0f)
+        if (!fallingCameraActive && stateMachineScript.smPlayerVelocity.Y > 775f)
         {
+            GD.Print("falling");
             fallingCameraActive = true;
-            TweenCameraOffsetY(FallingLookAheadY, FallSpeed);
-            return;
+            TweenCameraOffsetY(LookAheadDistanceY, VerticalLookAheadTweenTime);
         }
 
         // Falling stopped → recenter
-        if (fallingCameraActive && playerCB2D.IsOnFloor())
+        if (fallingCameraActive && playerCB2D.IsOnFloor() && verticalOffset == 0 && Offset.Y != defaultOffsetY)
         {
+            GD.Print("recenter");
             fallingCameraActive = false;
-            TweenCameraOffsetY(DefaultCenterOffsetY, RecenterSpeed);
-            return;
+            TweenCameraOffsetY(defaultOffsetY, VerticalResetTweenTime);
         }
 
-        // ================= MARGIN RECENTER =================
-        if (verticalOffset == 0 && playerCB2D.IsOnFloor())
+        //When the player is jumping
+        //****Problem with statement, JumpActive not correct, also need reset built in somewhere
+        /*if (!fallingCameraActive && stateMachineScript.smPlayerVelocity.Y < -740f)
         {
-            cameraWasMovedByMargin = false;
-            TweenCameraOffsetY(DefaultCenterOffsetY, RecenterSpeed);
-        }
+            GD.Print("jumping ");
+            TweenCameraOffsetY(-LookAheadDistanceY, VerticalLookAheadTweenTime);
+        }*/
         #endregion
 
         #region CameraMovement X
@@ -350,6 +345,8 @@ public partial class PlayerCamera : Camera2D
     #region Y Offset
     private void TweenCameraOffsetY(float targetY, float duration)
     {
+        GD.Print("TweenYMethod", targetY);
+
         if (yTween != null && IsInstanceValid(yTween))
         {
             yTween.Kill();
@@ -366,6 +363,11 @@ public partial class PlayerCamera : Camera2D
         yTween.TweenProperty(this, "offset:y", targetY, duration)
                 .SetTrans(Tween.TransitionType.Cubic)
                 .SetEase(Tween.EaseType.In);
+
+        if (targetY == defaultOffsetY && !yTween.IsRunning())
+        {
+            ForceRecenterY(playerCB2D);
+        }
 
     }
 
@@ -453,6 +455,7 @@ public partial class PlayerCamera : Camera2D
 
     public async void ForceRecenterY(CharacterBody2D player)
     {
+        GD.Print("ForceRecenterY");
         // Disable drag so margins don't block recentering
         DragVerticalEnabled = false;
 
@@ -464,7 +467,7 @@ public partial class PlayerCamera : Camera2D
         }
 
         // Reset offset
-        Offset = new Vector2(Offset.X, 0f);
+        Offset = new Vector2(Offset.X, defaultOffsetY);
 
         // Snap camera to player Y immediately
         GlobalPosition = new Vector2(GlobalPosition.X, player.GlobalPosition.Y);
