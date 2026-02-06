@@ -241,6 +241,7 @@ public partial class PlayerCamera : Camera2D
         }
         else
         {
+            currentCameraState = CameraYMovementState.Reset;
             if (Mathf.Round(Offset.Y) == defaultOffsetY && !stopReset)
             {
                 stopReset = true;
