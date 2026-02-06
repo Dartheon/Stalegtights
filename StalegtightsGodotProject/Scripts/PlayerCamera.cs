@@ -68,6 +68,7 @@ public partial class PlayerCamera : Camera2D
 
     //Drag Properties Y
     private Tween yTween;
+    private Tween yTween2;
 
     private const float VerticalResetTweenTime = 1.0f;
     private float defaultOffsetY = 60f;
@@ -90,9 +91,10 @@ public partial class PlayerCamera : Camera2D
         Default
     }
     private CameraYMovementState currentCameraState;
-    private float fillRate = 0.4f;   // lower = slower fill (≈ 2 jumps)
+    private float fillRate = 0.45f;   // lower = slower fill (≈ 2 jumps)
     private float decayRate = 0.8f;  // higher = faster reset
     private float normalizedY;
+    private bool stopReset = true;
     #endregion
     #endregion
 
@@ -144,6 +146,8 @@ public partial class PlayerCamera : Camera2D
     public override void _PhysicsProcess(double delta)
     {
         GD.Print(Offset.Y);
+        GD.Print(currentCameraState);
+        GD.Print(verticalOffset);
         //Two Systems Working Seperately
         /*Camera Zoom
         //Works with Timers Before Zooming In
@@ -206,7 +210,7 @@ public partial class PlayerCamera : Camera2D
         // Normalized vertical influence (0–1)
         normalizedY = Mathf.Clamp(Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) / Mathf.Abs(stateMachineScript.smPlayerJumpVelocity), 0f, 1f);
 
-        if (!playerCB2D.IsOnFloor() && currentCameraState != CameraYMovementState.Falling)
+        if (stateMachineScript.smPlayerVelocity.Y != 0 && currentCameraState != CameraYMovementState.Falling)
         {
             // AIR: only fill, never decay
             verticalOffset += normalizedY * fillRate * Mathf.Abs(stateMachineScript.smPlayerJumpVelocity) * (float)delta;
@@ -227,16 +231,21 @@ public partial class PlayerCamera : Camera2D
         {
             //do falling camera
             currentCameraState = CameraYMovementState.Falling;
+            stopReset = false;
         }
         else if (verticalOffset > Math.Abs(stateMachineScript.smPlayerJumpVelocity) * 0.3f)
         {
             //do rising camera
             currentCameraState = CameraYMovementState.Rising;
+            stopReset = false;
         }
         else
         {
-            //default camera
-            currentCameraState = CameraYMovementState.Reset;
+            if (Mathf.Round(Offset.Y) == defaultOffsetY && !stopReset)
+            {
+                stopReset = true;
+                RecenterOffsetY(playerCB2D);
+            }
         }
         #endregion
 
@@ -474,7 +483,23 @@ public partial class PlayerCamera : Camera2D
         Offset = new Vector2(Offset.X, defaultOffsetY);
 
         // Snap camera to player Y immediately
-        GlobalPosition = new Vector2(GlobalPosition.X, player.GlobalPosition.Y);
+        if (yTween != null && IsInstanceValid(yTween))
+        {
+            yTween.Kill();
+            yTween = null;
+        }
+
+        yTween = CreateTween();
+
+        yTween.Finished += () =>
+        {
+            yTween = null;
+        };
+
+        yTween.TweenProperty(this, "global_position:y", player.GlobalPosition.Y, 0.1f)
+                .SetTrans(Tween.TransitionType.Linear)
+                .SetEase(Tween.EaseType.In);
+        //GlobalPosition = new Vector2(GlobalPosition.X, player.GlobalPosition.Y);
 
         // Wait one frame so Godot updates internals
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
@@ -485,18 +510,28 @@ public partial class PlayerCamera : Camera2D
 
     public async void RecenterOffsetY(CharacterBody2D player)
     {
-        GD.Print("RecenterOffsetY");
-        // Disable drag so margins don't block recentering
-        DragVerticalEnabled = false;
+        GD.PushWarning("RecenterOffsetY");
 
-        // Snap camera to player Y immediately
-        GlobalPosition = new Vector2(GlobalPosition.X, player.GlobalPosition.Y);
+        Position = new(0, -160.0f);
+
+        DragVerticalEnabled = false;
 
         // Wait one frame so Godot updates internals
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
-        // Re-enable drag
-        DragVerticalEnabled = true;
+        yTween2 = CreateTween();
+
+        yTween2.Finished += () =>
+        {
+            yTween2 = null;
+            DragVerticalEnabled = true;
+
+            Position = new(0, 0);
+        };
+
+        yTween2.TweenProperty(this, "position:y", -155.0f, 0.1f)
+                .SetTrans(Tween.TransitionType.Linear)
+                .SetEase(Tween.EaseType.In);
     }
     #endregion
     #endregion
