@@ -62,6 +62,8 @@ public partial class TeleporterAllType : Area2D
     private float playerFacingDirection; //To Update the Facing Position of the Player after Teleporting through the Portal and having the Player Face away from the Portal
 
     private string newName; //For setting nodes name when setting up teleporter in the editor
+    private bool teleportCooldown = false;
+    private float teleportTimer;
     #endregion
     #endregion
 
@@ -91,6 +93,20 @@ public partial class TeleporterAllType : Area2D
         UpdateTeleporterVisuals();
     }
     #endregion
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (teleportCooldown)
+        {
+            teleportTimer += (float)delta * 50f;
+            if (teleportTimer >= 50.0f)
+            {
+                teleportCooldown = false;
+                teleportTimer = 0.0f;
+            }
+        }
+    }
+
 
     #region DebugUI Teleport
     //Called from the DebugUI when a button is clicked to teleport the Player to the specific Teleporter
@@ -178,10 +194,14 @@ public partial class TeleporterAllType : Area2D
         //Will teleport the player if set to not interactable
         if (body != null && body.IsInGroup("Player") && !Interactable)
         {
-            body.GlobalPosition = linkedPortalLocation.teleportLocation;
-            playerCamera.ForceRecenterY(playerCB2D);
-            stateMachineScript.LastFacingDirection = playerFacingDirection;
-            GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name}");
+            if (!teleportCooldown)
+            {
+                linkedPortalLocation.teleportCooldown = true;
+                body.GlobalPosition = linkedPortalLocation.teleportLocation;
+                playerCamera.ForceRecenterY(playerCB2D);
+                stateMachineScript.LastFacingDirection = playerFacingDirection;
+                GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name}");
+            }
         }
     }
     #endregion

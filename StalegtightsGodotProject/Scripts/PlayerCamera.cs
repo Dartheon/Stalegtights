@@ -62,8 +62,8 @@ public partial class PlayerCamera : Camera2D
     [Export] public float HorizontalOffsetStationaryTimer { get; set; } = 10.0f;
     [Export] public float HorizontalOffsetUnderThresholdTimer { get; set; } = 20.0f;
     [Export] public float OffsetDistanceX { get; set; } = 1.0f; //how far the offset will go. 1 Unit of Offset is equal to 1/10th of ScreenWidth. (5 will put the player at the edge of the sceen at Zoom = 1. At Zoom = 0.5, 10 will put the player at the edge of the screen.)
-    private Vector2 xTargetOffset = Vector2.Zero;
-    private Vector2 xNewTargetOffset = Vector2.Zero;
+    private float xTargetOffset;
+    private float xNewTargetOffset;
     private bool xReachedMaxOffset = false;
 
     //Drag Properties Y
@@ -73,12 +73,12 @@ public partial class PlayerCamera : Camera2D
     private float defaultOffsetY = 60f;
 
     private const float FallingOffsetTweenTime = 0.75f; // how fast the offset happens in the apply offset tween method
-    private float fallingInDistanceY = 200.0f;
+    private float fallingInDistanceY = 250.0f;
     private float fallingOutDistanceY = 400.0f;
 
     private const float RisingOffsetTweenTime = 0.75f; // how fast the offset happens in the apply offset tween method
-    private float risingInDistanceY = 200.0f;
-    private float risingOutDistanceY = -100.0f;
+    private float risingInDistanceY = -80.0f;
+    private float risingOutDistanceY = -150.0f;
 
     private float verticalOffset;
     private float fallingThreshold = 775.0f;
@@ -129,9 +129,21 @@ public partial class PlayerCamera : Camera2D
     }
     #endregion
 
+    public override void _Process(double delta)
+    {
+        if (Input.IsActionJustPressed("test_method"))
+
+        {
+            //ForceRecenterY(playerCB2D);
+            RecenterOffsetY(playerCB2D);
+        }
+
+    }
+
     #region Physics Process
     public override void _PhysicsProcess(double delta)
     {
+        GD.Print(Offset.Y);
         //Two Systems Working Seperately
         /*Camera Zoom
         //Works with Timers Before Zooming In
@@ -191,8 +203,6 @@ public partial class PlayerCamera : Camera2D
         */
         #region CameraMovement Y
         #region Player Jumping Consecutively
-        GD.Print("OffsetY: ", Offset.Y, " VerticalOffset: ", verticalOffset, " NormalizedY: ", normalizedY);
-
         // Normalized vertical influence (0–1)
         normalizedY = Mathf.Clamp(Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) / Mathf.Abs(stateMachineScript.smPlayerJumpVelocity), 0f, 1f);
 
@@ -209,6 +219,7 @@ public partial class PlayerCamera : Camera2D
 
         // Clamp once at the end
         verticalOffset = Mathf.Clamp(verticalOffset, 0f, Mathf.Abs(stateMachineScript.smPlayerJumpVelocity));
+        verticalOffset = Mathf.Round(verticalOffset);
         #endregion
 
         #region Determining Enum State
@@ -233,12 +244,30 @@ public partial class PlayerCamera : Camera2D
         switch (currentCameraState)
         {
             case CameraYMovementState.Falling:
-                //Zoom Out
-                TweenCameraOffsetY(fallingOutDistanceY, FallingOffsetTweenTime);
+                //TweenCameraOffsetY(fallingInDistanceY, FallingOffsetTweenTime);
+                if (Zoom == ZoomOutMax)
+                {
+                    //Zoom Out
+                    TweenCameraOffsetY(fallingOutDistanceY, FallingOffsetTweenTime);
+                }
+                else
+                {
+                    //Zoom In
+                    TweenCameraOffsetY(fallingInDistanceY, FallingOffsetTweenTime);
+                }
                 break;
             case CameraYMovementState.Rising:
-                //Zoom Out
-                TweenCameraOffsetY(risingOutDistanceY, RisingOffsetTweenTime);
+                //TweenCameraOffsetY(risingInDistanceY, RisingOffsetTweenTime);
+                if (Zoom == ZoomOutMax)
+                {
+                    //Zoom Out
+                    TweenCameraOffsetY(risingOutDistanceY, RisingOffsetTweenTime);
+                }
+                else
+                {
+                    //Zoom In
+                    TweenCameraOffsetY(risingInDistanceY, RisingOffsetTweenTime);
+                }
                 break;
             case CameraYMovementState.Reset:
                 //Reset
@@ -253,7 +282,7 @@ public partial class PlayerCamera : Camera2D
 
         #region CameraMovement X
         //Check whether the player has changed direction
-        bool directionFlipped = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != Mathf.Sign(xTargetOffset.X) && xTargetOffset.X != 0;
+        bool directionFlipped = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != Mathf.Sign(xTargetOffset) && xTargetOffset != 0;
         // When moving quickly Camera adjusts with player directly according to speed
         if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) >= threshold)
         {
@@ -281,7 +310,7 @@ public partial class PlayerCamera : Camera2D
             #endregion
 
             // Determine offset according to player speed
-            xNewTargetOffset.X = (stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX; // Changes the max offset to a percentage of player speed.
+            xNewTargetOffset = (stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX; // Changes the max offset to a percentage of player speed.
 
             // Start tween if target changes
             if (xNewTargetOffset != xTargetOffset)
@@ -294,7 +323,7 @@ public partial class PlayerCamera : Camera2D
         // camera slow recentering & quick recentering if direction flipped while moving
         else if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) < threshold)
         {
-            xNewTargetOffset.X = 0.0f;
+            xNewTargetOffset = 0.0f;
 
             // Start tween if target changes
             if (xNewTargetOffset != xTargetOffset)
@@ -349,7 +378,7 @@ public partial class PlayerCamera : Camera2D
             returningToCenter = false; // allow normal stationary logic again
         };
 
-        xTween.TweenProperty(this, "drag_horizontal_offset", xTargetOffset.X, duration)
+        xTween.TweenProperty(this, "drag_horizontal_offset", xTargetOffset, duration)
                .SetTrans(Tween.TransitionType.Linear)
                .SetEase(Tween.EaseType.In);
     }
@@ -375,29 +404,6 @@ public partial class PlayerCamera : Camera2D
                 .SetTrans(Tween.TransitionType.Linear)
                 .SetEase(Tween.EaseType.In);
     }
-
-    /*private void ApplyOffsetTweenY(float targetY, float duration = VerticalOffsetTweenTime)
-    {
-        if (yTween != null && IsInstanceValid(yTween))
-        {
-            yTween.Kill();
-            yTween = null;
-        }
-
-        yTween = CreateTween();
-
-        yTween.Finished += () =>
-        {
-            yTween = null;
-        };
-
-        Vector2 newOffset = Offset;
-        newOffset.Y = targetY;
-
-        yTween.TweenProperty(this, "offset", newOffset, duration)
-              .SetTrans(Tween.TransitionType.Cubic)
-              .SetEase(Tween.EaseType.In);
-    }*/
     #endregion
     #endregion
 
@@ -437,9 +443,9 @@ public partial class PlayerCamera : Camera2D
     #region Camera Recentering Timer Signal
     public void CameraRecenterX()
     {
-        if (xTargetOffset.X != 0)
+        if (xTargetOffset != 0)
         {
-            xNewTargetOffset.X = 0;
+            xNewTargetOffset = 0;
 
             // Safely stop paused tween before new one
             if (xTween != null && IsInstanceValid(xTween) && !xTween.IsRunning())
@@ -464,15 +470,24 @@ public partial class PlayerCamera : Camera2D
         // Disable drag so margins don't block recentering
         DragVerticalEnabled = false;
 
-        // Clear any tween that could fight us
-        if (yTween != null && IsInstanceValid(yTween))
-        {
-            yTween.Kill();
-            yTween = null;
-        }
-
         // Reset offset
         Offset = new Vector2(Offset.X, defaultOffsetY);
+
+        // Snap camera to player Y immediately
+        GlobalPosition = new Vector2(GlobalPosition.X, player.GlobalPosition.Y);
+
+        // Wait one frame so Godot updates internals
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+        // Re-enable drag
+        DragVerticalEnabled = true;
+    }
+
+    public async void RecenterOffsetY(CharacterBody2D player)
+    {
+        GD.Print("RecenterOffsetY");
+        // Disable drag so margins don't block recentering
+        DragVerticalEnabled = false;
 
         // Snap camera to player Y immediately
         GlobalPosition = new Vector2(GlobalPosition.X, player.GlobalPosition.Y);

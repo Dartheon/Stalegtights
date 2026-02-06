@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b1lmax25tkkax" path="res://Sprites/Spike_Jump-To-Run_Test.png" id="2_bjrvu"]
 
 [node name="PlayerCamera" type="Camera2D"]
-zoom = Vector2(2, 2)
+zoom = Vector2(1.5, 1.5)
 process_callback = 0
 limit_smoothed = true
 position_smoothing_speed = 20.0
