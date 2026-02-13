@@ -68,18 +68,21 @@ public partial class PlayerCamera : Camera2D
 
     //Drag Properties Y
     private Tween yTween;
-    private Tween yTween2;
+    //private Tween yTween2;
 
-    private const float VerticalResetTweenTime = 1.0f;
-    private float defaultOffsetY = 60f;
+    private const float VerticalResetTweenTime = 0.2f;
+    private float defaultOffsetYIn = -60f;
+    private float defaultOffsetYOut = 0f;
 
-    private const float FallingOffsetTweenTime = 0.75f; // how fast the offset happens in the apply offset tween method
-    private float fallingInDistanceY = 250.0f;
-    private float fallingOutDistanceY = 400.0f;
+    private const float FallingOffsetTweenTime = 0.175f; // how fast the offset happens in the apply offset tween method
+    private float fallingInDistanceY = 120.0f;
+    private float fallingMidDistanceY = 180.0f;
+    private float fallingOutDistanceY = 240.0f;
 
-    private const float RisingOffsetTweenTime = 0.75f; // how fast the offset happens in the apply offset tween method
-    private float risingInDistanceY = -80.0f;
-    private float risingOutDistanceY = -150.0f;
+    private const float RisingOffsetTweenTime = 0.15f; // how fast the offset happens in the apply offset tween method
+    private float risingInDistanceY = -120.0f;
+    private float risingMidDistanceY = -180.0f;
+    private float risingOutDistanceY = -240.0f;
 
     private float verticalOffset;
     private float fallingThreshold = 775.0f;
@@ -90,11 +93,12 @@ public partial class PlayerCamera : Camera2D
         Reset,
         Default
     }
-    private CameraYMovementState currentCameraState;
+    private CameraYMovementState currentCameraState = CameraYMovementState.Default;
     private float fillRate = 0.45f;   // lower = slower fill (≈ 2 jumps)
     private float decayRate = 0.8f;  // higher = faster reset
     private float normalizedY;
     private bool stopReset = true;
+    private Vector2 ZoomOutMid = new(1.25f, 1.25f);
     #endregion
     #endregion
 
@@ -114,7 +118,7 @@ public partial class PlayerCamera : Camera2D
         zoomInTimer = GetNode<Timer>("ZoomInTimer");
         cameraRecenterTimer = GetNode<Timer>("RecenterTimer");
 
-        currentCameraState = CameraYMovementState.Default;
+        currentCameraState = CameraYMovementState.Reset;
 
         // Sets the Player Zoom
         defaultZoom = Zoom;
@@ -127,7 +131,7 @@ public partial class PlayerCamera : Camera2D
         // Sets the Camera Position
         PlayerCameraPosition = Position;
 
-        TweenCameraOffsetY(defaultOffsetY, VerticalResetTweenTime);
+        TweenCameraOffsetY(defaultOffsetYIn, VerticalResetTweenTime);
     }
     #endregion
 
@@ -148,6 +152,7 @@ public partial class PlayerCamera : Camera2D
         GD.Print(Offset.Y);
         GD.Print(currentCameraState);
         GD.Print(verticalOffset);
+        GD.Print(Zoom);
         //Two Systems Working Seperately
         /*Camera Zoom
         //Works with Timers Before Zooming In
@@ -208,7 +213,7 @@ public partial class PlayerCamera : Camera2D
         #region CameraMovement Y
         #region Player Jumping Consecutively
         // Normalized vertical influence (0–1)
-        normalizedY = Mathf.Clamp(Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) / Mathf.Abs(stateMachineScript.smPlayerJumpVelocity), 0f, 1f);
+        /*normalizedY = Mathf.Clamp(Mathf.Abs(stateMachineScript.smPlayerVelocity.Y) / Mathf.Abs(stateMachineScript.smPlayerJumpVelocity), 0f, 1f);
 
         if (stateMachineScript.smPlayerVelocity.Y != 0 && currentCameraState != CameraYMovementState.Falling)
         {
@@ -247,6 +252,27 @@ public partial class PlayerCamera : Camera2D
                 stopReset = true;
                 RecenterOffsetY(playerCB2D);
             }
+        }*/
+        if (!playerCB2D.IsOnFloor() && stateMachineScript.smPlayerVelocity.Y > fallingThreshold)
+        {
+            //do falling camera
+            currentCameraState = CameraYMovementState.Falling;
+        }
+        else if (!playerCB2D.IsOnFloor() && stateMachineScript.smPlayerVelocity.Y < (stateMachineScript.smPlayerJumpVelocity * 0.8f))
+        {
+            //do rising camera
+            currentCameraState = CameraYMovementState.Rising;
+        }
+        else
+        {
+            if (playerCB2D.IsOnFloor())
+            {
+
+                if (currentCameraState != CameraYMovementState.Reset)
+                {
+                    currentCameraState = CameraYMovementState.Reset;
+                }
+            }
         }
         #endregion
 
@@ -260,6 +286,11 @@ public partial class PlayerCamera : Camera2D
                     //Zoom Out
                     TweenCameraOffsetY(fallingOutDistanceY, FallingOffsetTweenTime);
                 }
+                else if (Zoom == ZoomOutMid)
+                {
+                    //Zoom In
+                    TweenCameraOffsetY(fallingMidDistanceY, FallingOffsetTweenTime);
+                }
                 else
                 {
                     //Zoom In
@@ -267,11 +298,20 @@ public partial class PlayerCamera : Camera2D
                 }
                 break;
             case CameraYMovementState.Rising:
+                Tween zoomTween = CreateTween();
+                zoomTween.TweenProperty(this, "zoom", ZoomOutMid, ZoomOutDuration)
+                         .SetTrans(Tween.TransitionType.Linear)
+                         .SetEase(Tween.EaseType.InOut);
                 //TweenCameraOffsetY(risingInDistanceY, RisingOffsetTweenTime);
                 if (Zoom == ZoomOutMax)
                 {
                     //Zoom Out
-                    TweenCameraOffsetY(risingOutDistanceY, RisingOffsetTweenTime);
+                    //TweenCameraOffsetY(risingOutDistanceY, RisingOffsetTweenTime);
+                }
+                else if (Zoom == ZoomOutMid)
+                {
+                    //Zoom In
+                    TweenCameraOffsetY(risingMidDistanceY, FallingOffsetTweenTime);
                 }
                 else
                 {
@@ -281,7 +321,19 @@ public partial class PlayerCamera : Camera2D
                 break;
             case CameraYMovementState.Reset:
                 //Reset
-                TweenCameraOffsetY(defaultOffsetY, VerticalResetTweenTime);
+                if (Zoom == ZoomOutMax)
+                {
+                    TweenCameraOffsetY(defaultOffsetYOut, VerticalResetTweenTime);
+                }
+                else if (Zoom == ZoomOutMid)
+                {
+                    //Zoom In
+                    TweenCameraOffsetY(defaultOffsetYOut, FallingOffsetTweenTime);
+                }
+                else
+                {
+                    TweenCameraOffsetY(defaultOffsetYIn, VerticalResetTweenTime);
+                }
                 break;
             case CameraYMovementState.Default:
                 GD.PushWarning("CameraYMovementState Not Set to Correct State");
@@ -389,8 +441,8 @@ public partial class PlayerCamera : Camera2D
         };
 
         xTween.TweenProperty(this, "drag_horizontal_offset", xTargetOffset, duration)
-               .SetTrans(Tween.TransitionType.Linear)
-               .SetEase(Tween.EaseType.In);
+               .SetTrans(Tween.TransitionType.Cubic)
+               .SetEase(Tween.EaseType.InOut);
     }
     #endregion
 
@@ -411,8 +463,8 @@ public partial class PlayerCamera : Camera2D
         };
 
         yTween.TweenProperty(this, "offset:y", targetY, duration)
-                .SetTrans(Tween.TransitionType.Linear)
-                .SetEase(Tween.EaseType.In);
+                .SetTrans(Tween.TransitionType.Sine)
+                .SetEase(Tween.EaseType.InOut);
     }
     #endregion
     #endregion
@@ -476,7 +528,7 @@ public partial class PlayerCamera : Camera2D
 
     public async void ForceRecenterY(CharacterBody2D player)
     {
-        GD.Print("ForceRecenterY");
+        /*GD.Print("ForceRecenterY");
         // Disable drag so margins don't block recentering
         DragVerticalEnabled = false;
 
@@ -506,12 +558,12 @@ public partial class PlayerCamera : Camera2D
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
         // Re-enable drag
-        DragVerticalEnabled = true;
+        DragVerticalEnabled = true;*/
     }
 
     public async void RecenterOffsetY(CharacterBody2D player)
     {
-        GD.PushWarning("RecenterOffsetY");
+        /*GD.PushWarning("RecenterOffsetY");
 
         Position = new(0, -160.0f);
 
@@ -532,7 +584,7 @@ public partial class PlayerCamera : Camera2D
 
         yTween2.TweenProperty(this, "position:y", -155.0f, 0.1f)
                 .SetTrans(Tween.TransitionType.Linear)
-                .SetEase(Tween.EaseType.In);
+                .SetEase(Tween.EaseType.In);*/
     }
     #endregion
     #endregion

@@ -7,8 +7,6 @@
 zoom = Vector2(1.5, 1.5)
 process_callback = 0
 limit_smoothed = true
-position_smoothing_speed = 20.0
-drag_vertical_enabled = true
 drag_top_margin = 0.77
 drag_bottom_margin = 0.5
 editor_draw_limits = true
