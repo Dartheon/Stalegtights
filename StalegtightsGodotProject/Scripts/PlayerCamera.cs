@@ -280,14 +280,6 @@ public partial class PlayerCamera : Camera2D
         switch (currentCameraState)
         {
             case CameraYMovementState.Falling:
-                //TweenCameraOffsetY(fallingInDistanceY, FallingOffsetTweenTime);
-                if (Zoom < ZoomOutMax)
-                {
-                    Tween zoomTween = CreateTween();
-                    zoomTween.TweenProperty(this, "zoom", ZoomOutMid, ZoomOutDuration)
-                             .SetTrans(Tween.TransitionType.Linear)
-                             .SetEase(Tween.EaseType.InOut);
-                }
                 if (Zoom == ZoomOutMax)
                 {
                     //Zoom Out
@@ -300,23 +292,19 @@ public partial class PlayerCamera : Camera2D
                 }
                 else
                 {
+                    Tween zoomTween = CreateTween();
+                    zoomTween.TweenProperty(this, "zoom", ZoomOutMid, ZoomOutDuration)
+                             .SetTrans(Tween.TransitionType.Linear)
+                             .SetEase(Tween.EaseType.InOut);
                     //Zoom In
                     TweenCameraOffsetY(fallingInDistanceY, FallingOffsetTweenTime);
                 }
                 break;
             case CameraYMovementState.Rising:
-                if (Zoom < ZoomOutMax)
-                {
-                    Tween zoomTween = CreateTween();
-                    zoomTween.TweenProperty(this, "zoom", ZoomOutMid, ZoomOutDuration)
-                             .SetTrans(Tween.TransitionType.Linear)
-                             .SetEase(Tween.EaseType.InOut);
-                }
-                //TweenCameraOffsetY(risingInDistanceY, RisingOffsetTweenTime);
                 if (Zoom == ZoomOutMax)
                 {
                     //Zoom Out
-                    //TweenCameraOffsetY(risingOutDistanceY, RisingOffsetTweenTime);
+                    TweenCameraOffsetY(risingOutDistanceY, RisingOffsetTweenTime);
                 }
                 else if (Zoom == ZoomOutMid)
                 {
@@ -325,6 +313,10 @@ public partial class PlayerCamera : Camera2D
                 }
                 else
                 {
+                    Tween zoomTween = CreateTween();
+                    zoomTween.TweenProperty(this, "zoom", ZoomOutMid, ZoomOutDuration)
+                             .SetTrans(Tween.TransitionType.Linear)
+                             .SetEase(Tween.EaseType.InOut);
                     //Zoom In
                     TweenCameraOffsetY(risingInDistanceY, RisingOffsetTweenTime);
                 }
@@ -338,7 +330,7 @@ public partial class PlayerCamera : Camera2D
                 else if (Zoom == ZoomOutMid)
                 {
                     //Zoom In
-                    TweenCameraOffsetY(defaultOffsetYOut, FallingOffsetTweenTime);
+                    TweenCameraOffsetY(defaultOffsetYIn, FallingOffsetTweenTime);
                 }
                 else
                 {
