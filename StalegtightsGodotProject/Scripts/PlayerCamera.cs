@@ -444,7 +444,7 @@ public partial class PlayerCamera : Camera2D
 
         xTween.TweenProperty(this, "drag_horizontal_offset", xTargetOffset, duration)
                .SetTrans(Tween.TransitionType.Cubic)
-               .SetEase(Tween.EaseType.InOut);
+               .SetEase(Tween.EaseType.Out);
     }
     #endregion
 
