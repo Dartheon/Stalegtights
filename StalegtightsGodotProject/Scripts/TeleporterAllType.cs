@@ -7,8 +7,6 @@ public partial class TeleporterAllType : Area2D
     /*
     - In future will need to incorperate loading areas/having areas loaded before teleporting player through and reevaluating loaded areas after teleporting
         - if active, tell slmanager to load linked portal area
-
-    - Add disable timer to collision to prevent teleporting into the portal that was just exited
     */
     #region Variables
     #region Class Scripts
@@ -113,7 +111,6 @@ public partial class TeleporterAllType : Area2D
     public void TeleportPlayer()
     {
         playerCB2D.GlobalPosition = teleportLocation;
-        playerCamera.ForceRecenterY(playerCB2D);
         stateMachineScript.LastFacingDirection = playerFacingDirection;
         GD.Print($"Teleported to {Name} using DebugUI facing {playerFacingDirection}");
     }
@@ -175,7 +172,6 @@ public partial class TeleporterAllType : Area2D
         }
 
         playerCB2D.GlobalPosition = linkedPortalLocation.teleportLocation;
-        playerCamera.ForceRecenterY(playerCB2D);
         stateMachineScript.LastFacingDirection = playerFacingDirection;
         GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name} using an Interactive Teleporter");
     }
@@ -198,7 +194,6 @@ public partial class TeleporterAllType : Area2D
             {
                 linkedPortalLocation.teleportCooldown = true;
                 body.GlobalPosition = linkedPortalLocation.teleportLocation;
-                playerCamera.ForceRecenterY(playerCB2D);
                 stateMachineScript.LastFacingDirection = playerFacingDirection;
                 GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name}");
             }

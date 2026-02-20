@@ -1,12 +1,7 @@
-using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Godot;
 
 public partial class PlayerCamera : Camera2D
 {
-    //bottom margin .45 = 64px
-    //offsetY -150 = 64px  (default rest) 
     #region Variables
     #region Class Variables
     private StateMachine stateMachineScript;
@@ -38,37 +33,32 @@ public partial class PlayerCamera : Camera2D
 
     //Zoom Properties
     [Export] public float ZoomOutDuration { get; set; } = 1.5f; // seconds to fully zoom out
-    [Export] public float ZoomInDuration { get; set; } = 1.5f;  // seconds to fully zoom in
+    [Export] public float ZoomInDuration { get; set; } = 10.0f;  // seconds to fully zoom in
     [Export] public float MoveDelayTimer { get; set; } = 3.0f; // time player must move before zooming out
     [Export] public float SpeedPercentageThreshold { get; set; } = 0.9f; //the percentage used for the threshold
     private Timer zoomInTimer; //hold the Timer child to reference
 
     /*****UPDATE LATER*******
     Set threshold to a hardcoded value so the behaviour of the camera is consistent at low speeds even as player increases max speed*/
-    private float threshold; //used to determine the percentage of the max speed before starting the zoom //
+    private float threshold; //used to determine the percentage of the max speed before starting the zoom
     private float moveTimer = 0f;
     private bool isZoomedOut = false;
+    private Tween zoomTween;
     #endregion
 
     #region Drag Properties
-    //Drag Properties General
-    private Timer cameraRecenterTimer;
-    private bool returningToCenter = false; //checks if camera is moving back to center and pauses the timer
-    private bool startTimer = false; //if bool to stop repeated signal sending
-
     //Drag Properties X
     private Tween xTween;
-    private const float HorizontalOffsetTweenTime = 2.0f; // how fast the offset happens in the applly offset tween method
-    [Export] public float HorizontalOffsetStationaryTimer { get; set; } = 10.0f;
-    [Export] public float HorizontalOffsetUnderThresholdTimer { get; set; } = 20.0f;
+    private const float HorizontalOffsetDefaultTime = 3.0f; // how fast the offset happens in the apply offset tween method
+    private const float HorizontalOffsetSwitchTime = 1.0f; // how fast the offset happens when direction is changed
+    private const float HorizontalOffsetUnderThresholdTimer = 20.0f;
     [Export] public float OffsetDistanceX { get; set; } = 1.0f; //how far the offset will go. 1 Unit of Offset is equal to 1/10th of ScreenWidth. (5 will put the player at the edge of the sceen at Zoom = 1. At Zoom = 0.5, 10 will put the player at the edge of the screen.)
     private float xTargetOffset;
     private float xNewTargetOffset;
-    private bool xReachedMaxOffset = false;
+    private float playerDirectionX = 1.0f; //is 1 since player spawns facing right, would change to -1 if player spawned facing left
 
     //Drag Properties Y
     private Tween yTween;
-    //private Tween yTween2;
 
     private const float VerticalResetTweenTime = 0.2f;
     private float defaultOffsetYIn = -60f;
@@ -116,7 +106,6 @@ public partial class PlayerCamera : Camera2D
         threshold = maxPlayerSpeed * SpeedPercentageThreshold;
 
         zoomInTimer = GetNode<Timer>("ZoomInTimer");
-        cameraRecenterTimer = GetNode<Timer>("RecenterTimer");
 
         currentCameraState = CameraYMovementState.Reset;
 
@@ -135,24 +124,9 @@ public partial class PlayerCamera : Camera2D
     }
     #endregion
 
-    public override void _Process(double delta)
-    {
-        if (Input.IsActionJustPressed("test_method"))
-
-        {
-            //ForceRecenterY(playerCB2D);
-            RecenterOffsetY(playerCB2D);
-        }
-
-    }
-
     #region Physics Process
     public override void _PhysicsProcess(double delta)
     {
-        GD.Print(Offset.Y);
-        GD.Print(currentCameraState);
-        GD.Print(verticalOffset);
-        GD.Print(Zoom);
         //Two Systems Working Seperately
         /*Camera Zoom
         //Works with Timers Before Zooming In
@@ -172,7 +146,13 @@ public partial class PlayerCamera : Camera2D
             {
                 isZoomedOut = true;
 
-                Tween zoomTween = CreateTween();
+                if (zoomTween != null && IsInstanceValid(zoomTween) && zoomTween.IsRunning())
+                {
+                    zoomTween.Kill();
+                    zoomTween = null;
+                }
+
+                zoomTween = CreateTween();
                 zoomTween.TweenProperty(this, "zoom", ZoomOutMax, ZoomOutDuration)
                          .SetTrans(Tween.TransitionType.Linear)
                          .SetEase(Tween.EaseType.InOut);
@@ -346,33 +326,21 @@ public partial class PlayerCamera : Camera2D
 
         #region CameraMovement X
         //Check whether the player has changed direction
-        bool directionFlipped = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != Mathf.Sign(xTargetOffset) && xTargetOffset != 0;
-        // When moving quickly Camera adjusts with player directly according to speed
-        if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) >= threshold)
+        bool directionFlipped = Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != playerDirectionX && Mathf.Sign((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX) != 0.0f;
+
+        //Hold current frame player direction to check on next frame
+        if (Mathf.Clamp((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX, -1, 1) > 0)
         {
-            cameraRecenterTimer.Stop();
-            startTimer = false;
-            returningToCenter = false; // cancel any center return if movement resumes
+            playerDirectionX = 1;
+        }
+        else if (Mathf.Clamp((stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX, -1, 1) < 0)
+        {
+            playerDirectionX = -1;
+        }
 
-            #region TweenManagement
-            // Resume tween if paused and direction hasn’t changed
-            if (xTween != null && IsInstanceValid(xTween) && !xTween.IsRunning() && !directionFlipped)
-            {
-                xTween.Play(); // resume timer
-            }
-
-            if (directionFlipped)
-            {
-                xReachedMaxOffset = false;
-
-                // Restart tween for direction change
-                if (xTween != null && IsInstanceValid(xTween))
-                    xTween.Kill();
-
-                xTween = null;
-            }
-            #endregion
-
+        //snap camera if direction is flipped
+        if (directionFlipped)
+        {
             // Determine offset according to player speed
             xNewTargetOffset = (stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX; // Changes the max offset to a percentage of player speed.
 
@@ -380,11 +348,25 @@ public partial class PlayerCamera : Camera2D
             if (xNewTargetOffset != xTargetOffset)
             {
                 xTargetOffset = xNewTargetOffset;
+
+                ApplyOffsetTweenX(HorizontalOffsetSwitchTime);
+            }
+        }
+
+        // When moving quickly Camera adjusts with player directly according to speed
+        if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) >= threshold)
+        {
+            // Determine offset according to player speed
+            xNewTargetOffset = (stateMachineScript.smPlayerVelocity.X / maxPlayerSpeed) * OffsetDistanceX; // Changes the max offset to a percentage of player speed.
+
+            // Start tween if target changes
+            if (xNewTargetOffset != xTargetOffset)
+            {
+                xTargetOffset = xNewTargetOffset;
+
                 ApplyOffsetTweenX();
             }
         }
-        // TO DO: else if (stateMachineScript.smPlayerVelocity.Length() < threshold)
-        // camera slow recentering & quick recentering if direction flipped while moving
         else if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) < threshold)
         {
             xNewTargetOffset = 0.0f;
@@ -393,28 +375,11 @@ public partial class PlayerCamera : Camera2D
             if (xNewTargetOffset != xTargetOffset)
             {
                 xTargetOffset = xNewTargetOffset;
-                ApplyOffsetTweenX(HorizontalOffsetUnderThresholdTimer);
-            }
-        }
-        else if (Mathf.Abs(stateMachineScript.smPlayerVelocity.X) == 0.0f)
-        {
-            // only pause normal tweens if camera is not returning to center
-            if (!returningToCenter && xTween != null && IsInstanceValid(xTween) && xTween.IsRunning())
-            {
-                xTween.Pause();
-            }
 
-            // Skip the "hold offset" freeze while returning to center
-            if (!returningToCenter)
-            {
-                xNewTargetOffset = xTargetOffset;
-            }
-
-            // After delay, return to center (new tween)
-            if (!startTimer)
-            {
-                startTimer = true;
-                cameraRecenterTimer.Start();
+                if (!directionFlipped)
+                {
+                    ApplyOffsetTweenX(HorizontalOffsetUnderThresholdTimer, true);
+                }
             }
         }
         #endregion
@@ -423,8 +388,10 @@ public partial class PlayerCamera : Camera2D
 
     #region Apply Tween Offsets
     #region X Offset
-    private void ApplyOffsetTweenX(float duration = HorizontalOffsetTweenTime)
+    private void ApplyOffsetTweenX(float duration = HorizontalOffsetDefaultTime, bool recenter = false)
     {
+        GD.Print("ApplyOffsetTweenX ", "duration: ", duration, "recenter: ", recenter);
+
         // If a tween is active, stop and clear it
         if (xTween != null && IsInstanceValid(xTween) && xTween.IsRunning())
         {
@@ -439,12 +406,20 @@ public partial class PlayerCamera : Camera2D
         xTween.Finished += () =>
         {
             xTween = null;
-            returningToCenter = false; // allow normal stationary logic again
         };
 
-        xTween.TweenProperty(this, "drag_horizontal_offset", xTargetOffset, duration)
-               .SetTrans(Tween.TransitionType.Cubic)
-               .SetEase(Tween.EaseType.Out);
+        if (recenter)
+        {
+            xTween.TweenProperty(this, "drag_horizontal_offset", xTargetOffset, duration)
+                   .SetTrans(Tween.TransitionType.Circ)
+                   .SetEase(Tween.EaseType.Out);
+        }
+        else
+        {
+            xTween.TweenProperty(this, "drag_horizontal_offset", xTargetOffset, duration)
+                   .SetTrans(Tween.TransitionType.Cubic)
+                   .SetEase(Tween.EaseType.Out);
+        }
     }
     #endregion
 
@@ -496,98 +471,19 @@ public partial class PlayerCamera : Camera2D
         {
             isZoomedOut = false;
 
-            Tween zoomTween = CreateTween();
+            if (zoomTween != null && IsInstanceValid(zoomTween) && zoomTween.IsRunning())
+            {
+                zoomTween.Kill();
+                zoomTween = null;
+            }
+
+            zoomTween = CreateTween();
             zoomTween.TweenProperty(this, "zoom", defaultZoom, ZoomInDuration)
                      .SetTrans(Tween.TransitionType.Linear)
                      .SetEase(Tween.EaseType.In);
         }
     }
     #endregion
-
-    #region Camera Recentering Timer Signal
-    public void CameraRecenterX()
-    {
-        if (xTargetOffset != 0)
-        {
-            xNewTargetOffset = 0;
-
-            // Safely stop paused tween before new one
-            if (xTween != null && IsInstanceValid(xTween) && !xTween.IsRunning())
-            {
-                xTween.Kill();
-                xTween = null;
-            }
-
-            xTargetOffset = xNewTargetOffset;
-
-            returningToCenter = true; // prevent stationary block from pausing it
-
-            ApplyOffsetTweenX(HorizontalOffsetStationaryTimer);
-        }
-    }
-
-    #endregion
-
-    public async void ForceRecenterY(CharacterBody2D player)
-    {
-        /*GD.Print("ForceRecenterY");
-        // Disable drag so margins don't block recentering
-        DragVerticalEnabled = false;
-
-        // Reset offset
-        Offset = new Vector2(Offset.X, defaultOffsetY);
-
-        // Snap camera to player Y immediately
-        if (yTween != null && IsInstanceValid(yTween))
-        {
-            yTween.Kill();
-            yTween = null;
-        }
-
-        yTween = CreateTween();
-
-        yTween.Finished += () =>
-        {
-            yTween = null;
-        };
-
-        yTween.TweenProperty(this, "global_position:y", player.GlobalPosition.Y, 0.1f)
-                .SetTrans(Tween.TransitionType.Linear)
-                .SetEase(Tween.EaseType.In);
-        //GlobalPosition = new Vector2(GlobalPosition.X, player.GlobalPosition.Y);
-
-        // Wait one frame so Godot updates internals
-        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-
-        // Re-enable drag
-        DragVerticalEnabled = true;*/
-    }
-
-    public async void RecenterOffsetY(CharacterBody2D player)
-    {
-        /*GD.PushWarning("RecenterOffsetY");
-
-        Position = new(0, -160.0f);
-
-        DragVerticalEnabled = false;
-
-        // Wait one frame so Godot updates internals
-        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-
-        yTween2 = CreateTween();
-
-        yTween2.Finished += () =>
-        {
-            yTween2 = null;
-            DragVerticalEnabled = true;
-
-            Position = new(0, 0);
-        };
-
-        yTween2.TweenProperty(this, "position:y", -155.0f, 0.1f)
-                .SetTrans(Tween.TransitionType.Linear)
-                .SetEase(Tween.EaseType.In);*/
-    }
     #endregion
     #endregion
 }
