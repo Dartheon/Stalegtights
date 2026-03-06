@@ -29,12 +29,13 @@ public partial class PlayerCamera : Camera2D
     #region Zoom Properties
     // Camera Zoom
     private Vector2 defaultZoom;
-    [Export] public Vector2 ZoomOutMax { get; set; } = new(1.0f, 1.0f); // how far camera can zoom out
+    [Export] public Vector2 ZoomOutMax = new(1.0f, 1.0f); // how far camera can zoom out
+    [Export] private Vector2 ZoomOutMid = new(1.25f, 1.25f);
 
     //Zoom Properties
     [Export] public float ZoomOutDuration { get; set; } = 1.5f; // seconds to fully zoom out
     [Export] public float ZoomInDuration { get; set; } = 10.0f;  // seconds to fully zoom in
-    [Export] public float MoveDelayTimer { get; set; } = 3.0f; // time player must move before zooming out
+    [Export] public float MoveDelayTimer { get; set; } = 5.0f; // time player must move before zooming out
     [Export] public float SpeedPercentageThreshold { get; set; } = 0.9f; //the percentage used for the threshold
     private Timer zoomInTimer; //hold the Timer child to reference
 
@@ -42,11 +43,11 @@ public partial class PlayerCamera : Camera2D
     Set threshold to a hardcoded value so the behaviour of the camera is consistent at low speeds even as player increases max speed*/
     private float threshold; //used to determine the percentage of the max speed before starting the zoom
     private float moveTimer = 0f;
-    private bool isZoomedOut = false;
     private Tween zoomTween;
+    private Vector2 previousZoom = new();
     #endregion
 
-    #region Drag Properties
+    #region Offset Properties
     //Drag Properties X
     private Tween xTween;
     private const float HorizontalOffsetDefaultTime = 3.0f; // how fast the offset happens in the apply offset tween method
@@ -61,8 +62,8 @@ public partial class PlayerCamera : Camera2D
     private Tween yTween;
 
     private const float VerticalResetTweenTime = 0.2f;
-    private float defaultOffsetYIn = -60f;
-    private float defaultOffsetYOut = 0f;
+    private float defaultOffsetYIn = -100f;
+    private float defaultOffsetYOut = -200f;
 
     private const float FallingOffsetTweenTime = 0.175f; // how fast the offset happens in the apply offset tween method
     private float fallingInDistanceY = 120.0f;
@@ -88,7 +89,6 @@ public partial class PlayerCamera : Camera2D
     private float decayRate = 0.8f;  // higher = faster reset
     private float normalizedY;
     private bool stopReset = true;
-    private Vector2 ZoomOutMid = new(1.25f, 1.25f);
     #endregion
     #endregion
 
@@ -105,12 +105,13 @@ public partial class PlayerCamera : Camera2D
         maxPlayerSpeed = groundStateScript.GroundMoveSpeed;
         threshold = maxPlayerSpeed * SpeedPercentageThreshold;
 
-        zoomInTimer = GetNode<Timer>("ZoomInTimer");
-
-        currentCameraState = CameraYMovementState.Reset;
-
         // Sets the Player Zoom
         defaultZoom = Zoom;
+
+        zoomInTimer = GetNode<Timer>("ZoomInTimer");
+        zoomInTimer.Timeout += () => CameraZoom(defaultZoom, ZoomInDuration);
+
+        currentCameraState = CameraYMovementState.Reset;
 
         PlayerCameraLimitTop = LimitTop;
         PlayerCameraLimitBottom = LimitBottom;
@@ -140,22 +141,12 @@ public partial class PlayerCamera : Camera2D
         {
             // Increment timer when moving above threshold
             moveTimer += (float)delta;
+            moveTimer = Mathf.Min(moveTimer, MoveDelayTimer);
 
-            // Only trigger zoom if player has moved steadily for the required time
-            if (moveTimer >= MoveDelayTimer && !isZoomedOut)
+            // Only trigger zoomout if player has moved steadily for the required time
+            if (moveTimer >= MoveDelayTimer && Zoom != ZoomOutMax)
             {
-                isZoomedOut = true;
-
-                if (zoomTween != null && IsInstanceValid(zoomTween) && zoomTween.IsRunning())
-                {
-                    zoomTween.Kill();
-                    zoomTween = null;
-                }
-
-                zoomTween = CreateTween();
-                zoomTween.TweenProperty(this, "zoom", ZoomOutMax, ZoomOutDuration)
-                         .SetTrans(Tween.TransitionType.Linear)
-                         .SetEase(Tween.EaseType.InOut);
+                CameraZoom(ZoomOutMax, ZoomOutDuration);
             }
         }
         else
@@ -164,6 +155,7 @@ public partial class PlayerCamera : Camera2D
             moveTimer = 0f;
         }
 
+        //Used for zooming in the camera after player stops moving for a certain amount of time
         if (stateMachineScript.smPlayerVelocity.Length() == 0)
         {
             if (zoomInTimer.IsStopped())
@@ -208,10 +200,10 @@ public partial class PlayerCamera : Camera2D
 
         // Clamp once at the end
         verticalOffset = Mathf.Clamp(verticalOffset, 0f, Mathf.Abs(stateMachineScript.smPlayerJumpVelocity));
-        verticalOffset = Mathf.Round(verticalOffset);
+        verticalOffset = Mathf.Round(verticalOffset);*/
         #endregion
 
-        #region Determining Enum State
+        /*#region Determining Enum State
         if (!playerCB2D.IsOnFloor() && stateMachineScript.smPlayerVelocity.Y > fallingThreshold)
         {
             //do falling camera
@@ -267,15 +259,17 @@ public partial class PlayerCamera : Camera2D
                 }
                 else if (Zoom == ZoomOutMid)
                 {
+                    //Zoom out the camera from the player when jumping
+                    CameraZoom(ZoomOutMax, ZoomOutDuration);
+
                     //Zoom In
                     TweenCameraOffsetY(fallingMidDistanceY, FallingOffsetTweenTime);
                 }
-                else
+                else if (Zoom > ZoomOutMid)
                 {
-                    Tween zoomTween = CreateTween();
-                    zoomTween.TweenProperty(this, "zoom", ZoomOutMid, ZoomOutDuration)
-                             .SetTrans(Tween.TransitionType.Linear)
-                             .SetEase(Tween.EaseType.InOut);
+                    //Zoom out the camera from the player when jumping
+                    CameraZoom(ZoomOutMid, ZoomOutDuration);
+
                     //Zoom In
                     TweenCameraOffsetY(fallingInDistanceY, FallingOffsetTweenTime);
                 }
@@ -291,12 +285,11 @@ public partial class PlayerCamera : Camera2D
                     //Zoom In
                     TweenCameraOffsetY(risingMidDistanceY, FallingOffsetTweenTime);
                 }
-                else
+                else if (Zoom > ZoomOutMid)
                 {
-                    Tween zoomTween = CreateTween();
-                    zoomTween.TweenProperty(this, "zoom", ZoomOutMid, ZoomOutDuration)
-                             .SetTrans(Tween.TransitionType.Linear)
-                             .SetEase(Tween.EaseType.InOut);
+                    //Zoom out the camera from the player when jumping
+                    CameraZoom(ZoomOutMid, ZoomOutDuration);
+
                     //Zoom In
                     TweenCameraOffsetY(risingInDistanceY, RisingOffsetTweenTime);
                 }
@@ -312,7 +305,7 @@ public partial class PlayerCamera : Camera2D
                     //Zoom In
                     TweenCameraOffsetY(defaultOffsetYIn, FallingOffsetTweenTime);
                 }
-                else
+                else if (Zoom > ZoomOutMid)
                 {
                     TweenCameraOffsetY(defaultOffsetYIn, VerticalResetTweenTime);
                 }
@@ -321,7 +314,6 @@ public partial class PlayerCamera : Camera2D
                 GD.PushWarning("CameraYMovementState Not Set to Correct State");
                 break;
         }
-        #endregion
         #endregion
 
         #region CameraMovement X
@@ -390,8 +382,6 @@ public partial class PlayerCamera : Camera2D
     #region X Offset
     private void ApplyOffsetTweenX(float duration = HorizontalOffsetDefaultTime, bool recenter = false)
     {
-        GD.Print("ApplyOffsetTweenX ", "duration: ", duration, "recenter: ", recenter);
-
         // If a tween is active, stop and clear it
         if (xTween != null && IsInstanceValid(xTween) && xTween.IsRunning())
         {
@@ -462,14 +452,12 @@ public partial class PlayerCamera : Camera2D
     }
     #endregion
 
-    #region Signals
-    #region Zoom Timer Signal
-    // Timer used for code activate after Player is back to idle but can be interrupted if velocity is over threshold
-    public void ZoomInTimer()
+    #region Zoom Methods
+    public void CameraZoom(Vector2 desiredZoom, float zoomDuration)
     {
-        if (Zoom != defaultZoom)
+        if (desiredZoom != previousZoom)
         {
-            isZoomedOut = false;
+            previousZoom = desiredZoom;
 
             if (zoomTween != null && IsInstanceValid(zoomTween) && zoomTween.IsRunning())
             {
@@ -478,12 +466,31 @@ public partial class PlayerCamera : Camera2D
             }
 
             zoomTween = CreateTween();
-            zoomTween.TweenProperty(this, "zoom", defaultZoom, ZoomInDuration)
-                     .SetTrans(Tween.TransitionType.Linear)
-                     .SetEase(Tween.EaseType.In);
+            zoomTween.TweenProperty(this, "zoom", desiredZoom, zoomDuration)
+                     .SetTrans(Tween.TransitionType.Sine)
+                     .SetEase(Tween.EaseType.InOut);
         }
     }
     #endregion
-    #endregion
+    public void PlayerCameraReset()
+    {
+        if (xTween != null)
+        {
+            xTween.Kill();
+        }
+        if (yTween != null)
+        {
+            yTween.Kill();
+        }
+        if (zoomTween != null)
+        {
+            zoomTween.Kill();
+        }
+
+        stateMachineScript.smPlayerVelocity = new();
+        Zoom = defaultZoom;
+        Offset = Vector2.Zero;
+        DragHorizontalOffset = 0.0f;
+    }
     #endregion
 }

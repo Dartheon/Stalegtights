@@ -63,6 +63,7 @@ public partial class World : Node2D
 
             //TO DO: prevent Player Teleport if multiple scenes are loaded at once
             playerCB2D.GlobalPosition = slManager.ScenesLoaded[sceneName].PlayerPosition;
+            playerCB2D.GetNode("%PlayerCamera").CallDeferred("PlayerCameraReset");
         }
     }
     #endregion

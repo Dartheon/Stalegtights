@@ -621,6 +621,7 @@ script = ExtResource("6_ksbbd")
 script = ExtResource("7_glx4g")
 
 [node name="PlayerCamera" parent="." instance=ExtResource("9_megsn")]
+unique_name_in_owner = true
 
 [connection signal="animation_started" from="PlayerAnimationTree" to="PLAYERSTATEMACHINE" method="CurrentAnimationStartPlaying"]
 [connection signal="area_entered" from="InteractArea2D" to="." method="OnInteractBodyEntered"]
