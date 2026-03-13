@@ -19,6 +19,12 @@ public partial class Player : CharacterBody2D
     #region Position
     [Export] public Vector2 spawnPosition;
     #endregion
+
+    #region General
+    //Climbing
+    private RayCast2D ladderDetectionRaycast;
+    public float LadderPosX { get; set; }
+    #endregion
     #endregion
 
     #region Methods
@@ -51,6 +57,8 @@ public partial class Player : CharacterBody2D
 
         //assign to new variables to shorten code
         sfxPlayer = slManager.SFXPlayer;
+
+        ladderDetectionRaycast = GetNode<RayCast2D>("%LadderDetectionRaycast");
     }
     #endregion
 
@@ -95,6 +103,22 @@ public partial class Player : CharacterBody2D
     {
         //returns the Player's global location in the game world
         return GlobalPosition;
+    }
+    #endregion
+
+    #region LadderDetection
+    public bool IsOnLadder()
+    {
+        if (ladderDetectionRaycast.IsColliding())
+        {
+            //Gets the current ladder X position
+            LadderPosX = (float)ladderDetectionRaycast.GetCollider().CallDeferred("GetLadderGlobalPositionX");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     #endregion
 

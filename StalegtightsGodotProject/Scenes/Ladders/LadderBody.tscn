@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://p2yuadpa3x71"]
+
+[ext_resource type="Script" uid="uid://7aaclmgm8h1l" path="res://Scripts/Ladders.cs" id="1_11lcm"]
+[ext_resource type="Texture2D" uid="uid://cne7x2h4teo8n" path="res://Sprites/tiles_packed.png" id="1_l011m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ht5yu"]
+size = Vector2(64, 64)
+
+[node name="LadderBody" type="Node2D"]
+script = ExtResource("1_11lcm")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(2.38419e-06, 2.38419e-06)
+scale = Vector2(4.57143, 3.76471)
+texture = ExtResource("1_l011m")
+region_enabled = true
+region_rect = Rect2(200, 55, 14, 17)
+
+[node name="LadderBodyArea" type="Area2D" parent="."]
+position = Vector2(19, 17)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LadderBodyArea"]
+position = Vector2(-19, -17)
+shape = SubResource("RectangleShape2D_ht5yu")

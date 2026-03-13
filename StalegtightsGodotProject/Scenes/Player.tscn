@@ -623,6 +623,12 @@ script = ExtResource("7_glx4g")
 [node name="PlayerCamera" parent="." instance=ExtResource("9_megsn")]
 unique_name_in_owner = true
 
+[node name="LadderDetectionRaycast" type="RayCast2D" parent="."]
+unique_name_in_owner = true
+modulate = Color(0, 0, 0, 1)
+position = Vector2(0, 27)
+collision_mask = 2
+
 [connection signal="animation_started" from="PlayerAnimationTree" to="PLAYERSTATEMACHINE" method="CurrentAnimationStartPlaying"]
 [connection signal="area_entered" from="InteractArea2D" to="." method="OnInteractBodyEntered"]
 [connection signal="area_exited" from="InteractArea2D" to="." method="OnInteractBodyExited"]

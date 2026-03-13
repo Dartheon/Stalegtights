@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://dgc7kmcmajdyl"]
+
+[ext_resource type="Texture2D" uid="uid://cne7x2h4teo8n" path="res://Sprites/tiles_packed.png" id="1_817vr"]
+[ext_resource type="Script" uid="uid://7aaclmgm8h1l" path="res://Scripts/Ladders.cs" id="1_khv76"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_whwbl"]
+size = Vector2(64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_817vr"]
+size = Vector2(64, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_khv76"]
+size = Vector2(64, 8)
+
+[node name="LadderTop" type="Node2D"]
+script = ExtResource("1_khv76")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-9.53674e-07, -9.53674e-07)
+scale = Vector2(4.57143, 4.57143)
+texture = ExtResource("1_817vr")
+region_enabled = true
+region_rect = Rect2(200, 41, 14, 14)
+
+[node name="LadderBodyArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LadderBodyArea"]
+shape = SubResource("RectangleShape2D_whwbl")
+
+[node name="LadderTopPlatform" type="StaticBody2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+
+[node name="LadderTopCollisionShape" type="CollisionShape2D" parent="LadderTopPlatform"]
+unique_name_in_owner = true
+position = Vector2(0, -28)
+shape = SubResource("RectangleShape2D_817vr")
+one_way_collision = true
+
+[node name="PlayerDetection" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(0, -36)
+shape = SubResource("RectangleShape2D_khv76")

@@ -98,6 +98,11 @@ pause_menu={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Player"
+2d_physics/layer_2="LadderArea"
+
 [physics]
 
 2d/run_on_separate_thread=true
