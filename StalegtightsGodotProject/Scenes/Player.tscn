@@ -569,6 +569,7 @@ node_connections = [&"TimeScale", 0, &"PlayerStateMachine", &"output", 0, &"Time
 size = Vector2(85, 95)
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
+collision_mask = 3
 script = ExtResource("1_rpqav")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
@@ -595,6 +596,7 @@ anim_player = NodePath("../AnimationPlayer")
 parameters/TimeScale/scale = 1.0
 
 [node name="InteractArea2D" type="Area2D" parent="."]
+collision_mask = 3
 input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea2D"]
@@ -627,7 +629,10 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 modulate = Color(0, 0, 0, 1)
 position = Vector2(0, 27)
+target_position = Vector2(0, 22)
 collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
 
 [connection signal="animation_started" from="PlayerAnimationTree" to="PLAYERSTATEMACHINE" method="CurrentAnimationStartPlaying"]
 [connection signal="area_entered" from="InteractArea2D" to="." method="OnInteractBodyEntered"]

@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class Ladders : Node2D
+public partial class Ladders : Area2D
 {
     #region Variables
     private CollisionShape2D ladderTop;

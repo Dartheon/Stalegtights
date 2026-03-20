@@ -4,15 +4,16 @@
 [ext_resource type="Script" uid="uid://7aaclmgm8h1l" path="res://Scripts/Ladders.cs" id="1_khv76"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_whwbl"]
-size = Vector2(64, 64)
+size = Vector2(64, 65)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_817vr"]
 size = Vector2(64, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_khv76"]
-size = Vector2(64, 8)
+size = Vector2(64, 24)
 
-[node name="LadderTop" type="Node2D"]
+[node name="LadderBodyArea" type="Area2D" groups=["Ladder"]]
+collision_layer = 2
 script = ExtResource("1_khv76")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -22,13 +23,13 @@ texture = ExtResource("1_817vr")
 region_enabled = true
 region_rect = Rect2(200, 41, 14, 14)
 
-[node name="LadderBodyArea" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LadderBodyArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_whwbl")
 
-[node name="LadderTopPlatform" type="StaticBody2D" parent="."]
+[node name="LadderTopPlatform" type="StaticBody2D" parent="." groups=["Ladder"]]
 modulate = Color(0, 0, 0, 1)
+collision_layer = 2
 
 [node name="LadderTopCollisionShape" type="CollisionShape2D" parent="LadderTopPlatform"]
 unique_name_in_owner = true
@@ -36,8 +37,9 @@ position = Vector2(0, -28)
 shape = SubResource("RectangleShape2D_817vr")
 one_way_collision = true
 
-[node name="PlayerDetection" type="Area2D" parent="."]
+[node name="PlayerDetection" type="Area2D" parent="." groups=["Ladder"]]
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
-position = Vector2(0, -36)
+position = Vector2(0, -44)
 shape = SubResource("RectangleShape2D_khv76")

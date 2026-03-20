@@ -25,6 +25,8 @@ public partial class InputManager : Node
         { "duck", false },
         { "crawling_left", false },
         { "crawling_right", false },
+        { "climb_up", false },
+        { "climb_down", false },
 
         //Menu
         { "pause_menu", false },
@@ -88,6 +90,10 @@ public partial class InputManager : Node
         //Crawling
         PlayerContinuousInputs["crawling_left"] = Input.IsActionPressed("duck") && Input.IsActionPressed("move_left");
         PlayerContinuousInputs["crawling_right"] = Input.IsActionPressed("duck") && Input.IsActionPressed("move_right");
+
+        //Climbing
+        PlayerContinuousInputs["climb_up"] = Input.IsActionPressed("climb_up") && playerCB2D.PlayerOnLadder;
+        PlayerContinuousInputs["climb_down"] = Input.IsActionPressed("climb_down") && playerCB2D.PlayerOnLadder;
         #endregion
     }
     #endregion

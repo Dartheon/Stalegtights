@@ -27,7 +27,6 @@ public partial class StateMachine : Node
     public float BaseAcceleration { get; set; } = 20.0f;
     public float RunAccelerationModifier { get; set; } = 1.0f;
     public float RunAcceleration => BaseAcceleration * RunAccelerationModifier;
-
     #endregion
 
     #region Animations

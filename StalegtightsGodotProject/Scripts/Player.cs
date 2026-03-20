@@ -23,30 +23,15 @@ public partial class Player : CharacterBody2D
     #region General
     //Climbing
     private RayCast2D ladderDetectionRaycast;
-    public float LadderPosX { get; set; }
+    public float LadderPosX { get; set; } = 0.0f;
+    public bool PlayerOnLadder { get; set; } = false;
+    private float previousLadderPosX = 0.1f;
     #endregion
     #endregion
 
     #region Methods
     #region Ready
     public override void _Ready()
-    {
-        InitGrabNodes();
-    }
-    #endregion
-
-    public override void _PhysicsProcess(double delta)
-    {
-        if (inputManager.PlayerContinuousInputs["interact"])
-        {
-            InteractActivate();
-            inputManager.PlayerContinuousInputs["interact"] = false;
-        }
-    }
-
-
-    #region Initialize Nodes and Variables
-    private void InitGrabNodes()
     {
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
         soundManager = GetNode<SoundManager>("/root/SoundManager");
@@ -61,6 +46,15 @@ public partial class Player : CharacterBody2D
         ladderDetectionRaycast = GetNode<RayCast2D>("%LadderDetectionRaycast");
     }
     #endregion
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (inputManager.PlayerContinuousInputs["interact"])
+        {
+            InteractActivate();
+            inputManager.PlayerContinuousInputs["interact"] = false;
+        }
+    }
 
     #region Sound Methods
     /* Example for Calling Sounds from Key Press
@@ -107,17 +101,17 @@ public partial class Player : CharacterBody2D
     #endregion
 
     #region LadderDetection
-    public bool IsOnLadder()
+    public void IsOnLadder()
     {
-        if (ladderDetectionRaycast.IsColliding())
+        if (previousLadderPosX != LadderPosX)
         {
-            //Gets the current ladder X position
-            LadderPosX = (float)ladderDetectionRaycast.GetCollider().CallDeferred("GetLadderGlobalPositionX");
-            return true;
-        }
-        else
-        {
-            return false;
+            GD.Print("prev");
+            if (GameManager.LaddersEntered[GameManager.LaddersEntered.Count - 1] != null)
+            {
+                //Gets the current ladder X position
+                LadderPosX = (float)GameManager.LaddersEntered[GameManager.LaddersEntered.Count - 1].Call("GetLadderGlobalPositionX");
+                previousLadderPosX = LadderPosX;
+            }
         }
     }
     #endregion
@@ -141,6 +135,19 @@ public partial class Player : CharacterBody2D
 
             GameManager.InteractablesEntered?.Add(area);
         }
+
+        if (area != null && area.IsInGroup("Ladder"))
+        {
+            if (GameManager.LaddersEntered.Contains(area)) { return; }
+
+            GameManager.LaddersEntered?.Add(area);
+
+            if (GameManager.LaddersEntered?.Count > 0)
+            {
+                PlayerOnLadder = true;
+            }
+            IsOnLadder();
+        }
     }
 
     public void OnInteractBodyExited(Area2D area)
@@ -150,6 +157,18 @@ public partial class Player : CharacterBody2D
             if (GameManager.InteractablesEntered.Contains(area))
             {
                 GameManager.InteractablesEntered?.Remove(area);
+            }
+        }
+
+        if (area != null && area.IsInGroup("Ladder"))
+        {
+            if (GameManager.LaddersEntered.Contains(area))
+            {
+                GameManager.LaddersEntered?.Remove(area);
+            }
+            if (GameManager.LaddersEntered?.Count == 0)
+            {
+                PlayerOnLadder = false;
             }
         }
     }

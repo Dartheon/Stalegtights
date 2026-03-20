@@ -137,7 +137,13 @@ public partial class AirState : States
         //
         #endregion
         #region Detect to change to climbing state
-        //
+        if (PlayerScript.PlayerOnLadder && StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"] || PlayerScript.PlayerOnLadder && StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"])
+        {
+            GD.Print("on ladder");
+
+            NewStateChange = CLIMBINGSTATESTRING;
+
+        }
         #endregion
 
         #region Check for Character interacting with the wall

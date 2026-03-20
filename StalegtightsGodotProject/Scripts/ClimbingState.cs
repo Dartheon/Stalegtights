@@ -25,7 +25,8 @@ public partial class ClimbingState : States
     #endregion
 
     #region Movement
-    //
+    private float climbSpeed = 500.0f;
+    private float climbSnapWeight = 10.0f;
     #endregion
     #endregion
 
@@ -65,7 +66,8 @@ public partial class ClimbingState : States
         #endregion
 
         #region Movement
-        //
+        StateMachineScript.smPlayerVelocity = new(0, 0);
+
         #endregion
     }
 
@@ -112,7 +114,22 @@ public partial class ClimbingState : States
         #endregion
 
         #region Movement
-        //
+        if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"])
+        {
+            StateMachineScript.smPlayerVelocity.Y -= climbSpeed * (float)delta;
+            PlayerScript.IsOnLadder();
+            PlayerCB2D.GlobalPosition = new(Mathf.Lerp(PlayerCB2D.GlobalPosition.X, PlayerScript.LadderPosX, climbSnapWeight * (float)delta), PlayerCB2D.GlobalPosition.Y);
+        }
+        else if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"])
+        {
+            StateMachineScript.smPlayerVelocity.Y += climbSpeed * (float)delta;
+            PlayerScript.IsOnLadder();
+            PlayerCB2D.GlobalPosition = new(Mathf.Lerp(PlayerCB2D.GlobalPosition.X, PlayerScript.LadderPosX, climbSnapWeight * (float)delta), PlayerCB2D.GlobalPosition.Y);
+        }
+        else
+        {
+            StateMachineScript.smPlayerVelocity.Y = 0.0f;
+        }
         #endregion
     }
 
@@ -123,6 +140,17 @@ public partial class ClimbingState : States
         #endregion
 
         #region Movement
+        if (!PlayerScript.PlayerOnLadder)
+        {
+            if (PlayerCB2D.IsOnFloor())
+            {
+                NewStateChange = GROUNDSTATESTRING;
+            }
+            else
+            {
+                NewStateChange = AIRSTATESTRING;
+            }
+        }
 
         if (NewStateChange != CLIMBINGSTATESTRING)
         {
@@ -146,7 +174,11 @@ public partial class ClimbingState : States
         #endregion
 
         #region Movement
-        //
+        //When at the bottom of a ladder and the down key is pressed, set the state to ground
+        if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"] && PlayerCB2D.IsOnFloor())
+        {
+            NewStateChange = GROUNDSTATESTRING;
+        }
         #endregion
     }
 

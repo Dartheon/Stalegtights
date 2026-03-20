@@ -26,7 +26,6 @@ public partial class GroundState : States
     #endregion
 
     #region Animation
-    //
     private float runBlend; //Used for storing a variable to use in the AnimationTree BlendSpace1D for running
     #endregion
 
@@ -231,6 +230,13 @@ public partial class GroundState : States
             StateMachineScript.smPlayerVelocity.X = Mathf.Min(0, StateMachineScript.smPlayerVelocity.X + StateMachineScript.RunAcceleration);
         }
         #endregion
+
+        #region Check if Character is Interacting with a Climbable Surface
+        if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"])
+        {
+            NewStateChange = CLIMBINGSTATESTRING;
+        }
+        #endregion
         #endregion
 
         #region General
@@ -264,10 +270,6 @@ public partial class GroundState : States
         #endregion
 
         #region Check for Knockback- need to add code
-        //
-        #endregion
-
-        #region Check if Character is Interacting with a Climbable Surface - need to add code
         //
         #endregion
 

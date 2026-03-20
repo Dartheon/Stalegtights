@@ -6,7 +6,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ht5yu"]
 size = Vector2(64, 64)
 
-[node name="LadderBody" type="Node2D"]
+[node name="LadderBodyArea" type="Area2D" groups=["Ladder"]]
+collision_layer = 2
 script = ExtResource("1_11lcm")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -16,9 +17,5 @@ texture = ExtResource("1_l011m")
 region_enabled = true
 region_rect = Rect2(200, 55, 14, 17)
 
-[node name="LadderBodyArea" type="Area2D" parent="."]
-position = Vector2(19, 17)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LadderBodyArea"]
-position = Vector2(-19, -17)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ht5yu")

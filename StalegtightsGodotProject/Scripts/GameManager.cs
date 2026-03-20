@@ -25,6 +25,7 @@ public partial class GameManager : Node
 
     #region Interactables Currently Entered
     public static List<Area2D> InteractablesEntered { get; set; } = new();
+    public static List<Area2D> LaddersEntered { get; set; } = new();
     #endregion
 
     #region Teleport Nodes
