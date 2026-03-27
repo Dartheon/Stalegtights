@@ -3,6 +3,7 @@ using Godot;
 public partial class Ladders : Area2D
 {
     #region Variables
+    private Player playerScript;
     private CollisionShape2D ladderTop;
     private float ladderBodyAreaPosX;
     private float waitTimer = 0.2f; //changes time for waiting before enabling the Collider
@@ -12,6 +13,7 @@ public partial class Ladders : Area2D
     #region Ready
     public override void _Ready()
     {
+        playerScript = GetNode<Player>("/root/Main/World/Player");
         ladderTop = GetNodeOrNull<CollisionShape2D>("%LadderTopCollisionShape");
 
         ladderBodyAreaPosX = GlobalPosition.X;
@@ -32,7 +34,10 @@ public partial class Ladders : Area2D
     {
         if (body != null && body.IsInGroup("Player"))
         {
+
             Player.PlayerAboveLadder.Add(ladderTop);
+
+            playerScript.SetLadderPosition(GetLadderGlobalPositionX());
         }
     }
 

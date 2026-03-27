@@ -132,13 +132,11 @@ public partial class ClimbingState : States
         if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"])
         {
             StateMachineScript.smPlayerVelocity.Y -= climbSpeed * (float)delta;
-            PlayerScript.IsOnLadder();
             PlayerCB2D.GlobalPosition = new(Mathf.Lerp(PlayerCB2D.GlobalPosition.X, PlayerScript.LadderPosX, climbSnapWeight * (float)delta), PlayerCB2D.GlobalPosition.Y);
         }
         else if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"])
         {
             StateMachineScript.smPlayerVelocity.Y += climbSpeed * (float)delta;
-            PlayerScript.IsOnLadder();
             PlayerCB2D.GlobalPosition = new(Mathf.Lerp(PlayerCB2D.GlobalPosition.X, PlayerScript.LadderPosX, climbSnapWeight * (float)delta), PlayerCB2D.GlobalPosition.Y);
         }
         else if (PlayerScript.PlayerOnLadder)

@@ -111,6 +111,12 @@ public partial class Player : CharacterBody2D
             }
         }
     }
+
+    public void SetLadderPosition(float ladderX)
+    {
+        LadderPosX = ladderX;
+        previousLadderPosX = ladderX;
+    }
     #endregion
 
     #region Interactables
@@ -167,6 +173,7 @@ public partial class Player : CharacterBody2D
             {
                 PlayerOnLadder = false;
             }
+            previousLadderPosX = 0.0f;
         }
     }
     #endregion
