@@ -94,7 +94,22 @@ public partial class ClimbingState : States
         #endregion
 
         #region Movement
-        //
+        //Jumping
+        if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
+        {
+            //timer here as long as holding, reset on ground
+            StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
+            PlayerScript.PlayerOnLadder = false;   // detach ladder
+            StateMachineScript.smLadderDetachTimer = 1.0f;
+            StateMachineScript.smInputManager.PlayerInputBuffers["jump"] = false;
+
+            NewStateChange = AIRSTATESTRING;
+
+            if (NewStateChange != CLIMBINGSTATESTRING)
+            {
+                StateMachineScript.TransitionToState(NewStateChange);
+            }
+        }
         #endregion
     }
     #endregion
@@ -126,7 +141,7 @@ public partial class ClimbingState : States
             PlayerScript.IsOnLadder();
             PlayerCB2D.GlobalPosition = new(Mathf.Lerp(PlayerCB2D.GlobalPosition.X, PlayerScript.LadderPosX, climbSnapWeight * (float)delta), PlayerCB2D.GlobalPosition.Y);
         }
-        else
+        else if (PlayerScript.PlayerOnLadder)
         {
             StateMachineScript.smPlayerVelocity.Y = 0.0f;
         }

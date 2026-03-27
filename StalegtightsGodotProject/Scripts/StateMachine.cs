@@ -27,6 +27,7 @@ public partial class StateMachine : Node
     public float BaseAcceleration { get; set; } = 20.0f;
     public float RunAccelerationModifier { get; set; } = 1.0f;
     public float RunAcceleration => BaseAcceleration * RunAccelerationModifier;
+    public float smLadderDetachTimer { get; set; } = 0f;
     #endregion
 
     #region Animations
@@ -79,6 +80,11 @@ public partial class StateMachine : Node
     public override void _Process(double delta)
     {
         CurrentState.Update(delta);
+
+        if (smLadderDetachTimer > 0)
+        {
+            smLadderDetachTimer -= (float)delta;
+        }
     }
 
     public override void _PhysicsProcess(double delta)

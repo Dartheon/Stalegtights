@@ -27,6 +27,7 @@ public partial class InputManager : Node
         { "crawling_right", false },
         { "climb_up", false },
         { "climb_down", false },
+        { "climb_down_ladder_top", false },
 
         //Menu
         { "pause_menu", false },
@@ -94,6 +95,7 @@ public partial class InputManager : Node
         //Climbing
         PlayerContinuousInputs["climb_up"] = Input.IsActionPressed("climb_up") && playerCB2D.PlayerOnLadder;
         PlayerContinuousInputs["climb_down"] = Input.IsActionPressed("climb_down") && playerCB2D.PlayerOnLadder;
+        PlayerContinuousInputs["climb_down_ladder_top"] = Input.IsActionPressed("climb_down") && playerCB2D.IsOnFloor() && Player.PlayerAboveLadder.Count > 0;
         #endregion
     }
     #endregion
@@ -123,7 +125,7 @@ public partial class InputManager : Node
 
         #region Movement
         //Player Jump
-        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || !JumpTimer.IsStopped()))
+        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || !JumpTimer.IsStopped()) || Input.IsActionJustPressed("jump") && (playerCB2D.PlayerOnLadder || !JumpTimer.IsStopped()))
         {
             PlayerInputBuffers["jump"] = true;
         }

@@ -22,10 +22,10 @@ public partial class Player : CharacterBody2D
 
     #region General
     //Climbing
-    private RayCast2D ladderDetectionRaycast;
     public float LadderPosX { get; set; } = 0.0f;
     public bool PlayerOnLadder { get; set; } = false;
     private float previousLadderPosX = 0.1f;
+    public static HashSet<CollisionShape2D> PlayerAboveLadder { get; set; } = new();
     #endregion
     #endregion
 
@@ -42,8 +42,6 @@ public partial class Player : CharacterBody2D
 
         //assign to new variables to shorten code
         sfxPlayer = slManager.SFXPlayer;
-
-        ladderDetectionRaycast = GetNode<RayCast2D>("%LadderDetectionRaycast");
     }
     #endregion
 
@@ -105,7 +103,6 @@ public partial class Player : CharacterBody2D
     {
         if (previousLadderPosX != LadderPosX)
         {
-            GD.Print("prev");
             if (GameManager.LaddersEntered[GameManager.LaddersEntered.Count - 1] != null)
             {
                 //Gets the current ladder X position

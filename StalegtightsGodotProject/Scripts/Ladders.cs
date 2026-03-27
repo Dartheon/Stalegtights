@@ -18,13 +18,29 @@ public partial class Ladders : Area2D
     }
     #endregion
 
-    public async void OnWayDisableLadderTop()
+    public async void OnWayDisableLadderTop(CollisionShape2D shape2D)
     {
-        if (ladderTop != null)
+        if (shape2D != null)
         {
-            ladderTop.Disabled = true;
+            shape2D.Disabled = true;
             await ToSignal(GetTree().CreateTimer(waitTimer), SceneTreeTimer.SignalName.Timeout);
-            ladderTop.Disabled = false;
+            shape2D.Disabled = false;
+        }
+    }
+
+    public void OnPlayerBodyEntered(Node body)
+    {
+        if (body != null && body.IsInGroup("Player"))
+        {
+            Player.PlayerAboveLadder.Add(ladderTop);
+        }
+    }
+
+    public void OnPlayerBodyExited(Node body)
+    {
+        if (body != null && body.IsInGroup("Player"))
+        {
+            Player.PlayerAboveLadder.Remove(ladderTop);
         }
     }
 

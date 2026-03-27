@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 public partial class GroundState : States
@@ -236,6 +237,18 @@ public partial class GroundState : States
         {
             NewStateChange = CLIMBINGSTATESTRING;
         }
+
+        if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down_ladder_top"])
+        {
+            CollisionShape2D shape2D = Player.PlayerAboveLadder.FirstOrDefault<CollisionShape2D>();
+
+            if (shape2D != null)
+            {
+                PlayerScript.PlayerOnLadder = true;
+                shape2D.GetParent().GetParent().CallDeferred("OnWayDisableLadderTop", shape2D);
+                NewStateChange = CLIMBINGSTATESTRING;
+            }
+        }
         #endregion
         #endregion
 
@@ -278,7 +291,7 @@ public partial class GroundState : States
         #endregion
 
         #region Check if Character is on the Ground
-        if (!PlayerCB2D.IsOnFloor())
+        if (!PlayerCB2D.IsOnFloor() && (Player.PlayerAboveLadder.Count == 0 || !StateMachineScript.smInputManager.PlayerInputBuffers["jump"]))
         {
             NewStateChange = AIRSTATESTRING;
         }

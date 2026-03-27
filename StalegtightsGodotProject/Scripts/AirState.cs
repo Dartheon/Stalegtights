@@ -137,12 +137,9 @@ public partial class AirState : States
         //
         #endregion
         #region Detect to change to climbing state
-        if (PlayerScript.PlayerOnLadder && StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"] || PlayerScript.PlayerOnLadder && StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"])
+        if (PlayerScript.PlayerOnLadder && !StateMachineScript.smInputManager.PlayerInputBuffers["jump"] && StateMachineScript.smLadderDetachTimer <= 0 && StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"] || StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"])
         {
-            GD.Print("on ladder");
-
             NewStateChange = CLIMBINGSTATESTRING;
-
         }
         #endregion
 
