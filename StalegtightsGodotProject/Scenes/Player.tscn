@@ -1,4 +1,4 @@
-[gd_scene load_steps=90 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=142 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
@@ -244,16 +244,96 @@ tracks/1/keys = {
 "values": [14, 15, 16, 17, 18, 19, 20, 21]
 }
 
+[sub_resource type="Animation" id="Animation_1iu4k"]
+resource_name = "CLIMB_WALL_HORIZONTAL_LEFT"
+
+[sub_resource type="Animation" id="Animation_m0x7a"]
+resource_name = "CLIMB_WALL_HORIZONTAL_RIGHT"
+
+[sub_resource type="Animation" id="Animation_5v66d"]
+resource_name = "AIR_TO_LADDER_LEFT"
+
+[sub_resource type="Animation" id="Animation_x63xi"]
+resource_name = "AIR_TO_LADDER_RIGHT"
+
+[sub_resource type="Animation" id="Animation_i2e8t"]
+resource_name = "GROUND_TO_LADDER_LEFT"
+
+[sub_resource type="Animation" id="Animation_qidb7"]
+resource_name = "GROUND_TO_LADDER_RIGHT"
+
+[sub_resource type="Animation" id="Animation_70hv0"]
+resource_name = "LADDER_SLIDE_DOWN"
+
+[sub_resource type="Animation" id="Animation_8flut"]
+resource_name = "TOP_LADDER_DOWN_LEFT"
+
+[sub_resource type="Animation" id="Animation_u7x0b"]
+resource_name = "TOP_LADDER_DOWN_RIGHT"
+
+[sub_resource type="Animation" id="Animation_utwlt"]
+resource_name = "TOP_LADDER_UP_LEFT"
+
+[sub_resource type="Animation" id="Animation_kih0c"]
+resource_name = "TOP_LADDER_UP_RIGHT"
+
+[sub_resource type="Animation" id="Animation_lyrkg"]
+resource_name = "LADDER_JUMP_LEFT"
+
+[sub_resource type="Animation" id="Animation_c43xd"]
+resource_name = "LADDER_JUMP_RIGHT"
+
+[sub_resource type="Animation" id="Animation_lslt6"]
+resource_name = "CLIMB_WALL_DIAGONAL_LEFT_UP"
+
+[sub_resource type="Animation" id="Animation_avx33"]
+resource_name = "CLIMB_WALL_DIAGONAL_LEFT_DOWN"
+
+[sub_resource type="Animation" id="Animation_ulo2v"]
+resource_name = "CLIMB_WALL_DIAGONAL_RIGHT_UP"
+
+[sub_resource type="Animation" id="Animation_rxg2u"]
+resource_name = "CLIMB_WALL_DIAGONAL_RIGHT_DOWN"
+
+[sub_resource type="Animation" id="Animation_arntx"]
+resource_name = "CLIMB_VERTICAL_UP"
+
+[sub_resource type="Animation" id="Animation_xixlo"]
+resource_name = "CLIMB_VERTICAL_DOWN"
+
+[sub_resource type="Animation" id="Animation_bfbt0"]
+resource_name = "CLIMB_IDLE"
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_glx4g"]
 _data = {
+&"AIR_TO_LADDER_LEFT": SubResource("Animation_5v66d"),
+&"AIR_TO_LADDER_RIGHT": SubResource("Animation_x63xi"),
+&"CLIMB_IDLE": SubResource("Animation_bfbt0"),
+&"CLIMB_VERTICAL_DOWN": SubResource("Animation_xixlo"),
+&"CLIMB_VERTICAL_UP": SubResource("Animation_arntx"),
+&"CLIMB_WALL_DIAGONAL_LEFT_DOWN": SubResource("Animation_avx33"),
+&"CLIMB_WALL_DIAGONAL_LEFT_UP": SubResource("Animation_lslt6"),
+&"CLIMB_WALL_DIAGONAL_RIGHT_DOWN": SubResource("Animation_rxg2u"),
+&"CLIMB_WALL_DIAGONAL_RIGHT_UP": SubResource("Animation_ulo2v"),
+&"CLIMB_WALL_HORIZONTAL_LEFT": SubResource("Animation_1iu4k"),
+&"CLIMB_WALL_HORIZONTAL_RIGHT": SubResource("Animation_m0x7a"),
+&"GROUND_TO_LADDER_LEFT": SubResource("Animation_i2e8t"),
+&"GROUND_TO_LADDER_RIGHT": SubResource("Animation_qidb7"),
 &"IDLE_LEFT": SubResource("Animation_megsn"),
 &"IDLE_RIGHT": SubResource("Animation_bhhdu"),
 &"JUMP_LEFT": SubResource("Animation_miouo"),
 &"JUMP_RIGHT": SubResource("Animation_glx4g"),
+&"LADDER_JUMP_LEFT": SubResource("Animation_lyrkg"),
+&"LADDER_JUMP_RIGHT": SubResource("Animation_c43xd"),
+&"LADDER_SLIDE_DOWN": SubResource("Animation_70hv0"),
 &"LANDING_LEFT": SubResource("Animation_1e7my"),
 &"LANDING_RIGHT": SubResource("Animation_o3h8g"),
 &"RUN_LEFT": SubResource("Animation_ksbbd"),
-&"RUN_RIGHT": SubResource("Animation_yoq75")
+&"RUN_RIGHT": SubResource("Animation_yoq75"),
+&"TOP_LADDER_DOWN_LEFT": SubResource("Animation_8flut"),
+&"TOP_LADDER_DOWN_RIGHT": SubResource("Animation_u7x0b"),
+&"TOP_LADDER_UP_LEFT": SubResource("Animation_utwlt"),
+&"TOP_LADDER_UP_RIGHT": SubResource("Animation_kih0c")
 }
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bhhdu"]
@@ -329,7 +409,167 @@ advance_expression = "!hasWeapon && !hasStalag"
 transitions = ["Start", "AIR NORMAL", SubResource("AnimationNodeStateMachineTransition_rxg2u"), "Start", "AIR WEAPON", SubResource("AnimationNodeStateMachineTransition_xixlo"), "Start", "AIR STALAG", SubResource("AnimationNodeStateMachineTransition_bfbt0"), "AIR NORMAL", "AIR STALAG", SubResource("AnimationNodeStateMachineTransition_wosd6"), "AIR NORMAL", "AIR WEAPON", SubResource("AnimationNodeStateMachineTransition_hkrn1"), "AIR STALAG", "AIR WEAPON", SubResource("AnimationNodeStateMachineTransition_y6y60"), "AIR WEAPON", "AIR NORMAL", SubResource("AnimationNodeStateMachineTransition_vmcrb"), "AIR WEAPON", "AIR STALAG", SubResource("AnimationNodeStateMachineTransition_teras"), "AIR STALAG", "AIR NORMAL", SubResource("AnimationNodeStateMachineTransition_8p516")]
 graph_offset = Vector2(-53, -119)
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wosd6"]
+animation = &"AIR_TO_LADDER_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hkrn1"]
+animation = &"AIR_TO_LADDER_RIGHT"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_avx33"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_wosd6")
+blend_point_0/pos = -1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_hkrn1")
+blend_point_1/pos = 1.0
+value_label = "facingDirection"
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wpo1r"]
+animation = &"CLIMB_WALL_DIAGONAL_LEFT_UP"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pqity"]
+animation = &"CLIMB_WALL_DIAGONAL_RIGHT_UP"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_opqna"]
+animation = &"CLIMB_WALL_HORIZONTAL_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_00okb"]
+animation = &"CLIMB_WALL_HORIZONTAL_RIGHT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6hr71"]
+animation = &"CLIMB_WALL_DIAGONAL_LEFT_DOWN"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y6y60"]
+animation = &"CLIMB_WALL_DIAGONAL_RIGHT_DOWN"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vmcrb"]
+animation = &"CLIMB_VERTICAL_UP"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_teras"]
+animation = &"CLIMB_VERTICAL_DOWN"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8p516"]
+animation = &"CLIMB_IDLE"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_rxg2u"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_wpo1r")
+blend_point_0/pos = Vector2(-1, 1)
+blend_point_1/node = SubResource("AnimationNodeAnimation_pqity")
+blend_point_1/pos = Vector2(1, 1)
+blend_point_2/node = SubResource("AnimationNodeAnimation_opqna")
+blend_point_2/pos = Vector2(-1, 0)
+blend_point_3/node = SubResource("AnimationNodeAnimation_00okb")
+blend_point_3/pos = Vector2(1, 0)
+blend_point_4/node = SubResource("AnimationNodeAnimation_6hr71")
+blend_point_4/pos = Vector2(-1, -1)
+blend_point_5/node = SubResource("AnimationNodeAnimation_y6y60")
+blend_point_5/pos = Vector2(1, -1)
+blend_point_6/node = SubResource("AnimationNodeAnimation_vmcrb")
+blend_point_6/pos = Vector2(0, 1)
+blend_point_7/node = SubResource("AnimationNodeAnimation_teras")
+blend_point_7/pos = Vector2(0, -1)
+blend_point_8/node = SubResource("AnimationNodeAnimation_8p516")
+blend_point_8/pos = Vector2(0, 0)
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fvoow"]
+animation = &"TOP_LADDER_DOWN_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v5fqo"]
+animation = &"TOP_LADDER_DOWN_RIGHT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yf17c"]
+animation = &"GROUND_TO_LADDER_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_awd2i"]
+animation = &"GROUND_TO_LADDER_RIGHT"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_xixlo"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_fvoow")
+blend_point_0/pos = Vector2(-1, 1)
+blend_point_1/node = SubResource("AnimationNodeAnimation_v5fqo")
+blend_point_1/pos = Vector2(1, 1)
+blend_point_2/node = SubResource("AnimationNodeAnimation_yf17c")
+blend_point_2/pos = Vector2(-1, -1)
+blend_point_3/node = SubResource("AnimationNodeAnimation_awd2i")
+blend_point_3/pos = Vector2(1, -1)
+x_label = "facingDirection"
+y_label = "verticalMovement"
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_glx4g"]
+animation = &"LADDER_JUMP_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_miouo"]
+animation = &"LADDER_JUMP_RIGHT"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_bfbt0"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_glx4g")
+blend_point_0/pos = -1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_miouo")
+blend_point_1/pos = 1.0
+value_label = "facingDirection"
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_arntx"]
+animation = &"LADDER_SLIDE_DOWN"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_hkrn1"]
+blend_mode = 1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3rw25"]
+advance_mode = 2
+advance_expression = "//AIRSTATESTRING"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u4y2r"]
+advance_mode = 2
+advance_expression = "//GROUNDSTATESTRING"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tbv6f"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vp15a"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fayk8"]
+advance_mode = 2
+advance_expression = "//!PlayerOnLadder
+//PlayerAboveLadder"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_omi2y"]
+advance_mode = 2
+advance_expression = "playerState = \"CLIMB STATE\"
+//playerJump"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ddly5"]
+advance_mode = 2
+advance_expression = "//slideDown"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_lslt6"]
+"states/AIR TO CLIMB/node" = SubResource("AnimationNodeBlendSpace1D_avx33")
+"states/AIR TO CLIMB/position" = Vector2(217, 184)
+states/CLIMBING/node = SubResource("AnimationNodeBlendSpace2D_rxg2u")
+states/CLIMBING/position = Vector2(471, 5)
+states/End/position = Vector2(1125, 4)
+"states/GROUND TO CLIMB/node" = SubResource("AnimationNodeBlendSpace2D_xixlo")
+"states/GROUND TO CLIMB/position" = Vector2(217, -154)
+"states/LADDER JUMP/node" = SubResource("AnimationNodeBlendSpace1D_bfbt0")
+"states/LADDER JUMP/position" = Vector2(746, 5)
+states/LADDER_SLIDE_DOWN/node = SubResource("AnimationNodeAnimation_arntx")
+states/LADDER_SLIDE_DOWN/position = Vector2(471, 184)
+states/Start/position = Vector2(-4, 5)
+"states/TOP LADDER UP/node" = SubResource("AnimationNodeBlendSpace1D_hkrn1")
+"states/TOP LADDER UP/position" = Vector2(471, -154)
+transitions = ["Start", "AIR TO CLIMB", SubResource("AnimationNodeStateMachineTransition_3rw25"), "Start", "GROUND TO CLIMB", SubResource("AnimationNodeStateMachineTransition_u4y2r"), "GROUND TO CLIMB", "CLIMBING", SubResource("AnimationNodeStateMachineTransition_tbv6f"), "AIR TO CLIMB", "CLIMBING", SubResource("AnimationNodeStateMachineTransition_vp15a"), "CLIMBING", "TOP LADDER UP", SubResource("AnimationNodeStateMachineTransition_fayk8"), "CLIMBING", "LADDER JUMP", SubResource("AnimationNodeStateMachineTransition_omi2y"), "CLIMBING", "LADDER_SLIDE_DOWN", SubResource("AnimationNodeStateMachineTransition_ddly5")]
+graph_offset = Vector2(-259, -369)
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o2sks"]
+advance_mode = 2
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_bhhdu"]
+"states/CLIMB NORMAL/node" = SubResource("AnimationNodeStateMachine_lslt6")
+"states/CLIMB NORMAL/position" = Vector2(502, 100)
+transitions = ["Start", "CLIMB NORMAL", SubResource("AnimationNodeStateMachineTransition_o2sks")]
+graph_offset = Vector2(-223, -324)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_megsn"]
 
@@ -385,6 +625,7 @@ states/RUN/node = SubResource("AnimationNodeBlendSpace1D_1iu4k")
 states/RUN/position = Vector2(416, 117)
 states/Start/position = Vector2(153, 188)
 transitions = ["Start", "IDLE", SubResource("AnimationNodeStateMachineTransition_avx33"), "RUN", "IDLE", SubResource("AnimationNodeStateMachineTransition_bhhdu"), "IDLE", "RUN", SubResource("AnimationNodeStateMachineTransition_megsn"), "Start", "RUN", SubResource("AnimationNodeStateMachineTransition_yoq75")]
+graph_offset = Vector2(-96, -109)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_hkrn1"]
 graph_offset = Vector2(-54, -85)
@@ -553,7 +794,7 @@ states/Start/position = Vector2(129, 300)
 "states/WALL STATE/node" = SubResource("AnimationNodeStateMachine_ksbbd")
 "states/WALL STATE/position" = Vector2(973, 499)
 transitions = ["Start", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_glx4g"), "GROUND STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_miouo"), "AIR STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_o3h8g"), "GROUND STATE", "CLIMB STATE", SubResource("AnimationNodeStateMachineTransition_1e7my"), "CLIMB STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_arntx"), "AIR STATE", "WALL STATE", SubResource("AnimationNodeStateMachineTransition_lslt6"), "WALL STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_ulo2v"), "GROUND STATE", "WALL STATE", SubResource("AnimationNodeStateMachineTransition_1iu4k"), "WALL STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_m0x7a"), "AIR STATE", "CLIMB STATE", SubResource("AnimationNodeStateMachineTransition_5v66d"), "CLIMB STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_x63xi"), "GROUND STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_i2e8t"), "CLIMB STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_qidb7"), "AIR STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_70hv0"), "WALL STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_8flut"), "Start", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_u7x0b")]
-graph_offset = Vector2(-27, 30)
+graph_offset = Vector2(96, 66)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
@@ -590,9 +831,14 @@ tree_root = SubResource("AnimationNodeBlendTree_52ee3")
 advance_expression_base_node = NodePath("../PLAYERSTATEMACHINE")
 anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/JUMP/blend_position" = 0
+"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/AIR TO CLIMB/blend_position" = 0
+"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/CLIMBING/blend_position" = Vector2(0, 0)
+"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/GROUND TO CLIMB/blend_position" = Vector2(-0.116745, 0.4739)
+"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/LADDER JUMP/blend_position" = 0
+"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/TOP LADDER UP/blend_position" = 0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position" = 0.0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position" = -0.457213
-"parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position" = 0
+"parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position" = -0.586002
 parameters/TimeScale/scale = 1.0
 
 [node name="InteractArea2D" type="Area2D" parent="."]

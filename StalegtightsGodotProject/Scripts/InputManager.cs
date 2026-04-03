@@ -28,6 +28,7 @@ public partial class InputManager : Node
         { "climb_up", false },
         { "climb_down", false },
         { "climb_down_ladder_top", false },
+        { "wall_drop_down", false },
 
         //Menu
         { "pause_menu", false },
@@ -96,6 +97,9 @@ public partial class InputManager : Node
         PlayerContinuousInputs["climb_up"] = Input.IsActionPressed("climb_up") && playerCB2D.PlayerOnLadder;
         PlayerContinuousInputs["climb_down"] = Input.IsActionPressed("climb_down") && playerCB2D.PlayerOnLadder;
         PlayerContinuousInputs["climb_down_ladder_top"] = Input.IsActionPressed("climb_down") && playerCB2D.IsOnFloor() && Player.PlayerAboveLadder.Count > 0;
+
+        //Wall
+        PlayerContinuousInputs["wall_drop_down"] = Input.IsActionPressed("down");
         #endregion
     }
     #endregion
