@@ -12,7 +12,8 @@ public partial class InputManager : Node
     public Dictionary<string, bool> PlayerInputBuffers { get; set; } = new()
     {
         //Player Inputs That Require a Timer to Reset
-        { "jump", false },
+        { "ground_jump", false },
+        { "wall_jump", false },
     };
 
     //These inputs are for continuous key presses that the bool needs to be reset in the code
@@ -131,7 +132,12 @@ public partial class InputManager : Node
         //Player Jump
         if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || !JumpTimer.IsStopped()) || Input.IsActionJustPressed("jump") && (playerCB2D.PlayerOnLadder || !JumpTimer.IsStopped()))
         {
-            PlayerInputBuffers["jump"] = true;
+            PlayerInputBuffers["ground_jump"] = true;
+        }
+
+        if (Input.IsActionJustPressed("jump") && playerCB2D.IsOnWall() || !JumpTimer.IsStopped())
+        {
+            PlayerInputBuffers["wall_jump"] = true;
         }
         #endregion
     }

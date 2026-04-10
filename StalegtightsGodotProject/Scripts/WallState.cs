@@ -27,7 +27,36 @@ public partial class WallState : States
 
     #region Movement
     private float enteringDirection;
-    private float currentDirection;
+    private int currentDirection;
+    private Timer wallDetachTimer;
+    private float waitTimer = 2.0f;
+
+    public enum WallSlideState
+    {
+        InitialJump,   // player just touched wall
+        ControlledSlide, // slow slide
+        FastSlide      // accelerating slide
+    }
+
+    private WallSlideState wallSlideState;
+
+    private float wallSlideTimer = 0f;
+
+    private float initialSlideSpeed = 40f;
+    private float maxSlideSpeed = 350f;
+
+    private float accelerationDelay = 0.6f;   // when exponential acceleration begins
+    private float accelerationRate = 2.5f;
+
+    private float currentSlideSpeed;
+    private float jumpStrength;
+
+    //the different jump strengths used for jumping of the Wall
+    private float momentumWallJumpPower;
+    private float normalWallJumpPower;
+    private float weakWallJumpPower;
+    private float jumpHorizontalPower = 100f;
+    private float jumpOutPower = 250f;
     #endregion
     #endregion
 
@@ -46,7 +75,18 @@ public partial class WallState : States
         #endregion
 
         #region Movement
-        //
+
+        wallDetachTimer = new();
+        wallDetachTimer.WaitTime = waitTimer;
+        wallDetachTimer.OneShot = true;
+
+        AddChild(wallDetachTimer);
+
+        wallDetachTimer.Timeout += () => NewStateChange = AIRSTATESTRING;
+
+        momentumWallJumpPower = StateMachineScript.smPlayerJumpVelocity;
+        normalWallJumpPower = StateMachineScript.smPlayerJumpVelocity / 2;
+        weakWallJumpPower = StateMachineScript.smPlayerJumpVelocity / 3;
         #endregion
     }
 
@@ -68,6 +108,12 @@ public partial class WallState : States
 
         #region Movement
         enteringDirection = StateMachineScript.LastFacingDirection;
+
+        wallSlideTimer = 0f;
+        currentSlideSpeed = initialSlideSpeed;
+
+        wallSlideState = WallSlideState.InitialJump;
+        StateMachineScript.smPlayerVelocity = Vector2.Zero;
         #endregion
     }
 
@@ -94,7 +140,35 @@ public partial class WallState : States
         #endregion
 
         #region Movement
-        //
+        #region Detect Jumping Off
+        if (StateMachineScript.smWallDirection != 0)
+        {
+            GD.Print("wall");
+            if (StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"])
+            {
+                GD.Print("jump off");
+                WallJump(jumpHorizontalPower, -jumpStrength);
+            }
+        }
+        #endregion
+        #region Detect Diving Out - add code
+        if (StateMachineScript.smWallDirection == 1)
+        {
+            if (StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"] && StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
+            {
+                GD.Print("jump out");
+                WallJump(jumpOutPower, 0);
+            }
+        }
+        else if (StateMachineScript.smWallDirection == -1)
+        {
+            if (StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"] && StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"])
+            {
+                GD.Print("jump out");
+                WallJump(jumpOutPower, 0);
+            }
+        }
+        #endregion
         #endregion
     }
     #endregion
@@ -114,12 +188,23 @@ public partial class WallState : States
         #endregion
 
         #region Movement
+        #region Touching the Wall
+        currentDirection = (StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
+        #endregion
+
         #region Check to see if still on wall - if character collider is still interacting with the wall
-        if (!StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] && !StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
+        if (PlayerCB2D.IsOnWall() && !StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] && !StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
         {
-            //start delay timer
-            //change state to air
+            if (wallDetachTimer.IsStopped())
+            {
+                wallDetachTimer.Start();
+            }
         }
+        else
+        {
+            wallDetachTimer.Stop();
+        }
+
         #endregion
 
         #region Detect power slide out - add code
@@ -144,11 +229,6 @@ public partial class WallState : States
         //
         #endregion
 
-        #region Touching the Wall
-        currentDirection = StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] ? -1 : 0;
-        currentDirection = StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"] ? 1 : 0;
-        #endregion
-
         #region Touching the Ground
         if (PlayerCB2D.IsOnFloor())
         {
@@ -157,9 +237,49 @@ public partial class WallState : States
         #endregion
 
         #region Process Sliding Down the Wall
-        //move player down
-        //duration timer counting down
-        //when timer hits 0 move player down faster expontentally over time till max speed
+        wallSlideTimer += (float)delta;
+
+        // Determine slide phase
+        if (wallSlideTimer < 0.2f)
+        {
+            wallSlideState = WallSlideState.InitialJump;
+        }
+        else if (wallSlideTimer < accelerationDelay)
+        {
+            wallSlideState = WallSlideState.ControlledSlide;
+            currentSlideSpeed = initialSlideSpeed;
+        }
+        else
+        {
+            wallSlideState = WallSlideState.FastSlide;
+        }
+
+        // Handle slide speed
+        if (wallSlideState == WallSlideState.FastSlide)
+        {
+            currentSlideSpeed += accelerationRate * currentSlideSpeed * (float)delta;
+            currentSlideSpeed = Mathf.Min(currentSlideSpeed, maxSlideSpeed);
+        }
+
+        // Apply velocity
+        StateMachineScript.smPlayerVelocity = new(PlayerCB2D.Velocity.X, currentSlideSpeed);
+        #endregion
+
+        #region Check Jump State
+        switch (wallSlideState)
+        {
+            case WallSlideState.InitialJump:
+                jumpStrength = momentumWallJumpPower;
+                break;
+
+            case WallSlideState.ControlledSlide:
+                jumpStrength = normalWallJumpPower;
+                break;
+
+            case WallSlideState.FastSlide:
+                jumpStrength = weakWallJumpPower;
+                break;
+        }
         #endregion
 
         #region Change State Logic
@@ -186,20 +306,9 @@ public partial class WallState : States
         #endregion
 
         #region Movement
-        #region Detect Jumping Off
-        //set vel to 0 before jumping
-        //check duration timer, if timer not 0 use standard jump, if 0 use lesser jump
-        //check direction either up or out from wall + jump to jump either straight up or out <_ direction held might not matter when jumping up or out
-        #endregion
-
-        #region Detect Diving Out - add code
-        //set vel to 0 before jumping
-        //apply horizontal jump if direction held into the wall and down
-        #endregion
-
         #region Detect if Character is Dropping Down - add code
         //if direction out of wall and down enter air state
-        if (enteringDirection != currentDirection && StateMachineScript.smInputManager.PlayerContinuousInputs["wall_drop_down"])
+        if (StateMachineScript.smWallDirection != currentDirection && StateMachineScript.smInputManager.PlayerContinuousInputs["wall_drop_down"])
         {
             NewStateChange = AIRSTATESTRING;
         }
@@ -231,7 +340,8 @@ public partial class WallState : States
         #endregion
 
         #region Movement
-        //
+        StateMachineScript.smWallDirection = 0;
+        wallDetachTimer.Stop();
         #endregion
     }
 }

@@ -129,11 +129,11 @@ public partial class GroundState : States
 
         #region Movement
         #region Detect any Jump and keep track of the type of jump used
-        if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
+        if (StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"])
         {
             //timer here as long as holding, reset on ground
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
-            StateMachineScript.smInputManager.PlayerInputBuffers["jump"] = false;
+            StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"] = false;
             NewStateChange = AIRSTATESTRING;
         }
         #endregion
@@ -286,12 +286,28 @@ public partial class GroundState : States
         //
         #endregion
 
-        #region Check if Character is Interacting with a Wall - need to add code
-        //
+        #region Check if Character is Interacting with a Wall
+        if (PlayerCB2D.IsOnWall())
+        {
+            Vector2 wallNormal = PlayerCB2D.GetWallNormal();
+
+            if (wallNormal.X > 0)
+            {
+                StateMachineScript.smWallDirection = -1;
+            }
+            else if (wallNormal.X < 0)
+            {
+                StateMachineScript.smWallDirection = 1;
+            }
+        }
+        else
+        {
+            StateMachineScript.smWallDirection = 0;
+        }
         #endregion
 
         #region Check if Character is on the Ground
-        if (!PlayerCB2D.IsOnFloor() && (Player.PlayerAboveLadder.Count == 0 || !StateMachineScript.smInputManager.PlayerInputBuffers["jump"]))
+        if (!PlayerCB2D.IsOnFloor() && (Player.PlayerAboveLadder.Count == 0 || !StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"]))
         {
             NewStateChange = AIRSTATESTRING;
         }

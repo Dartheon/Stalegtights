@@ -19,6 +19,7 @@ public partial class StateMachine : Node
     [Export] public NodePath InitialState { get; set; }
     private Dictionary<string, States> states = new();
     public string SMPreviousState { get; set; } = "DEFAULT STATE";
+    public float smWallDirection { get; set; }
 
     //Movement
     public float BaseGravity { get; set; } = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();

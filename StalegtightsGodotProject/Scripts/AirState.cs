@@ -30,6 +30,7 @@ public partial class AirState : States
 
     #region Movement
     [Export] private float inAirMoveSpeed = 300.0f; //speed of the character in the air
+    private int currentDirection = 0;
     #endregion
     #endregion
 
@@ -108,10 +109,10 @@ public partial class AirState : States
         #region Movement
         //Possible tweek for jumping, if jump happens in buffer lessen the jump power
         #region Detect any Jump and keep track of the type of jump used
-        if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
+        if (StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"])
         {
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
-            StateMachineScript.smInputManager.PlayerInputBuffers["jump"] = false;
+            StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"] = false;
         }
         #endregion
         #endregion
@@ -133,18 +134,11 @@ public partial class AirState : States
         #endregion
 
         #region Movement
-        #region Check for Climbing Input - add code
-        //
-        #endregion
-        #region Detect to change to climbing state
-        if (PlayerScript.PlayerOnLadder && !StateMachineScript.smInputManager.PlayerInputBuffers["jump"] && StateMachineScript.smLadderDetachTimer <= 0 && StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"] || StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"])
+        #region Check for Climbing Input
+        if (PlayerScript.PlayerOnLadder && !StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"] || StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"])
         {
             NewStateChange = CLIMBINGSTATESTRING;
         }
-        #endregion
-
-        #region Check for Character interacting with the wall
-        //
         #endregion
 
         #region Check Input for Moving Right/Left
@@ -234,6 +228,33 @@ public partial class AirState : States
 
         #region Check for Knockback - add code
         //
+        #endregion
+
+        #region Check for Character interacting with the wall
+        currentDirection = (StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
+
+        if (PlayerCB2D.IsOnWall())
+        {
+            Vector2 wallNormal = PlayerCB2D.GetWallNormal();
+
+            if (wallNormal.X > 0)
+            {
+                StateMachineScript.smWallDirection = -1;
+            }
+            else if (wallNormal.X < 0)
+            {
+                StateMachineScript.smWallDirection = 1;
+            }
+        }
+        else
+        {
+            StateMachineScript.smWallDirection = 0;
+        }
+
+        if (PlayerCB2D.IsOnWall() && currentDirection == StateMachineScript.smWallDirection)
+        {
+            NewStateChange = WALLSTATESTRING;
+        }
         #endregion
 
         #region Check if the Character is Grounded

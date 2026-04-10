@@ -58,4 +58,13 @@ public partial class States : Node
     public virtual void HandleInput(InputEvent @event) { }
 
     public virtual void Exit() { }
+
+    //Wall State Methods
+    public void WallJump(float jumpHorizontalPower, float jumpStrength)
+    {
+        GD.Print("works");
+        StateMachineScript.smPlayerVelocity = new(StateMachineScript.smWallDirection * jumpHorizontalPower, -jumpStrength);
+        StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"] = false;
+        NewStateChange = AIRSTATESTRING;
+    }
 }
