@@ -60,11 +60,22 @@ public partial class States : Node
     public virtual void Exit() { }
 
     //Wall State Methods
-    public void WallJump(float jumpHorizontalPower, float jumpStrength)
+    public void WallJump(float jumpHorizontal, float jumpUpStrength)
     {
-        GD.Print("works");
-        StateMachineScript.smPlayerVelocity = new(StateMachineScript.smWallDirection * jumpHorizontalPower, -jumpStrength);
+        GD.Print("WALL JUMP TRIGGERED");
+        GD.Print($"Dir: {StateMachineScript.smWallDirection}");
+        GD.Print($"Velocity Before Jump: {StateMachineScript.smPlayerVelocity}");
+        StateMachineScript.smPlayerVelocity = new(StateMachineScript.smWallDirection * jumpHorizontal, jumpUpStrength);
+        GD.Print($"Velocity After Jump: {StateMachineScript.smPlayerVelocity}");
         StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"] = false;
-        NewStateChange = AIRSTATESTRING;
+        WallCancel();
+        StateMachineScript.TransitionToState(AIRSTATESTRING);
+    }
+
+    public async void WallCancel()
+    {
+        StateMachineScript.smWallCancel = true;
+        await ToSignal(GetTree().CreateTimer(0.1f), SceneTreeTimer.SignalName.Timeout);
+        StateMachineScript.smWallCancel = false;
     }
 }

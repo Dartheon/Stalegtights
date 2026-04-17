@@ -101,13 +101,13 @@ public partial class ClimbingState : States
 
         #region Movement
         //Jumping
-        if (StateMachineScript.smInputManager.PlayerInputBuffers["jump"])
+        if (StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"])
         {
             //timer here as long as holding, reset on ground
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
             PlayerScript.PlayerOnLadder = false;   // detach ladder
             StateMachineScript.smLadderDetachTimer = 1.0f;
-            StateMachineScript.smInputManager.PlayerInputBuffers["jump"] = false;
+            StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"] = false;
 
             //TO ADD:
             ladderJump = true;
@@ -162,6 +162,10 @@ public partial class ClimbingState : States
         #endregion
 
         #region Movement
+        #region Change State before PhysicsUpdate
+        if (NewStateChange != CLIMBINGSTATESTRING) { return; }
+        #endregion
+
         if (!PlayerScript.PlayerOnLadder)
         {
             if (PlayerCB2D.IsOnFloor())

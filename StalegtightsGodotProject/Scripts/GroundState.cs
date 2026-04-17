@@ -256,6 +256,8 @@ public partial class GroundState : States
         #region Change State Logic
         if (NewStateChange != GROUNDSTATESTRING)
         {
+            if (NewStateChange == WALLSTATESTRING && StateMachineScript.smWallCancel) { return; }
+
             StateMachineScript.TransitionToState(NewStateChange);
         }
         #endregion
@@ -278,6 +280,10 @@ public partial class GroundState : States
         #endregion
 
         #region Movement
+        #region Change State before PhysicsUpdate
+        if (NewStateChange != GROUNDSTATESTRING) { return; }
+        #endregion
+
         #region Check for Stun - need to add code
         //
         #endregion
@@ -321,6 +327,8 @@ public partial class GroundState : States
         #region Change State Logic
         if (NewStateChange != GROUNDSTATESTRING)
         {
+            if (NewStateChange == WALLSTATESTRING && StateMachineScript.smWallCancel) { return; }
+
             StateMachineScript.TransitionToState(NewStateChange);
         }
         #endregion
@@ -392,6 +400,8 @@ public partial class GroundState : States
         #region Change State Logic
         if (NewStateChange != GROUNDSTATESTRING)
         {
+            if (NewStateChange == WALLSTATESTRING && StateMachineScript.smWallCancel) { return; }
+
             StateMachineScript.TransitionToState(NewStateChange);
         }
         #endregion

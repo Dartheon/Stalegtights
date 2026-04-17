@@ -55,8 +55,8 @@ public partial class WallState : States
     private float momentumWallJumpPower;
     private float normalWallJumpPower;
     private float weakWallJumpPower;
-    private float jumpHorizontalPower = 100f;
-    private float jumpOutPower = 250f;
+    private float jumpHorizontalPower = 300f;
+    private float jumpOutPower = 350f;
     #endregion
     #endregion
 
@@ -76,17 +76,19 @@ public partial class WallState : States
 
         #region Movement
 
-        wallDetachTimer = new();
-        wallDetachTimer.WaitTime = waitTimer;
-        wallDetachTimer.OneShot = true;
+        wallDetachTimer = new()
+        {
+            WaitTime = waitTimer,
+            OneShot = true
+        };
 
         AddChild(wallDetachTimer);
 
         wallDetachTimer.Timeout += () => NewStateChange = AIRSTATESTRING;
 
         momentumWallJumpPower = StateMachineScript.smPlayerJumpVelocity;
-        normalWallJumpPower = StateMachineScript.smPlayerJumpVelocity / 2;
-        weakWallJumpPower = StateMachineScript.smPlayerJumpVelocity / 3;
+        normalWallJumpPower = StateMachineScript.smPlayerJumpVelocity / 1.5f;
+        weakWallJumpPower = StateMachineScript.smPlayerJumpVelocity / 2;
         #endregion
     }
 
@@ -136,37 +138,51 @@ public partial class WallState : States
         #endregion
 
         #region General
-        //
+        #region Check Jump State
+        switch (wallSlideState)
+        {
+            case WallSlideState.InitialJump:
+                jumpStrength = momentumWallJumpPower;
+                break;
+
+            case WallSlideState.ControlledSlide:
+                jumpStrength = normalWallJumpPower;
+                break;
+
+            case WallSlideState.FastSlide:
+                jumpStrength = weakWallJumpPower;
+                break;
+        }
+        #endregion
         #endregion
 
         #region Movement
-        #region Detect Jumping Off
-        if (StateMachineScript.smWallDirection != 0)
-        {
-            GD.Print("wall");
-            if (StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"])
-            {
-                GD.Print("jump off");
-                WallJump(jumpHorizontalPower, -jumpStrength);
-            }
-        }
-        #endregion
-        #region Detect Diving Out - add code
+        #region Detect Diving Out
         if (StateMachineScript.smWallDirection == 1)
         {
             if (StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"] && StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
             {
-                GD.Print("jump out");
-                WallJump(jumpOutPower, 0);
+                GD.Print("jump out right");
+                WallJump(jumpOutPower, 100);
+                return;
             }
         }
         else if (StateMachineScript.smWallDirection == -1)
         {
             if (StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"] && StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"])
             {
-                GD.Print("jump out");
-                WallJump(jumpOutPower, 0);
+                GD.Print("jump out left");
+                WallJump(jumpOutPower, 100);
+                return;
             }
+        }
+        #endregion
+        #region Detect Jumping Off
+        if (StateMachineScript.smWallDirection != 0 && StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"])
+        {
+            GD.Print("jump off");
+            WallJump(jumpHorizontalPower, jumpStrength);
+
         }
         #endregion
         #endregion
@@ -193,7 +209,7 @@ public partial class WallState : States
         #endregion
 
         #region Check to see if still on wall - if character collider is still interacting with the wall
-        if (PlayerCB2D.IsOnWall() && !StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] && !StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
+        if (PlayerCB2D.IsOnWall() && !StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] && !StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"] || StateMachineScript.smWallDirection != currentDirection && currentDirection != 0)
         {
             if (wallDetachTimer.IsStopped())
             {
@@ -204,7 +220,6 @@ public partial class WallState : States
         {
             wallDetachTimer.Stop();
         }
-
         #endregion
 
         #region Detect power slide out - add code
@@ -213,6 +228,13 @@ public partial class WallState : States
 
         #region Detect for power slide - add code
         //
+        #endregion
+
+        #region Change State Logic
+        if (NewStateChange != WALLSTATESTRING)
+        {
+            StateMachineScript.TransitionToState(NewStateChange);
+        }
         #endregion
         #endregion
     }
@@ -224,6 +246,9 @@ public partial class WallState : States
         #endregion
 
         #region Movement
+        #region Change State before PhysicsUpdate
+        if (NewStateChange != WALLSTATESTRING) { return; }
+        #endregion
 
         #region Character Stun - add code
         //
@@ -262,24 +287,17 @@ public partial class WallState : States
         }
 
         // Apply velocity
-        StateMachineScript.smPlayerVelocity = new(PlayerCB2D.Velocity.X, currentSlideSpeed);
-        #endregion
-
-        #region Check Jump State
-        switch (wallSlideState)
+        // Prevent upward motion
+        float yVelocity = PlayerCB2D.Velocity.Y;
+        if (yVelocity < 0)
         {
-            case WallSlideState.InitialJump:
-                jumpStrength = momentumWallJumpPower;
-                break;
-
-            case WallSlideState.ControlledSlide:
-                jumpStrength = normalWallJumpPower;
-                break;
-
-            case WallSlideState.FastSlide:
-                jumpStrength = weakWallJumpPower;
-                break;
+            yVelocity = 0;
         }
+
+        // Apply slide speed (always downward)
+        yVelocity = Mathf.Max(yVelocity, currentSlideSpeed);
+
+        StateMachineScript.smPlayerVelocity = new(0, yVelocity);
         #endregion
 
         #region Change State Logic

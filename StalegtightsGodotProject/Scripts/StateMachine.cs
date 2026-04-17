@@ -20,6 +20,7 @@ public partial class StateMachine : Node
     private Dictionary<string, States> states = new();
     public string SMPreviousState { get; set; } = "DEFAULT STATE";
     public float smWallDirection { get; set; }
+    public bool smWallCancel { get; set; } = false;
 
     //Movement
     public float BaseGravity { get; set; } = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
@@ -99,7 +100,7 @@ public partial class StateMachine : Node
         CurrentState.PhysicsUpdate(delta);
 
         bool wasOnFloor = smPlayerCB2D.IsOnFloor();
-
+        GD.Print($"Final Velocity Applied: {smPlayerVelocity}");
         smPlayerCB2D.Velocity = smPlayerVelocity;
         smPlayerCB2D.MoveAndSlide();
 
