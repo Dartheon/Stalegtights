@@ -68,7 +68,7 @@ public partial class GroundState : States
         #endregion
 
         #region General
-        NewStateChange = GROUNDSTATESTRING;
+        //
         #endregion
 
         #region Animations
@@ -129,12 +129,13 @@ public partial class GroundState : States
 
         #region Movement
         #region Detect any Jump and keep track of the type of jump used
-        if (StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"])
+        if (InputManager.PlayerInputBuffers["ground_jump"])
         {
             //timer here as long as holding, reset on ground
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
             StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"] = false;
-            NewStateChange = AIRSTATESTRING;
+            ChangeToNewState(AIRSTATESTRING);
+            return;
         }
         #endregion
         #endregion
@@ -161,7 +162,7 @@ public partial class GroundState : States
 
         #region Movement
         #region Detect Input for Ducking - need to add code
-        if (StateMachineScript.smInputManager.PlayerContinuousInputs["duck"])
+        if (InputManager.PlayerContinuousInputs["duck"])
         {
             //add code for ducking
             GD.Print("Ducking");
@@ -169,7 +170,7 @@ public partial class GroundState : States
         #endregion
 
         #region Detect Input for Crawling - need to add code
-        if (StateMachineScript.smInputManager.PlayerContinuousInputs["crawling_left"] || StateMachineScript.smInputManager.PlayerContinuousInputs["crawling_right"])
+        if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
         {
             //add code for crawling
             GD.Print("Crawling");
@@ -177,7 +178,7 @@ public partial class GroundState : States
         #endregion
 
         #region Detect Input for Moving Right or Left
-        if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"])
+        if (InputManager.PlayerContinuousInputs["move_left"])
         {
             if (StateMachineScript.smPlayerVelocity.X > 0)
             {
@@ -201,7 +202,7 @@ public partial class GroundState : States
             }
         }
 
-        else if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
+        else if (InputManager.PlayerContinuousInputs["move_right"])
         {
             if (StateMachineScript.smPlayerVelocity.X < 0)
             {
@@ -233,12 +234,13 @@ public partial class GroundState : States
         #endregion
 
         #region Check if Character is Interacting with a Climbable Surface
-        if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"])
+        if (InputManager.PlayerContinuousInputs["climb_up"])
         {
-            NewStateChange = CLIMBINGSTATESTRING;
+            ChangeToNewState(CLIMBINGSTATESTRING);
+            return;
         }
 
-        if (StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down_ladder_top"])
+        if (InputManager.PlayerContinuousInputs["climb_down_ladder_top"])
         {
             CollisionShape2D shape2D = Player.PlayerAboveLadder.FirstOrDefault<CollisionShape2D>();
 
@@ -246,21 +248,15 @@ public partial class GroundState : States
             {
                 PlayerScript.PlayerOnLadder = true;
                 shape2D.GetParent().GetParent().CallDeferred("OnWayDisableLadderTop", shape2D);
-                NewStateChange = CLIMBINGSTATESTRING;
+                ChangeToNewState(CLIMBINGSTATESTRING);
+                return;
             }
         }
         #endregion
         #endregion
 
         #region General
-        #region Change State Logic
-        if (NewStateChange != GROUNDSTATESTRING)
-        {
-            if (NewStateChange == WALLSTATESTRING && StateMachineScript.smWallCancel) { return; }
-
-            StateMachineScript.TransitionToState(NewStateChange);
-        }
-        #endregion
+        //
         #endregion
     }
     #endregion
@@ -280,10 +276,6 @@ public partial class GroundState : States
         #endregion
 
         #region Movement
-        #region Change State before PhysicsUpdate
-        if (NewStateChange != GROUNDSTATESTRING) { return; }
-        #endregion
-
         #region Check for Stun - need to add code
         //
         #endregion
@@ -315,21 +307,13 @@ public partial class GroundState : States
         #region Check if Character is on the Ground
         if (!PlayerCB2D.IsOnFloor() && (Player.PlayerAboveLadder.Count == 0 || !StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"]))
         {
-            NewStateChange = AIRSTATESTRING;
+            ChangeToNewState(AIRSTATESTRING);
+            return;
         }
         else
         {
             //sets the velocity to 0 if the player is not touching the ground
             StateMachineScript.smPlayerVelocity.Y = 0.0f;
-        }
-        #endregion
-
-        #region Change State Logic
-        if (NewStateChange != GROUNDSTATESTRING)
-        {
-            if (NewStateChange == WALLSTATESTRING && StateMachineScript.smWallCancel) { return; }
-
-            StateMachineScript.TransitionToState(NewStateChange);
         }
         #endregion
         #endregion
@@ -397,14 +381,7 @@ public partial class GroundState : States
         #endregion
 
         #region General
-        #region Change State Logic
-        if (NewStateChange != GROUNDSTATESTRING)
-        {
-            if (NewStateChange == WALLSTATESTRING && StateMachineScript.smWallCancel) { return; }
-
-            StateMachineScript.TransitionToState(NewStateChange);
-        }
-        #endregion
+        //
         #endregion
         #endregion
     }
@@ -420,7 +397,7 @@ public partial class GroundState : States
         #endregion
 
         #region General
-        NewStateChange = "";
+        //
         #endregion
 
         #region Animations

@@ -63,7 +63,7 @@ public partial class AirState : States
         #endregion
 
         #region General
-        NewStateChange = AIRSTATESTRING;
+        //
         #endregion
 
         #region Animations
@@ -109,10 +109,10 @@ public partial class AirState : States
         #region Movement
         //Possible tweek for jumping, if jump happens in buffer lessen the jump power
         #region Detect any Jump and keep track of the type of jump used
-        if (StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"])
+        if (InputManager.PlayerInputBuffers["ground_jump"])
         {
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
-            StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"] = false;
+            InputManager.PlayerInputBuffers["ground_jump"] = false;
         }
         #endregion
         #endregion
@@ -138,18 +138,19 @@ public partial class AirState : States
         if (!StateMachineScript.smWallCancel)
         {
             // Normal air control
-            float direction = (StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
+            float direction = (InputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (InputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
             StateMachineScript.smPlayerVelocity.X = direction * inAirMoveSpeed;
         }
 
-        if (PlayerScript.PlayerOnLadder && !StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && StateMachineScript.smInputManager.PlayerContinuousInputs["climb_up"] || StateMachineScript.smInputManager.PlayerContinuousInputs["climb_down"])
+        if (PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
         {
-            NewStateChange = CLIMBINGSTATESTRING;
+            ChangeToNewState(CLIMBINGSTATESTRING);
+            return;
         }
         #endregion
 
         #region Check Input for Moving Right/Left
-        if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] && StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
+        if (InputManager.PlayerContinuousInputs["move_left"] && InputManager.PlayerContinuousInputs["move_right"])
         {
             if (StateMachineScript.smPlayerVelocity.X > 0)
             {
@@ -164,7 +165,7 @@ public partial class AirState : States
             }
         }
 
-        else if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"])
+        else if (InputManager.PlayerContinuousInputs["move_left"])
         {
             if (StateMachineScript.smPlayerVelocity.X >= -inAirMoveSpeed)
             {
@@ -177,7 +178,7 @@ public partial class AirState : States
             }
         }
 
-        else if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
+        else if (InputManager.PlayerContinuousInputs["move_right"])
         {
             if (StateMachineScript.smPlayerVelocity.X <= inAirMoveSpeed)
             {
@@ -214,10 +215,6 @@ public partial class AirState : States
         #endregion
 
         #region Movement
-        #region Change State before PhysicsUpdate
-        if (NewStateChange != AIRSTATESTRING) { return; }
-        #endregion
-
         #region Apply Gravity on Character
         /*
         two timers 
@@ -242,7 +239,7 @@ public partial class AirState : States
         #endregion
 
         #region Check for Character interacting with the wall
-        currentDirection = (StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
+        currentDirection = (InputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (InputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
 
         if (PlayerCB2D.IsOnWall())
         {
@@ -264,7 +261,8 @@ public partial class AirState : States
 
         if (PlayerCB2D.IsOnWall() && currentDirection == StateMachineScript.smWallDirection)
         {
-            NewStateChange = WALLSTATESTRING;
+            ChangeToNewState(WALLSTATESTRING);
+            return;
         }
         #endregion
 
@@ -273,19 +271,16 @@ public partial class AirState : States
         if (PlayerCB2D.IsOnFloor())
         {
             IsLanding = false;
-            NewStateChange = GROUNDSTATESTRING;
+
+            if (StateMachineScript.smWallCancel) { return; }
+
+            ChangeToNewState(GROUNDSTATESTRING);
+            return;
         }
         #endregion
 
         #region General
-        #region Change State Logic
-        if (NewStateChange != AIRSTATESTRING)
-        {
-            if (NewStateChange == WALLSTATESTRING && StateMachineScript.smWallCancel) { return; }
-
-            StateMachineScript.TransitionToState(NewStateChange);
-        }
-        #endregion
+        //
         #endregion
         #endregion
     }
@@ -336,16 +331,6 @@ public partial class AirState : States
         #region Check for Attacking Input - add code
         //
         #endregion
-
-        #region Change State Logic
-        if (NewStateChange != AIRSTATESTRING)
-        {
-
-            if (NewStateChange == WALLSTATESTRING && StateMachineScript.smWallCancel) { return; }
-
-            StateMachineScript.TransitionToState(NewStateChange);
-        }
-        #endregion
         #endregion
     }
 
@@ -358,7 +343,7 @@ public partial class AirState : States
         #endregion
 
         #region General
-        NewStateChange = "";
+        //
         #endregion
 
         #region Animations

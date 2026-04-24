@@ -10,13 +10,13 @@ public partial class States : Node
     #endregion
 
     #region General
-    public StateMachine StateMachineScript { get; set; }
+    protected StateMachine StateMachineScript { get; private set; }
 
-    public CharacterBody2D PlayerCB2D => StateMachineScript.smPlayerCB2D;
-    public Player PlayerScript => StateMachineScript.smPlayerScript;
+    protected CharacterBody2D PlayerCB2D => StateMachineScript.smPlayerCB2D;
+    protected Player PlayerScript => StateMachineScript.smPlayerScript;
+    protected InputManager InputManager => StateMachineScript.smInputManager;
 
-    public string NewStateChange { get; set; }
-    public string PreviousState => StateMachineScript.SMPreviousState;
+    protected string PreviousState => StateMachineScript.SMPreviousState;
 
 
     public const string AIRSTATESTRING = "AIR STATE";
@@ -28,9 +28,9 @@ public partial class States : Node
     #endregion
 
     #region Animations
-    public bool HasWeapon { get; set; } = false;
-    public bool HasStalag { get; set; } = false;
-    public bool IsLanding { get; set; } = false;
+    public bool HasWeapon { get; protected set; } = false;
+    public bool HasStalag { get; protected set; } = false;
+    public bool IsLanding { get; protected set; } = false;
     #endregion
 
     #region Movement
@@ -59,21 +59,41 @@ public partial class States : Node
 
     public virtual void Exit() { }
 
+    public void SetStateMachineScript(StateMachine stateMachine)
+    {
+        StateMachineScript = stateMachine;
+    }
+
+    //Change State
+    public void ChangeToNewState(string newState)
+    {
+        StateMachineScript.TransitionToState(newState);
+    }
+
     //Wall State Methods
     public void WallJump(float jumpHorizontal, float jumpUpStrength)
     {
         GD.Print("WALL JUMP TRIGGERED");
-        GD.Print($"Dir: {StateMachineScript.smWallDirection}");
-        GD.Print($"Velocity Before Jump: {StateMachineScript.smPlayerVelocity}");
+        //sets the player velocity to zero before applying the jump force to the player so slide momentum does not interfere with movement
+        StateMachineScript.smPlayerVelocity = Vector2.Zero;
+        PlayerCB2D.Velocity = StateMachineScript.smPlayerVelocity;
+        PlayerCB2D.MoveAndSlide();
+
+        //sets the jump velocity for the player to trigger
         StateMachineScript.smPlayerVelocity = new(StateMachineScript.smWallDirection * jumpHorizontal, jumpUpStrength);
         GD.Print($"Velocity After Jump: {StateMachineScript.smPlayerVelocity}");
         StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"] = false;
+
+        //Cancels the players ability to reattach to the wall immediatly after jumping
         WallCancel();
+
+        //change State to air state
         StateMachineScript.TransitionToState(AIRSTATESTRING);
     }
 
     public async void WallCancel()
     {
+        //method sets a bool value to true -> wait a timer -> then sends a signal to set it back to false
         StateMachineScript.smWallCancel = true;
         await ToSignal(GetTree().CreateTimer(0.1f), SceneTreeTimer.SignalName.Timeout);
         StateMachineScript.smWallCancel = false;

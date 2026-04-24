@@ -10,20 +10,20 @@ public partial class StateMachine : Node
 
     #region General
     //References to Other Components
-    public CharacterBody2D smPlayerCB2D { get; set; }
-    public Player smPlayerScript { get; set; }
-    public InputManager smInputManager { get; set; }
+    public CharacterBody2D smPlayerCB2D { get; private set; }
+    public Player smPlayerScript { get; private set; }
+    public InputManager smInputManager { get; private set; }
 
     //State Machine
     public States CurrentState { get; private set; }
-    [Export] public NodePath InitialState { get; set; }
+    [Export] public NodePath InitialState { get; private set; }
     private Dictionary<string, States> states = new();
     public string SMPreviousState { get; set; } = "DEFAULT STATE";
     public float smWallDirection { get; set; }
     public bool smWallCancel { get; set; } = false;
 
     //Movement
-    public float BaseGravity { get; set; } = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
+    public float BaseGravity { get; private set; } = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
     public float GravityModifier { get; set; } = 1.0f;
     public float smGravity => BaseGravity * GravityModifier;
     public float BaseAcceleration { get; set; } = 20.0f;
@@ -46,7 +46,7 @@ public partial class StateMachine : Node
 
     #region Movement
     public Vector2 smPlayerVelocity; //The Variable for storing and changing the Players Velocity
-    [Export] public float BaseJumpVelocity { get; set; } = -750.0f;
+    [Export] public float BaseJumpVelocity { get; private set; } = -750.0f;
     public float JumpModifier { get; set; } = 1.0f;
     public float smPlayerJumpVelocity => BaseJumpVelocity * JumpModifier;
     #endregion
@@ -68,7 +68,7 @@ public partial class StateMachine : Node
             if (stateNode is States state)
             {
                 states[stateNode.Name] = state;
-                state.StateMachineScript = this;
+                state.SetStateMachineScript(this);
                 state.Start();
                 state.Exit(); //reset all states
             }
@@ -100,7 +100,6 @@ public partial class StateMachine : Node
         CurrentState.PhysicsUpdate(delta);
 
         bool wasOnFloor = smPlayerCB2D.IsOnFloor();
-        GD.Print($"Final Velocity Applied: {smPlayerVelocity}");
         smPlayerCB2D.Velocity = smPlayerVelocity;
         smPlayerCB2D.MoveAndSlide();
 
