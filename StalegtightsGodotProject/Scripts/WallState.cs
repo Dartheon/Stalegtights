@@ -26,12 +26,13 @@ public partial class WallState : States
     #endregion
 
     #region Movement
-    private float enteringDirection; //jholds the direction player was when entering the wall
+    private int enteringDirection; //holds the direction player was when entering the wall
     private int currentDirection; //current direction the player is facing
+    private int wallDirection;
     private Timer wallDetachTimer;
     private float waitTimer = 1.0f; //used to control how long player attaches to the wall after no input is detected to hold to wall
 
-    public enum WallSlideState
+    private enum WallSlideState
     {
         InitialJump,   // player just touched wall
         ControlledSlide, // slow slide
@@ -57,9 +58,9 @@ public partial class WallState : States
     private float momentumWallJumpPower; //Will be set to a formula based on current player momentum to assist jump power off wall
     private float normalWallJumpPower; //Set to default jump power, currently set to PlayerJumpVelocity
     private float weakWallJumpPower; //Set to a constant weaker jump based on the default jump power
-    private float jumpHorizontalPower = 300f; //diving out horizontal power
-    private float jumpVerticalPower = 100.0f; //diving out vertical power
-    private float jumpOutPower = 350f; //horizontal power to push away from wall when jumping up
+    private float jumpHorizontalPower = 1000f; //diving out horizontal power
+    private float jumpVerticalPower = -500.0f; //diving out vertical power
+    private float jumpOutPower = 1000f; //horizontal power to push away from wall when jumping up
     #endregion
     #endregion
 
@@ -113,6 +114,7 @@ public partial class WallState : States
 
         #region Movement
         enteringDirection = StateMachineScript.LastFacingDirection;
+        wallDirection = StateMachineScript.smWallDirection;
 
         wallSlideTimer = 0f;
         currentSlideSpeed = initialSlideSpeed;
@@ -168,8 +170,8 @@ public partial class WallState : States
         {
             if (InputManager.PlayerInputBuffers["wall_jump"] && InputManager.PlayerContinuousInputs["move_right"])
             {
-                GD.Print("jump out right");
-                WallJump(jumpOutPower, 0); //jumpVerticalPower
+                GD.Print("jump out hold right");
+                WallJump(jumpOutPower, jumpVerticalPower);
                 return;
             }
         }
@@ -177,12 +179,13 @@ public partial class WallState : States
         {
             if (InputManager.PlayerInputBuffers["wall_jump"] && InputManager.PlayerContinuousInputs["move_left"])
             {
-                GD.Print("jump out left");
-                WallJump(jumpOutPower, 0);
+                GD.Print("jump out hold left");
+                WallJump(jumpOutPower, jumpVerticalPower);
                 return;
             }
         }
         #endregion
+
         #region Detect Jumping Off
         if (StateMachineScript.smWallDirection != 0 && InputManager.PlayerInputBuffers["wall_jump"])
         {
@@ -263,18 +266,18 @@ public partial class WallState : States
         // Determine slide phase
         if (wallSlideTimer < accelerationDelay)
         {
-            GD.Print("mom spped");
+            GD.Print("momentum time");
             wallSlideState = WallSlideState.InitialJump;
         }
         else if (wallSlideTimer > accelerationDelay && wallSlideTimer < fastSlideStart)
         {
-            GD.Print("initial spped");
+            GD.Print("slide time");
             wallSlideState = WallSlideState.ControlledSlide;
             currentSlideSpeed = initialSlideSpeed;
         }
         else if (wallSlideTimer > fastSlideStart)
         {
-            GD.Print("nerf spped", currentSlideSpeed);
+            GD.Print("weak time");
             wallSlideState = WallSlideState.FastSlide;
         }
 
@@ -289,8 +292,11 @@ public partial class WallState : States
         // Apply slide speed (always downward)
         yVelocity = Mathf.Max(yVelocity, currentSlideSpeed);
 
-        // - DISABLED FOR TESTING
         StateMachineScript.smPlayerVelocity = new(0, yVelocity);
+        /*if (StateMachineScript.CurrentState == this)
+        {
+            StateMachineScript.smPlayerVelocity = new(0, yVelocity);
+        }*/
         #endregion
         #endregion
     }
@@ -341,5 +347,31 @@ public partial class WallState : States
         StateMachineScript.smWallDirection = 0;
         wallDetachTimer.Stop();
         #endregion
+    }
+
+    //Wall State Methods
+    public void WallJump(float jumpHorizontal, float jumpUpStrength)
+    {
+        GD.Print("WALL JUMP TRIGGERED");
+
+        //sets the jump velocity for the player to trigger
+        StateMachineScript.smPlayerVelocity = new(-wallDirection * jumpHorizontal, jumpUpStrength);
+
+        GD.Print($"Velocity After Jump: {StateMachineScript.smPlayerVelocity}");
+        InputManager.PlayerInputBuffers["wall_jump"] = false;
+
+        //Cancels the players ability to reattach to the wall immediatly after jumping
+        WallCancel();
+
+        //change State to air state
+        StateMachineScript.TransitionToState(AIRSTATESTRING);
+    }
+
+    public async void WallCancel()
+    {
+        //method sets a bool value to true -> wait a timer -> then sends a signal to set it back to false
+        StateMachineScript.smWallCancel = true;
+        await ToSignal(GetTree().CreateTimer(0.1f), SceneTreeTimer.SignalName.Timeout);
+        StateMachineScript.smWallCancel = false;
     }
 }

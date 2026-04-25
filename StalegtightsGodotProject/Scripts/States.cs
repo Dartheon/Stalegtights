@@ -69,33 +69,4 @@ public partial class States : Node
     {
         StateMachineScript.TransitionToState(newState);
     }
-
-    //Wall State Methods
-    public void WallJump(float jumpHorizontal, float jumpUpStrength)
-    {
-        GD.Print("WALL JUMP TRIGGERED");
-        //sets the player velocity to zero before applying the jump force to the player so slide momentum does not interfere with movement
-        StateMachineScript.smPlayerVelocity = Vector2.Zero;
-        PlayerCB2D.Velocity = StateMachineScript.smPlayerVelocity;
-        PlayerCB2D.MoveAndSlide();
-
-        //sets the jump velocity for the player to trigger
-        StateMachineScript.smPlayerVelocity = new(StateMachineScript.smWallDirection * jumpHorizontal, jumpUpStrength);
-        GD.Print($"Velocity After Jump: {StateMachineScript.smPlayerVelocity}");
-        StateMachineScript.smInputManager.PlayerInputBuffers["wall_jump"] = false;
-
-        //Cancels the players ability to reattach to the wall immediatly after jumping
-        WallCancel();
-
-        //change State to air state
-        StateMachineScript.TransitionToState(AIRSTATESTRING);
-    }
-
-    public async void WallCancel()
-    {
-        //method sets a bool value to true -> wait a timer -> then sends a signal to set it back to false
-        StateMachineScript.smWallCancel = true;
-        await ToSignal(GetTree().CreateTimer(0.1f), SceneTreeTimer.SignalName.Timeout);
-        StateMachineScript.smWallCancel = false;
-    }
 }

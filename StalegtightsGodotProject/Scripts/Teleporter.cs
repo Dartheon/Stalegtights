@@ -27,7 +27,7 @@ public partial class Teleporter : Area2D
     //To set the Global Position for the Player to Teleport To
     private Vector2 teleportLocation = new();
     //To Update the Facing Position of the Player after Teleporting through the Portal and having the Player Face away from the Portal
-    private float playerFacingDirection;
+    private int playerFacingDirection;
     private bool teleporterVariant;
     #endregion
     #endregion
@@ -56,11 +56,11 @@ public partial class Teleporter : Area2D
         {
             case "TeleporterRight":
                 teleportLocation = rightMarker.GlobalPosition;
-                playerFacingDirection = 1.0f;
+                playerFacingDirection = 1;
                 break;
             case "TeleporterLeft":
                 teleportLocation = leftMarker.GlobalPosition;
-                playerFacingDirection = -1.0f;
+                playerFacingDirection = -1;
                 break;
             default:
                 GD.PushWarning("Invald Teleporter Type, Default Scene Used. Choose Teleporter Left, Right, or Variant Instead");

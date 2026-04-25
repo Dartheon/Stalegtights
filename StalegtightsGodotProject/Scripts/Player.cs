@@ -17,7 +17,7 @@ public partial class Player : CharacterBody2D
     #endregion
 
     #region Position
-    [Export] public Vector2 spawnPosition;
+    [Export] private Vector2 spawnPosition;
     #endregion
 
     #region General
@@ -25,7 +25,7 @@ public partial class Player : CharacterBody2D
     public float LadderPosX { get; set; } = 0.0f;
     public bool PlayerOnLadder { get; set; } = false;
     private float previousLadderPosX = 0.1f;
-    public static HashSet<CollisionShape2D> PlayerAboveLadder { get; set; } = new();
+    public static HashSet<CollisionShape2D> PlayerAboveLadder { get; private set; } = new();
     #endregion
     #endregion
 

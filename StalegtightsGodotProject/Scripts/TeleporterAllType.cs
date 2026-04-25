@@ -57,7 +57,7 @@ public partial class TeleporterAllType : Area2D
 
     private Vector2 teleportLocation = new(); //To set the Global Position for the Player to Teleport To
 
-    private float playerFacingDirection; //To Update the Facing Position of the Player after Teleporting through the Portal and having the Player Face away from the Portal
+    private int playerFacingDirection; //To Update the Facing Position of the Player after Teleporting through the Portal and having the Player Face away from the Portal
 
     private string newName; //For setting nodes name when setting up teleporter in the editor
     private bool teleportCooldown = false;
@@ -128,14 +128,14 @@ public partial class TeleporterAllType : Area2D
                 teleportLocation = rightMarker.GlobalPosition;
                 rightMarker.Visible = true;
                 leftMarker.Visible = false;
-                playerFacingDirection = 1.0f;
+                playerFacingDirection = 1;
                 newName += "RightMarker";
                 break;
             case TeleporterType.LeftMarkerTeleporter:
                 teleportLocation = leftMarker.GlobalPosition;
                 leftMarker.Visible = true;
                 rightMarker.Visible = false;
-                playerFacingDirection = -1.0f;
+                playerFacingDirection = -1;
                 newName += "LeftMarker";
                 break;
             case TeleporterType.DEFAULT:

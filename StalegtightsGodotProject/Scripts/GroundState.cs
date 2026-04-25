@@ -18,7 +18,7 @@ public partial class GroundState : States
     StateMachineScript.smPlayerVelocity                          - Vector2
     StateMachineScript.hasWeapon                                 - bool
     StateMachineScript.hasStalag                                 - bool
-    StateMachineScript.LastFacingDirection                       - float
+    StateMachineScript.LastFacingDirection                       - int
     StateMachineScript.PlayerAnimIdle                            - bool
     StateMachineScript.PlayerAnimTree                            - AnimationTree
     StateMachineScript.isJumping                                 - bool
@@ -31,7 +31,7 @@ public partial class GroundState : States
     #endregion
 
     #region Movement
-    [Export] public float BaseSpeed { get; set; } = 500.0f; //characters speed
+    [Export] public float BaseSpeed { get; private set; } = 500.0f; //characters speed
     public float MoveSpeedModifier { get; set; } = 1.0f;
     public float GroundMoveSpeed => BaseSpeed * MoveSpeedModifier;
     #endregion
@@ -106,7 +106,7 @@ public partial class GroundState : States
         //Updates the LastFacingDirection based on velocity
         if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.1f) // If moving, update facing
         {
-            StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1f : -1f;
+            StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1 : -1;
         }
 
         //Sets the blend using the LastFacingPosition

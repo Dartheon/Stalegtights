@@ -19,7 +19,7 @@ public partial class StateMachine : Node
     [Export] public NodePath InitialState { get; private set; }
     private Dictionary<string, States> states = new();
     public string SMPreviousState { get; set; } = "DEFAULT STATE";
-    public float smWallDirection { get; set; }
+    public int smWallDirection { get; set; }
     public bool smWallCancel { get; set; } = false;
 
     //Movement
@@ -37,7 +37,7 @@ public partial class StateMachine : Node
     public AnimationPlayer PlayerCB2DAnimPlayer { get; set; }
     public StringName CurrentAnimationPlaying { get; set; } = "";
     private string playerState = "DEFAULT STATE"; //Used for animation tree transitions between state machines
-    public float LastFacingDirection { get; set; } = 1.0f; //Identifies the Players last facing direction used for animation blend
+    public int LastFacingDirection { get; set; } = 1; //Identifies the Players last facing direction used for animation blend
     public bool PlayerAnimIdle { get; set; } //Checks for player movement
     public bool hasWeapon = false; //bool to see if player is holding weapon
     public bool hasStalag = false; //bool to see if player is holding stalag
@@ -91,6 +91,7 @@ public partial class StateMachine : Node
 
     public override void _PhysicsProcess(double delta)
     {
+        GD.Print(smWallCancel);
         CurrentState.InputBuffer(delta);
 
         // Call current state for continuous input handling (first)

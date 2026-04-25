@@ -5,7 +5,7 @@ public partial class AirState : States
     #region Variables
     #region DEBUG
     //DEBUG Variables Go Here...
-    bool firsttime = false;
+    private bool firsttime = false;
     #endregion
 
     #region General
@@ -18,7 +18,7 @@ public partial class AirState : States
     /*Variables from StateMachine that need direct Referenece
     StateMachineScript.smPlayerVelocity                          - Vector2
     StateMachineScript.PlayerAnimTree                            - AnimationTree
-    StateMachineScript.LastFacingDirection                       - float
+    StateMachineScript.LastFacingDirection                       - int
     StateMachineScript.isJumping                                 - bool
     StateMachineScript.smInputManager.PlayerInputBuffers[string] - bool
     */
@@ -87,7 +87,7 @@ public partial class AirState : States
         //Updates the LastFacingDirection based on velocity
         if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.1f) // If moving, update facing
         {
-            StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1f : -1f;
+            StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1 : -1;
         }
 
         //Sets the blend using te LastFacingPosition
@@ -135,12 +135,9 @@ public partial class AirState : States
 
         #region Movement
         #region Check for Climbing Input
-        if (!StateMachineScript.smWallCancel)
-        {
-            // Normal air control
-            float direction = (InputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (InputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
-            StateMachineScript.smPlayerVelocity.X = direction * inAirMoveSpeed;
-        }
+        // Normal air control
+        float direction = (InputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (InputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
+        StateMachineScript.smPlayerVelocity.X = direction * inAirMoveSpeed;
 
         if (PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
         {
@@ -259,11 +256,19 @@ public partial class AirState : States
             StateMachineScript.smWallDirection = 0;
         }
 
-        if (PlayerCB2D.IsOnWall() && currentDirection == StateMachineScript.smWallDirection)
+
+        if (!StateMachineScript.smWallCancel && PlayerCB2D.IsOnWall())
         {
-            ChangeToNewState(WALLSTATESTRING);
-            return;
+            Vector2 wallNormal = PlayerCB2D.GetWallNormal();
+
+            // Only attach if moving INTO the wall
+            if (Mathf.Sign(StateMachineScript.smPlayerVelocity.X) == -Mathf.Sign(wallNormal.X))
+            {
+                ChangeToNewState(WALLSTATESTRING);
+                return;
+            }
         }
+
         #endregion
 
         #region Check if the Character is Grounded
@@ -271,8 +276,6 @@ public partial class AirState : States
         if (PlayerCB2D.IsOnFloor())
         {
             IsLanding = false;
-
-            if (StateMachineScript.smWallCancel) { return; }
 
             ChangeToNewState(GROUNDSTATESTRING);
             return;
