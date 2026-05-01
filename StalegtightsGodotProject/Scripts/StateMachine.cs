@@ -102,7 +102,6 @@ public partial class StateMachine : Node
         bool wasOnFloor = smPlayerCB2D.IsOnFloor();
         bool wasOnWall = smPlayerCB2D.IsOnWall();
         smPlayerCB2D.Velocity = smPlayerVelocity;
-        GD.Print($"Final Velocity Applied: {smPlayerVelocity}");
         smPlayerCB2D.MoveAndSlide();
 
         if (!smPlayerCB2D.IsOnFloor() && wasOnFloor)
