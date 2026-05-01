@@ -14,6 +14,8 @@ public partial class InputManager : Node
         //Player Inputs That Require a Timer to Reset
         { "ground_jump", false },
         { "wall_jump", false },
+        { "wall_jump_right",false},
+        { "wall_jump_left",false},
     };
 
     //These inputs are for continuous key presses that the bool needs to be reset in the code
@@ -41,7 +43,10 @@ public partial class InputManager : Node
         { "engine_scale_reset", false },
     };
 
-    public Timer JumpTimer { get; set; }
+    public Timer GroundJumpTimer { get; private set; }
+    public Timer WallJumpTimer { get; private set; }
+
+    public bool JumpOutWallCancel { get; private set; } = false;
     #endregion
 
     #region Ready
@@ -50,7 +55,8 @@ public partial class InputManager : Node
         stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
         playerCB2D = GetNode<Player>("/root/Main/World/Player");
         menuUI = GetNode<MenuUI>("/root/Main/UILayer/MenuUI");
-        JumpTimer = GetNode<Timer>("JumpTimer");
+        GroundJumpTimer = GetNode<Timer>("GroundJumpTimer");
+        WallJumpTimer = GetNode<Timer>("WallJumpTimer");
     }
     #endregion
 
@@ -130,14 +136,45 @@ public partial class InputManager : Node
 
         #region Movement
         //Player Jump
-        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || !JumpTimer.IsStopped()) || Input.IsActionJustPressed("jump") && (playerCB2D.PlayerOnLadder || !JumpTimer.IsStopped()))
+        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || !GroundJumpTimer.IsStopped()) || Input.IsActionJustPressed("jump") && (playerCB2D.PlayerOnLadder || !GroundJumpTimer.IsStopped()))
         {
             PlayerInputBuffers["ground_jump"] = true;
         }
 
-        if (Input.IsActionJustPressed("jump") && playerCB2D.IsOnWall() || !JumpTimer.IsStopped())
+        if (Input.IsActionJustPressed("jump") && playerCB2D.IsOnWall() || !WallJumpTimer.IsStopped())
         {
             PlayerInputBuffers["wall_jump"] = true;
+        }
+
+        //Wall Jump Out
+        if (playerCB2D.IsOnWall() && Input.IsActionPressed("wall_jump_right"))
+        {
+            PlayerInputBuffers["wall_jump_right"] = true;
+            JumpOutWallCancel = false;
+        }
+
+        if (playerCB2D.IsOnWall() && Input.IsActionPressed("wall_jump_left"))
+        {
+            PlayerInputBuffers["wall_jump_left"] = true;
+            JumpOutWallCancel = false;
+        }
+
+        //Wall Jump Out Cancel when direction is released
+        if (Input.IsActionJustReleased("wall_jump_left") || Input.IsActionJustReleased("wall_jump_right"))
+        {
+            JumpOutWallCancel = true;
+        }
+
+        if (playerCB2D.IsOnWall() && Input.IsActionJustPressed("up"))
+        {
+            PlayerInputBuffers["wall_jump_left"] = false;
+            PlayerInputBuffers["wall_jump_right"] = false;
+        }
+
+        if (playerCB2D.IsOnWall() && Input.IsActionJustPressed("down"))
+        {
+            PlayerInputBuffers["wall_jump_left"] = false;
+            PlayerInputBuffers["wall_jump_right"] = false;
         }
         #endregion
     }

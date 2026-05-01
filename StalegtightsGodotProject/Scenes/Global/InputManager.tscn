@@ -6,7 +6,13 @@
 process_mode = 3
 script = ExtResource("1_pskt2")
 
-[node name="JumpTimer" type="Timer" parent="."]
+[node name="GroundJumpTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.05
+one_shot = true
+ignore_time_scale = true
+
+[node name="WallJumpTimer" type="Timer" parent="."]
 process_callback = 0
 wait_time = 0.05
 one_shot = true

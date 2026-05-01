@@ -19,7 +19,7 @@ public partial class PlayerCamera : Camera2D
     #endregion
 
     #region  Camera Positioning
-    public Vector2 PlayerCameraPosition { get; set; } //holds the camera position
+    public Vector2 PlayerCameraPosition { get; private set; } //holds the camera position
     #endregion
 
     #region  Player Movement
@@ -29,14 +29,14 @@ public partial class PlayerCamera : Camera2D
     #region Zoom Properties
     // Camera Zoom
     private Vector2 defaultZoom;
-    [Export] public Vector2 ZoomOutMax = new(1.0f, 1.0f); // how far camera can zoom out
+    [Export] private Vector2 ZoomOutMax = new(1.0f, 1.0f); // how far camera can zoom out
     [Export] private Vector2 ZoomOutMid = new(1.25f, 1.25f);
 
     //Zoom Properties
-    [Export] public float ZoomOutDuration { get; set; } = 1.5f; // seconds to fully zoom out
-    [Export] public float ZoomInDuration { get; set; } = 10.0f;  // seconds to fully zoom in
-    [Export] public float MoveDelayTimer { get; set; } = 5.0f; // time player must move before zooming out
-    [Export] public float SpeedPercentageThreshold { get; set; } = 0.9f; //the percentage used for the threshold
+    [Export] public float ZoomOutDuration { get; private set; } = 1.5f; // seconds to fully zoom out
+    [Export] public float ZoomInDuration { get; private set; } = 10.0f;  // seconds to fully zoom in
+    [Export] public float MoveDelayTimer { get; private set; } = 5.0f; // time player must move before zooming out
+    [Export] public float SpeedPercentageThreshold { get; private set; } = 0.9f; //the percentage used for the threshold
     private Timer zoomInTimer; //hold the Timer child to reference
 
     /*****UPDATE LATER*******
@@ -53,7 +53,7 @@ public partial class PlayerCamera : Camera2D
     private const float HorizontalOffsetDefaultTime = 3.0f; // how fast the offset happens in the apply offset tween method
     private const float HorizontalOffsetSwitchTime = 1.0f; // how fast the offset happens when direction is changed
     private const float HorizontalOffsetUnderThresholdTimer = 20.0f;
-    [Export] public float OffsetDistanceX { get; set; } = 1.0f; //how far the offset will go. 1 Unit of Offset is equal to 1/10th of ScreenWidth. (5 will put the player at the edge of the sceen at Zoom = 1. At Zoom = 0.5, 10 will put the player at the edge of the screen.)
+    [Export] public float OffsetDistanceX { get; protected set; } = 1.0f; //how far the offset will go. 1 Unit of Offset is equal to 1/10th of ScreenWidth. (5 will put the player at the edge of the sceen at Zoom = 1. At Zoom = 0.5, 10 will put the player at the edge of the screen.)
     private float xTargetOffset;
     private float xNewTargetOffset;
     private float playerDirectionX = 1.0f; //is 1 since player spawns facing right, would change to -1 if player spawned facing left
@@ -225,7 +225,7 @@ public partial class PlayerCamera : Camera2D
                 RecenterOffsetY(playerCB2D);
             }
         }*/
-        if (!playerCB2D.IsOnFloor() && stateMachineScript.smPlayerVelocity.Y > fallingThreshold)
+        if (!playerCB2D.IsOnFloor() && stateMachineScript.smPlayerVelocity.Y > fallingThreshold && stateMachineScript.PlayerState != "WALL STATE")
         {
             //do falling camera
             currentCameraState = CameraYMovementState.Falling;
@@ -315,6 +315,7 @@ public partial class PlayerCamera : Camera2D
                 break;
         }
         #endregion
+
 
         #region CameraMovement X
         //Check whether the player has changed direction

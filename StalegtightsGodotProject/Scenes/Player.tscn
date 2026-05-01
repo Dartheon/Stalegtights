@@ -718,67 +718,67 @@ graph_offset = Vector2(12, 119)
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_glx4g"]
 advance_mode = 2
-advance_expression = "playerState == \"GROUND STATE\""
+advance_expression = "PlayerState == \"GROUND STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_miouo"]
 advance_mode = 2
-advance_expression = "playerState == \"AIR STATE\""
+advance_expression = "PlayerState == \"AIR STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o3h8g"]
 advance_mode = 2
-advance_expression = "playerState == \"GROUND STATE\""
+advance_expression = "PlayerState == \"GROUND STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1e7my"]
 advance_mode = 2
-advance_expression = "playerState == \"CLIMB STATE\""
+advance_expression = "PlayerState == \"CLIMB STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_arntx"]
 advance_mode = 2
-advance_expression = "playerState == \"GROUND STATE\""
+advance_expression = "PlayerState == \"GROUND STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lslt6"]
 advance_mode = 2
-advance_expression = "playerState == \"WALL STATE\""
+advance_expression = "PlayerState == \"WALL STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ulo2v"]
 advance_mode = 2
-advance_expression = "playerState == \"AIR STATE\""
+advance_expression = "PlayerState == \"AIR STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1iu4k"]
 advance_mode = 2
-advance_expression = "playerState == \"WALL STATE\""
+advance_expression = "PlayerState == \"WALL STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m0x7a"]
 advance_mode = 2
-advance_expression = "playerState == \"GROUND STATE\""
+advance_expression = "PlayerState == \"GROUND STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5v66d"]
 advance_mode = 2
-advance_expression = "playerState == \"CLIMB STATE\""
+advance_expression = "PlayerState == \"CLIMB STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_x63xi"]
 advance_mode = 2
-advance_expression = "playerState == \"AIR STATE\""
+advance_expression = "PlayerState == \"AIR STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i2e8t"]
 advance_mode = 2
-advance_expression = "playerState == \"DEATH STATE\""
+advance_expression = "PlayerState == \"DEATH STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qidb7"]
 advance_mode = 2
-advance_expression = "playerState == \"DEATH STATE\""
+advance_expression = "PlayerState == \"DEATH STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_70hv0"]
 advance_mode = 2
-advance_expression = "playerState == \"DEATH STATE\""
+advance_expression = "PlayerState == \"DEATH STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8flut"]
 advance_mode = 2
-advance_expression = "playerState == \"DEATH STATE\""
+advance_expression = "PlayerState == \"DEATH STATE\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u7x0b"]
 advance_mode = 2
-advance_expression = "playerState == \"AIR STATE\""
+advance_expression = "PlayerState == \"AIR STATE\""
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_utwlt"]
 "states/AIR STATE/node" = SubResource("AnimationNodeStateMachine_52ee3")
@@ -794,7 +794,7 @@ states/Start/position = Vector2(129, 300)
 "states/WALL STATE/node" = SubResource("AnimationNodeStateMachine_ksbbd")
 "states/WALL STATE/position" = Vector2(973, 499)
 transitions = ["Start", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_glx4g"), "GROUND STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_miouo"), "AIR STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_o3h8g"), "GROUND STATE", "CLIMB STATE", SubResource("AnimationNodeStateMachineTransition_1e7my"), "CLIMB STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_arntx"), "AIR STATE", "WALL STATE", SubResource("AnimationNodeStateMachineTransition_lslt6"), "WALL STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_ulo2v"), "GROUND STATE", "WALL STATE", SubResource("AnimationNodeStateMachineTransition_1iu4k"), "WALL STATE", "GROUND STATE", SubResource("AnimationNodeStateMachineTransition_m0x7a"), "AIR STATE", "CLIMB STATE", SubResource("AnimationNodeStateMachineTransition_5v66d"), "CLIMB STATE", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_x63xi"), "GROUND STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_i2e8t"), "CLIMB STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_qidb7"), "AIR STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_70hv0"), "WALL STATE", "DEATH STATE", SubResource("AnimationNodeStateMachineTransition_8flut"), "Start", "AIR STATE", SubResource("AnimationNodeStateMachineTransition_u7x0b")]
-graph_offset = Vector2(96, 66)
+graph_offset = Vector2(-251, 137)
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 

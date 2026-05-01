@@ -135,9 +135,14 @@ public partial class AirState : States
 
         #region Movement
         #region Check for Climbing Input
+        //TO DO: Change how In Air Controls are assigned/applied to the player
+        //  Must not interfere with movement when entering Air State from any other state
         // Normal air control
         float direction = (InputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (InputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
-        StateMachineScript.smPlayerVelocity.X = direction * inAirMoveSpeed;
+        if (direction != 0 && StateMachineScript.smPlayerVelocity.X < inAirMoveSpeed && StateMachineScript.smPlayerVelocity.X > -inAirMoveSpeed)
+        {
+            StateMachineScript.smPlayerVelocity.X = direction * inAirMoveSpeed; //Must Change in the Future
+        }
 
         if (PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
         {

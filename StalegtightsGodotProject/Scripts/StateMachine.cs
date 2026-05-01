@@ -36,7 +36,7 @@ public partial class StateMachine : Node
     public AnimationTree PlayerAnimTree { get; set; } //Used to access the different variables of the AnimationTree
     public AnimationPlayer PlayerCB2DAnimPlayer { get; set; }
     public StringName CurrentAnimationPlaying { get; set; } = "";
-    private string playerState = "DEFAULT STATE"; //Used for animation tree transitions between state machines
+    public string PlayerState { get; private set; } = "DEFAULT STATE"; //Used for animation tree transitions between state machines
     public int LastFacingDirection { get; set; } = 1; //Identifies the Players last facing direction used for animation blend
     public bool PlayerAnimIdle { get; set; } //Checks for player movement
     public bool hasWeapon = false; //bool to see if player is holding weapon
@@ -91,7 +91,6 @@ public partial class StateMachine : Node
 
     public override void _PhysicsProcess(double delta)
     {
-        GD.Print(smWallCancel);
         CurrentState.InputBuffer(delta);
 
         // Call current state for continuous input handling (first)
@@ -101,12 +100,19 @@ public partial class StateMachine : Node
         CurrentState.PhysicsUpdate(delta);
 
         bool wasOnFloor = smPlayerCB2D.IsOnFloor();
+        bool wasOnWall = smPlayerCB2D.IsOnWall();
         smPlayerCB2D.Velocity = smPlayerVelocity;
+        GD.Print($"Final Velocity Applied: {smPlayerVelocity}");
         smPlayerCB2D.MoveAndSlide();
 
         if (!smPlayerCB2D.IsOnFloor() && wasOnFloor)
         {
-            smInputManager.JumpTimer.Start();
+            smInputManager.GroundJumpTimer.Start();
+        }
+
+        if (!smPlayerCB2D.IsOnWall() && wasOnWall)
+        {
+            smInputManager.GroundJumpTimer.Start();
         }
     }
 
@@ -123,7 +129,7 @@ public partial class StateMachine : Node
 
         CurrentState.Exit();
         CurrentState = newState;
-        playerState = key; //For changing States in the AnimationTree
+        PlayerState = key; //For changing States in the AnimationTree
         CurrentState.Enter();
         SMPreviousState = key;
     }
