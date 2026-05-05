@@ -178,58 +178,26 @@ public partial class GroundState : States
         #endregion
 
         #region Detect Input for Moving Right or Left
-        if (InputManager.PlayerContinuousInputs["move_left"])
+        if (InputManager.HorizontalInput != 0)
         {
-            if (StateMachineScript.smPlayerVelocity.X > 0)
+            if (Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && StateMachineScript.smPlayerVelocity.X != 0)
             {
                 StateMachineScript.BaseAcceleration = 200.0f;
-                StateMachineScript.smPlayerVelocity.X -= StateMachineScript.RunAcceleration;
             }
-
-            if (StateMachineScript.smPlayerVelocity.X >= -GroundMoveSpeed)
+            else
             {
                 StateMachineScript.BaseAcceleration = 20.0f;
-                StateMachineScript.smPlayerVelocity.X -= StateMachineScript.RunAcceleration;
-            }
-            else if (StateMachineScript.smPlayerVelocity.X < -GroundMoveSpeed)
-            {
-                StateMachineScript.BaseAcceleration = 0f;
             }
 
-            if (StateMachineScript.smInputManager.PlayerContinuousInputs["move_left"] && StateMachineScript.smInputManager.PlayerContinuousInputs["move_right"])
-            {
-                StateMachineScript.smPlayerVelocity.X = 0;
-            }
+            StateMachineScript.smPlayerVelocity.X += InputManager.HorizontalInput * StateMachineScript.RunAcceleration;
+
+            StateMachineScript.smPlayerVelocity.X = Mathf.Clamp(StateMachineScript.smPlayerVelocity.X, -GroundMoveSpeed, GroundMoveSpeed);
         }
-
-        else if (InputManager.PlayerContinuousInputs["move_right"])
-        {
-            if (StateMachineScript.smPlayerVelocity.X < 0)
-            {
-                StateMachineScript.BaseAcceleration = 200.0f;
-                StateMachineScript.smPlayerVelocity.X += StateMachineScript.RunAcceleration;
-            }
-            if (StateMachineScript.smPlayerVelocity.X <= GroundMoveSpeed)
-            {
-                StateMachineScript.BaseAcceleration = 20.0f;
-                StateMachineScript.smPlayerVelocity.X += StateMachineScript.RunAcceleration;
-            }
-            else if (StateMachineScript.smPlayerVelocity.X > GroundMoveSpeed)
-            {
-                StateMachineScript.BaseAcceleration = 0f;
-            }
-        }
-
-        else if (StateMachineScript.smPlayerVelocity.X > 0)
+        else
         {
             StateMachineScript.BaseAcceleration = 20.0f;
-            StateMachineScript.smPlayerVelocity.X = Mathf.Max(0, StateMachineScript.smPlayerVelocity.X - StateMachineScript.RunAcceleration);
-        }
 
-        else if (StateMachineScript.smPlayerVelocity.X < 0)
-        {
-            StateMachineScript.BaseAcceleration = 20.0f;
-            StateMachineScript.smPlayerVelocity.X = Mathf.Min(0, StateMachineScript.smPlayerVelocity.X + StateMachineScript.RunAcceleration);
+            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0, StateMachineScript.RunAcceleration);
         }
         #endregion
 

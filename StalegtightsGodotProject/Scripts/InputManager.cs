@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 public partial class InputManager : Node
@@ -47,6 +48,15 @@ public partial class InputManager : Node
     public Timer WallJumpTimer { get; private set; }
 
     public bool JumpOutWallCancel { get; private set; } = false;
+
+    //Mainly for analog stick Vector2 using direction inputs
+    public float HorizontalInput { get; private set; }
+    public float VerticalInput { get; private set; }
+    public Vector2 RawInput { get; private set; }
+
+    //Controller Deadzone setting. 0 is center, -1 is left and up, 1 is right and down. Deadzone set to amount before limit to account for stick drift
+    public float AnalogDeadzoneMax { get; private set; } = 0.8f;
+    public float AnalogDeadzoneMin { get; private set; } = 0.2f;
     #endregion
 
     #region Ready
@@ -92,6 +102,20 @@ public partial class InputManager : Node
         //Moving
         PlayerContinuousInputs["move_left"] = Input.IsActionPressed("move_left");
         PlayerContinuousInputs["move_right"] = Input.IsActionPressed("move_right");
+
+        RawInput = Input.GetVector("move_left", "move_right", "up", "down");
+
+        HorizontalInput = ApplyDeadzone(RawInput.X);
+        VerticalInput = ApplyDeadzone(RawInput.Y);
+
+        /*if (Mathf.Abs(RawInput.X) < AnalogDeadzoneMin)
+        {
+            HorizontalInput = 0;
+        }
+        else
+        {
+            HorizontalInput = Mathf.Sign(RawInput.X) * Mathf.InverseLerp(AnalogDeadzoneMin, AnalogDeadzoneMax, Mathf.Min(Mathf.Abs(RawInput.X), AnalogDeadzoneMax));
+        }*/
 
         //Ducking
         PlayerContinuousInputs["duck"] = Input.IsActionPressed("duck");
@@ -177,6 +201,15 @@ public partial class InputManager : Node
             PlayerInputBuffers["wall_jump_right"] = false;
         }
         #endregion
+    }
+    #endregion
+    #region Methods
+    private float ApplyDeadzone(float value)
+    {
+        if (Mathf.Abs(value) < AnalogDeadzoneMin)
+        { return 0; }
+
+        return Mathf.Sign(value) * Mathf.InverseLerp(AnalogDeadzoneMin, AnalogDeadzoneMax, Mathf.Min(Mathf.Abs(value), AnalogDeadzoneMax));
     }
     #endregion
 }

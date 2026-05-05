@@ -92,6 +92,7 @@ public partial class StateMachine : Node
     public override void _PhysicsProcess(double delta)
     {
         CurrentState.InputBuffer(delta);
+        GD.Print($"RawX: {smInputManager.RawInput.X:F3} | Horizontal: {smInputManager.HorizontalInput:F3} | Vertical: {smInputManager.VerticalInput:F3}");
 
         // Call current state for continuous input handling (first)
         CurrentState.HandleContinuousInput(delta);
