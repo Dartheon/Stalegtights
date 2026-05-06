@@ -42,6 +42,7 @@ public partial class StateMachine : Node
     public bool hasWeapon = false; //bool to see if player is holding weapon
     public bool hasStalag = false; //bool to see if player is holding stalag
     public bool isLanding = false; //bool to see if player is jumping
+    public bool groundToClimb = false; //bool to check whether climbing starts from ground or air
     #endregion
 
     #region Movement
@@ -92,7 +93,7 @@ public partial class StateMachine : Node
     public override void _PhysicsProcess(double delta)
     {
         CurrentState.InputBuffer(delta);
-        GD.Print($"RawX: {smInputManager.RawInput.X:F3} | Horizontal: {smInputManager.HorizontalInput:F3} | Vertical: {smInputManager.VerticalInput:F3}");
+        //GD.Print($"RawX: {smInputManager.RawInput.X:F3} | Horizontal: {smInputManager.HorizontalInput:F3} | Vertical: {smInputManager.VerticalInput:F3}");
 
         // Call current state for continuous input handling (first)
         CurrentState.HandleContinuousInput(delta);

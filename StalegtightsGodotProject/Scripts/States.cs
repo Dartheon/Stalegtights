@@ -10,7 +10,7 @@ public partial class States : Node
     #endregion
 
     #region General
-    protected StateMachine StateMachineScript { get; private set; }
+    public StateMachine StateMachineScript { get; private set; }
 
     protected CharacterBody2D PlayerCB2D => StateMachineScript.smPlayerCB2D;
     protected Player PlayerScript => StateMachineScript.smPlayerScript;
@@ -31,12 +31,13 @@ public partial class States : Node
     public bool HasWeapon { get; protected set; } = false;
     public bool HasStalag { get; protected set; } = false;
     public bool IsLanding { get; protected set; } = false;
+    public bool GroundToClimb { get; protected set; } = false;
     #endregion
 
     #region Movement
     // Get the gravity from the project settings to be synced with RigidBody nodes.
-    public float Gravity => StateMachineScript.smGravity;
-    public float PlayerJumpVelocity => StateMachineScript.smPlayerJumpVelocity;
+    protected float Gravity => StateMachineScript.smGravity;
+    protected float PlayerJumpVelocity => StateMachineScript.smPlayerJumpVelocity;
     #endregion
     #endregion
 

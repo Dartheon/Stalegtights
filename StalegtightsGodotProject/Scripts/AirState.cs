@@ -1,3 +1,4 @@
+using System.Data;
 using Godot;
 
 public partial class AirState : States
@@ -70,6 +71,7 @@ public partial class AirState : States
         //Used for testing, will be handled different later
         StateMachineScript.hasStalag = HasStalag;
         StateMachineScript.hasWeapon = HasWeapon;
+        StateMachineScript.groundToClimb = GroundToClimb;
         #endregion
 
         #region Movement
@@ -84,10 +86,16 @@ public partial class AirState : States
         #endregion
 
         #region Animation
-        //Updates the LastFacingDirection based on velocity
-        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.1f) // If moving, update facing
+        //Updates the LastFacingDirection based on velocity if no input
+        if (StateMachineScript.smPlayerVelocity.X != 0 && InputManager.HorizontalInput == 0) // If player moving with no input, update facing
         {
             StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1 : -1;
+        }
+
+        //Updates LastFacingDirection based on Input
+        if (InputManager.HorizontalInput != 0) // If moving, update facing
+        {
+            StateMachineScript.LastFacingDirection = InputManager.HorizontalInput > 0 ? 1 : -1;
         }
 
         //Sets the blend using te LastFacingPosition
@@ -107,14 +115,7 @@ public partial class AirState : States
         #endregion
 
         #region Movement
-        //Possible tweek for jumping, if jump happens in buffer lessen the jump power
-        #region Detect any Jump and keep track of the type of jump used
-        if (InputManager.PlayerInputBuffers["ground_jump"])
-        {
-            StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
-            InputManager.PlayerInputBuffers["ground_jump"] = false;
-        }
-        #endregion
+        //
         #endregion
     }
     #endregion
@@ -135,75 +136,36 @@ public partial class AirState : States
 
         #region Movement
         #region Check for Climbing Input
-        //TO DO: Change how In Air Controls are assigned/applied to the player
-        //  Must not interfere with movement when entering Air State from any other state
-        // Normal air control
-        float direction = (InputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (InputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
-        if (direction != 0 && StateMachineScript.smPlayerVelocity.X < inAirMoveSpeed && StateMachineScript.smPlayerVelocity.X > -inAirMoveSpeed)
+        if (InputManager.HorizontalInput != 0 && StateMachineScript.smPlayerVelocity.X < inAirMoveSpeed && StateMachineScript.smPlayerVelocity.X > -inAirMoveSpeed)
         {
-            StateMachineScript.smPlayerVelocity.X = direction * inAirMoveSpeed; //Must Change in the Future
+            StateMachineScript.smPlayerVelocity.X = InputManager.HorizontalInput * inAirMoveSpeed;
         }
 
         if (PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
         {
+            GroundToClimb = true;
             ChangeToNewState(CLIMBINGSTATESTRING);
             return;
         }
         #endregion
 
         #region Check Input for Moving Right/Left
-        if (InputManager.PlayerContinuousInputs["move_left"] && InputManager.PlayerContinuousInputs["move_right"])
+        if (InputManager.HorizontalInput != 0)
         {
-            if (StateMachineScript.smPlayerVelocity.X > 0)
-            {
-                StateMachineScript.BaseAcceleration = 10.0f;
-                StateMachineScript.smPlayerVelocity.X = Mathf.Max(0, StateMachineScript.smPlayerVelocity.X - StateMachineScript.RunAcceleration);
-            }
-
-            else if (StateMachineScript.smPlayerVelocity.X < 0)
-            {
-                StateMachineScript.BaseAcceleration = 10.0f;
-                StateMachineScript.smPlayerVelocity.X = Mathf.Min(0, StateMachineScript.smPlayerVelocity.X + StateMachineScript.RunAcceleration);
-            }
-        }
-
-        else if (InputManager.PlayerContinuousInputs["move_left"])
-        {
-            if (StateMachineScript.smPlayerVelocity.X >= -inAirMoveSpeed)
-            {
-                StateMachineScript.BaseAcceleration = 20.0f;
-                StateMachineScript.smPlayerVelocity.X -= StateMachineScript.RunAcceleration;
-            }
-            else if (StateMachineScript.smPlayerVelocity.X < -inAirMoveSpeed)
-            {
-                StateMachineScript.BaseAcceleration = 0f;
-            }
-        }
-
-        else if (InputManager.PlayerContinuousInputs["move_right"])
-        {
-            if (StateMachineScript.smPlayerVelocity.X <= inAirMoveSpeed)
-            {
-                StateMachineScript.BaseAcceleration = 20.0f;
-                StateMachineScript.smPlayerVelocity.X += StateMachineScript.RunAcceleration;
-            }
-            else if (StateMachineScript.smPlayerVelocity.X > inAirMoveSpeed)
-            {
-                StateMachineScript.BaseAcceleration = 0f;
-            }
-
-        }
-
-        else if (StateMachineScript.smPlayerVelocity.X > 0)
-        {
+            // Apply air acceleration toward input direction
             StateMachineScript.BaseAcceleration = 20.0f;
-            StateMachineScript.smPlayerVelocity.X = Mathf.Max(0, StateMachineScript.smPlayerVelocity.X - StateMachineScript.RunAcceleration);
-        }
 
-        else if (StateMachineScript.smPlayerVelocity.X < 0)
+            StateMachineScript.smPlayerVelocity.X += InputManager.HorizontalInput * StateMachineScript.RunAcceleration;
+
+            // Clamp to air max speed
+            StateMachineScript.smPlayerVelocity.X = Mathf.Clamp(StateMachineScript.smPlayerVelocity.X, -inAirMoveSpeed, inAirMoveSpeed);
+        }
+        else
         {
-            StateMachineScript.BaseAcceleration = 20.0f;
-            StateMachineScript.smPlayerVelocity.X = Mathf.Min(0, StateMachineScript.smPlayerVelocity.X + StateMachineScript.RunAcceleration);
+            // Air deceleration (no input)
+            StateMachineScript.BaseAcceleration = 10.0f;
+
+            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0, StateMachineScript.RunAcceleration);
         }
         #endregion
         #endregion
@@ -241,8 +203,6 @@ public partial class AirState : States
         #endregion
 
         #region Check for Character interacting with the wall
-        currentDirection = (InputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (InputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
-
         if (PlayerCB2D.IsOnWall())
         {
             Vector2 wallNormal = PlayerCB2D.GetWallNormal();
@@ -280,7 +240,7 @@ public partial class AirState : States
 
         if (PlayerCB2D.IsOnFloor())
         {
-            IsLanding = false;
+            IsLanding = false; //for the animation tree
 
             ChangeToNewState(GROUNDSTATESTRING);
             return;
@@ -356,6 +316,7 @@ public partial class AirState : States
 
         #region Animations
         StateMachineScript.isLanding = IsLanding;
+        StateMachineScript.groundToClimb = GroundToClimb;
         #endregion
 
         #region Movement

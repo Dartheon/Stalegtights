@@ -10,7 +10,7 @@ public partial class InputManager : Node
     private MenuUI menuUI;
 
     //These inputs are for one-time presses that need timers to reset the bool value
-    public Dictionary<string, bool> PlayerInputBuffers { get; set; } = new()
+    public Dictionary<string, bool> PlayerInputBuffers { get; private set; } = new()
     {
         //Player Inputs That Require a Timer to Reset
         { "ground_jump", false },
@@ -20,7 +20,7 @@ public partial class InputManager : Node
     };
 
     //These inputs are for continuous key presses that the bool needs to be reset in the code
-    public Dictionary<string, bool> PlayerContinuousInputs { get; set; } = new()
+    public Dictionary<string, bool> PlayerContinuousInputs { get; private set; } = new()
     {
         //Player Inputs That Get Reset In the Code
         { "move_right", false },
@@ -50,8 +50,8 @@ public partial class InputManager : Node
     public bool JumpOutWallCancel { get; private set; } = false;
 
     //Mainly for analog stick Vector2 using direction inputs
-    public float HorizontalInput { get; private set; }
-    public float VerticalInput { get; private set; }
+    public float HorizontalInput { get; private set; } = 0.0f;
+    public float VerticalInput { get; private set; } = 0.0f;
     public Vector2 RawInput { get; private set; }
 
     //Controller Deadzone setting. 0 is center, -1 is left and up, 1 is right and down. Deadzone set to amount before limit to account for stick drift
@@ -100,22 +100,10 @@ public partial class InputManager : Node
 
         #region Movement
         //Moving
-        PlayerContinuousInputs["move_left"] = Input.IsActionPressed("move_left");
-        PlayerContinuousInputs["move_right"] = Input.IsActionPressed("move_right");
-
         RawInput = Input.GetVector("move_left", "move_right", "up", "down");
 
         HorizontalInput = ApplyDeadzone(RawInput.X);
         VerticalInput = ApplyDeadzone(RawInput.Y);
-
-        /*if (Mathf.Abs(RawInput.X) < AnalogDeadzoneMin)
-        {
-            HorizontalInput = 0;
-        }
-        else
-        {
-            HorizontalInput = Mathf.Sign(RawInput.X) * Mathf.InverseLerp(AnalogDeadzoneMin, AnalogDeadzoneMax, Mathf.Min(Mathf.Abs(RawInput.X), AnalogDeadzoneMax));
-        }*/
 
         //Ducking
         PlayerContinuousInputs["duck"] = Input.IsActionPressed("duck");
@@ -160,7 +148,7 @@ public partial class InputManager : Node
 
         #region Movement
         //Player Jump
-        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || !GroundJumpTimer.IsStopped()) || Input.IsActionJustPressed("jump") && (playerCB2D.PlayerOnLadder || !GroundJumpTimer.IsStopped()))
+        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || playerCB2D.PlayerOnLadder || !GroundJumpTimer.IsStopped()))
         {
             PlayerInputBuffers["ground_jump"] = true;
         }

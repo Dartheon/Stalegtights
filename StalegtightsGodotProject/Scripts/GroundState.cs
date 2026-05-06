@@ -27,6 +27,7 @@ public partial class GroundState : States
     #endregion
 
     #region Animation
+    public float AnimHorizontal { get; private set; }
     private float runBlend; //Used for storing a variable to use in the AnimationTree BlendSpace1D for running
     #endregion
 
@@ -76,6 +77,7 @@ public partial class GroundState : States
         StateMachineScript.hasStalag = HasStalag;
         StateMachineScript.hasWeapon = HasWeapon;
         StateMachineScript.isLanding = IsLanding;
+        StateMachineScript.groundToClimb = GroundToClimb;
         #endregion
 
         #region Movement
@@ -98,18 +100,19 @@ public partial class GroundState : States
         //Sets the Idle bool to true or false
         StateMachineScript.PlayerAnimIdle = StateMachineScript.smPlayerVelocity.X == 0.0f ? true : false;
 
-        //Normalizes the Velocity before setting the BlendSpace value to it
-        runBlend = Mathf.Clamp(StateMachineScript.smPlayerVelocity.X / GroundMoveSpeed, -1f, 1f);
-        //Sets the blend Value in the AnimationTree
-        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position", runBlend);
-
-        //Updates the LastFacingDirection based on velocity
-        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.1f) // If moving, update facing
+        //Set horizontal input as long as input is not 0
+        if (InputManager.HorizontalInput != 0)
         {
-            StateMachineScript.LastFacingDirection = StateMachineScript.smPlayerVelocity.X > 0 ? 1 : -1;
+            AnimHorizontal = InputManager.HorizontalInput;
+
+            //Updates the LastFacingDirection based on Input
+            StateMachineScript.LastFacingDirection = Mathf.Sign(InputManager.HorizontalInput);
         }
 
-        //Sets the blend using the LastFacingPosition
+        //Sets the blend Value in the AnimationTree
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position", AnimHorizontal);
+
+        // Apply to animations
         StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position", StateMachineScript.LastFacingDirection);
         StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position", StateMachineScript.LastFacingDirection);
         #endregion
@@ -132,8 +135,9 @@ public partial class GroundState : States
         if (InputManager.PlayerInputBuffers["ground_jump"])
         {
             //timer here as long as holding, reset on ground
+            InputManager.PlayerInputBuffers["ground_jump"] = false;
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
-            StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"] = false;
+
             ChangeToNewState(AIRSTATESTRING);
             return;
         }
@@ -204,6 +208,7 @@ public partial class GroundState : States
         #region Check if Character is Interacting with a Climbable Surface
         if (InputManager.PlayerContinuousInputs["climb_up"])
         {
+            GroundToClimb = false;
             ChangeToNewState(CLIMBINGSTATESTRING);
             return;
         }
@@ -216,6 +221,7 @@ public partial class GroundState : States
             {
                 PlayerScript.PlayerOnLadder = true;
                 shape2D.GetParent().GetParent().CallDeferred("OnWayDisableLadderTop", shape2D);
+                GroundToClimb = false;
                 ChangeToNewState(CLIMBINGSTATESTRING);
                 return;
             }
@@ -273,14 +279,14 @@ public partial class GroundState : States
         #endregion
 
         #region Check if Character is on the Ground
-        if (!PlayerCB2D.IsOnFloor() && (Player.PlayerAboveLadder.Count == 0 || !StateMachineScript.smInputManager.PlayerInputBuffers["ground_jump"]))
+        if (!PlayerCB2D.IsOnFloor() && ((Player.PlayerAboveLadder.Count == 0) || !InputManager.PlayerInputBuffers["ground_jump"]))
         {
             ChangeToNewState(AIRSTATESTRING);
             return;
         }
         else
         {
-            //sets the velocity to 0 if the player is not touching the ground
+            //sets the velocity to 0 if the player is touching the ground
             StateMachineScript.smPlayerVelocity.Y = 0.0f;
         }
         #endregion
@@ -298,7 +304,6 @@ public partial class GroundState : States
      HIPU* detect input for stalag system
 	 HIPU* detect input for stomping
 	 HIPU* detect input for attacking
-     HIPU* detect input for climbing
      HIPU* detect input for walljumping
     */
     public override void HandleInput(InputEvent @event)
@@ -340,10 +345,6 @@ public partial class GroundState : States
         //
         #endregion
 
-        #region Check for Climbing Input
-        //
-        #endregion
-
         #region Check for Wall Jumping
         //
         #endregion
@@ -372,6 +373,7 @@ public partial class GroundState : States
         //Due to how the AnimationTree Expressions check bools it works if the bools are reversed when setting them to change the states
         IsLanding = true;
         StateMachineScript.isLanding = IsLanding;
+        StateMachineScript.groundToClimb = GroundToClimb;
         #endregion
 
         #region Movement
