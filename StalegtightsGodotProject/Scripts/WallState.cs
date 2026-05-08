@@ -27,7 +27,6 @@ public partial class WallState : States
 
     #region Movement
     private int enteringDirection; //holds the direction player was when entering the wall
-    private int currentDirection; //current direction the player is facing
     private int wallDirection;
     private Timer wallDetachTimer;
     private float waitTimer = 1.0f; //used to control how long player attaches to the wall after no input is detected to hold to wall
@@ -243,12 +242,8 @@ public partial class WallState : States
         #endregion
 
         #region Movement
-        #region Touching the Wall
-        currentDirection = (InputManager.PlayerContinuousInputs["move_right"] ? 1 : 0) - (InputManager.PlayerContinuousInputs["move_left"] ? 1 : 0);
-        #endregion
-
         #region Check to see if still on wall - if character collider is still interacting with the wall
-        if (PlayerCB2D.IsOnWall() && !InputManager.PlayerContinuousInputs["move_left"] && !InputManager.PlayerContinuousInputs["move_right"] || StateMachineScript.smWallDirection != currentDirection && currentDirection != 0)
+        if (PlayerCB2D.IsOnWall() && ((!InputManager.LeftIntent && !InputManager.RightIntent) || (StateMachineScript.smWallDirection < 0 && InputManager.RightIntent) || (StateMachineScript.smWallDirection > 0 && InputManager.LeftIntent)))
         {
             if (wallDetachTimer.IsStopped())
             {
@@ -283,7 +278,7 @@ public partial class WallState : States
         #endregion
 
         #region Touching the Ground
-        if (PlayerCB2D.IsOnFloor())
+        if (!StateMachineScript.smTeleporting && PlayerCB2D.IsOnFloor())
         {
             ChangeToNewState(GROUNDSTATESTRING);
             return;
@@ -308,7 +303,6 @@ public partial class WallState : States
             wallSlideState = WallSlideState.FastSlide;
         }
 
-        // Apply velocity
         // Prevent upward motion
         float yVelocity = PlayerCB2D.Velocity.Y;
         if (yVelocity < 0)
@@ -339,9 +333,9 @@ public partial class WallState : States
         #endregion
 
         #region Movement
-        #region Detect if Character is Dropping Down - add code
+        #region Detect if Character is Dropping Down
         //if direction out of wall and down enter air state
-        if (StateMachineScript.smWallDirection != currentDirection && InputManager.PlayerContinuousInputs["wall_drop_down"])
+        if (InputManager.PlayerContinuousInputs["wall_drop_down"])
         {
             ChangeToNewState(AIRSTATESTRING);
             return;
@@ -392,9 +386,10 @@ public partial class WallState : States
 
     public async void WallCancel()
     {
-        //method sets a bool value to true -> wait a timer -> then sends a signal to set it back to false
         StateMachineScript.smWallCancel = true;
-        await ToSignal(GetTree().CreateTimer(0.1f), SceneTreeTimer.SignalName.Timeout);
+
+        await ToSignal(GetTree().CreateTimer(0.25f), SceneTreeTimer.SignalName.Timeout);
+
         StateMachineScript.smWallCancel = false;
     }
 }

@@ -32,6 +32,9 @@ public partial class AirState : States
     #region Movement
     [Export] private float inAirMoveSpeed = 300.0f; //speed of the character in the air
     private int currentDirection = 0;
+    private float airControlMultiplier = 1.0f;
+    private bool oppositeDirection;
+    private bool belowSpeedCap;
     #endregion
     #endregion
 
@@ -141,7 +144,7 @@ public partial class AirState : States
             StateMachineScript.smPlayerVelocity.X = InputManager.HorizontalInput * inAirMoveSpeed;
         }
 
-        if (PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
+        if (!StateMachineScript.smTeleporting && PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
         {
             GroundToClimb = true;
             ChangeToNewState(CLIMBINGSTATESTRING);
@@ -152,17 +155,29 @@ public partial class AirState : States
         #region Check Input for Moving Right/Left
         if (InputManager.HorizontalInput != 0)
         {
-            // Apply air acceleration toward input direction
             StateMachineScript.BaseAcceleration = 20.0f;
 
-            StateMachineScript.smPlayerVelocity.X += InputManager.HorizontalInput * StateMachineScript.RunAcceleration;
+            airControlMultiplier = 1.0f;
 
-            // Clamp to air max speed
-            StateMachineScript.smPlayerVelocity.X = Mathf.Clamp(StateMachineScript.smPlayerVelocity.X, -inAirMoveSpeed, inAirMoveSpeed);
+            oppositeDirection = Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X);
+
+            if (StateMachineScript.smWallCancel && oppositeDirection)
+            {
+                airControlMultiplier = 0.15f;
+            }
+
+            belowSpeedCap = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < inAirMoveSpeed;
+
+            // Allow acceleration if:
+            // - below speed cap
+            // - OR changing directions
+            if (belowSpeedCap || oppositeDirection)
+            {
+                StateMachineScript.smPlayerVelocity.X += InputManager.HorizontalInput * StateMachineScript.RunAcceleration * airControlMultiplier;
+            }
         }
         else
         {
-            // Air deceleration (no input)
             StateMachineScript.BaseAcceleration = 10.0f;
 
             StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0, StateMachineScript.RunAcceleration);
@@ -222,7 +237,7 @@ public partial class AirState : States
         }
 
 
-        if (!StateMachineScript.smWallCancel && PlayerCB2D.IsOnWall())
+        if (!StateMachineScript.smTeleporting && !StateMachineScript.smWallCancel && PlayerCB2D.IsOnWall())
         {
             Vector2 wallNormal = PlayerCB2D.GetWallNormal();
 
@@ -237,8 +252,7 @@ public partial class AirState : States
         #endregion
 
         #region Check if the Character is Grounded
-
-        if (PlayerCB2D.IsOnFloor())
+        if (!StateMachineScript.smTeleporting && PlayerCB2D.IsOnFloor())
         {
             IsLanding = false; //for the animation tree
 

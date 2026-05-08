@@ -160,7 +160,7 @@ public partial class ClimbingState : States
         #region Movement
         if (!PlayerScript.PlayerOnLadder)
         {
-            if (PlayerCB2D.IsOnFloor())
+            if (!StateMachineScript.smTeleporting && PlayerCB2D.IsOnFloor())
             {
                 ChangeToNewState(GROUNDSTATESTRING);
                 return;
@@ -190,7 +190,7 @@ public partial class ClimbingState : States
 
         #region Movement
         //When at the bottom of a ladder and the down key is pressed, set the state to ground
-        if (InputManager.PlayerContinuousInputs["climb_down"] && PlayerCB2D.IsOnFloor())
+        if (!StateMachineScript.smTeleporting && InputManager.PlayerContinuousInputs["climb_down"] && PlayerCB2D.IsOnFloor())
         {
             ChangeToNewState(GROUNDSTATESTRING);
             return;

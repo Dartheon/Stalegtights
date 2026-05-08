@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
 public partial class InputManager : Node
@@ -23,8 +22,6 @@ public partial class InputManager : Node
     public Dictionary<string, bool> PlayerContinuousInputs { get; private set; } = new()
     {
         //Player Inputs That Get Reset In the Code
-        { "move_right", false },
-        { "move_left", false },
         { "interact", false },
         { "duck", false },
         { "crawling_left", false },
@@ -54,6 +51,12 @@ public partial class InputManager : Node
     public float VerticalInput { get; private set; } = 0.0f;
     public Vector2 RawInput { get; private set; }
 
+    //For reading the direction input an using that to set a bool for specific directions pressed
+    public bool UpIntent { get; private set; }
+    public bool DownIntent { get; private set; }
+    public bool RightIntent { get; private set; }
+    public bool LeftIntent { get; private set; }
+
     //Controller Deadzone setting. 0 is center, -1 is left and up, 1 is right and down. Deadzone set to amount before limit to account for stick drift
     public float AnalogDeadzoneMax { get; private set; } = 0.8f;
     public float AnalogDeadzoneMin { get; private set; } = 0.2f;
@@ -66,7 +69,6 @@ public partial class InputManager : Node
         playerCB2D = GetNode<Player>("/root/Main/World/Player");
         menuUI = GetNode<MenuUI>("/root/Main/UILayer/MenuUI");
         GroundJumpTimer = GetNode<Timer>("GroundJumpTimer");
-        WallJumpTimer = GetNode<Timer>("WallJumpTimer");
     }
     #endregion
 
@@ -91,7 +93,8 @@ public partial class InputManager : Node
     public override void _PhysicsProcess(double delta)
     {
         #region General
-        //
+        //Player Interact
+        PlayerContinuousInputs["interact"] = Input.IsActionJustPressed("interact") && (GameManager.InteractablesEntered?.Count > 0);
         #endregion
 
         #region Debug
@@ -102,34 +105,114 @@ public partial class InputManager : Node
         //Moving
         RawInput = Input.GetVector("move_left", "move_right", "up", "down");
 
-        HorizontalInput = ApplyDeadzone(RawInput.X);
         VerticalInput = ApplyDeadzone(RawInput.Y);
 
-        //Ducking
+        if (stateMachineScript.smDisableVerticalInput)
+        {
+            VerticalInput = 0;
+        }
+        else
+        {
+            // Disable UP only
+            if (stateMachineScript.smDisableUpInput && VerticalInput < 0)
+            {
+                VerticalInput = 0;
+            }
+
+            // Disable DOWN only
+            if (stateMachineScript.smDisableDownInput && VerticalInput > 0)
+            {
+                VerticalInput = 0;
+            }
+        }
+
+        UpIntent = VerticalInput < -0.5f;
+        DownIntent = VerticalInput > 0.5f;
+
+        HorizontalInput = ApplyDeadzone(RawInput.X);
+
+        if (stateMachineScript.smDisableHorizontalInput)
+        {
+            HorizontalInput = 0;
+        }
+        else
+        {
+            // Disable LEFT only
+            if (stateMachineScript.smDisableLeftInput && HorizontalInput < 0)
+            {
+                HorizontalInput = 0;
+            }
+
+            // Disable RIGHT only
+            if (stateMachineScript.smDisableRightInput && HorizontalInput > 0)
+            {
+                HorizontalInput = 0;
+            }
+        }
+
+        LeftIntent = HorizontalInput < -0.5f;
+        RightIntent = HorizontalInput > 0.5f;
+
+        //Ducking - Needs Changing to new Input Intent
         PlayerContinuousInputs["duck"] = Input.IsActionPressed("duck");
 
-        //Crawling
-        PlayerContinuousInputs["crawling_left"] = Input.IsActionPressed("duck") && Input.IsActionPressed("move_left");
-        PlayerContinuousInputs["crawling_right"] = Input.IsActionPressed("duck") && Input.IsActionPressed("move_right");
+        //Crawling - Needs More Testing with Intents
+        PlayerContinuousInputs["crawling_left"] = Input.IsActionPressed("duck") && LeftIntent;
+        PlayerContinuousInputs["crawling_right"] = Input.IsActionPressed("duck") && RightIntent;
 
         //Climbing
-        PlayerContinuousInputs["climb_up"] = Input.IsActionPressed("climb_up") && playerCB2D.PlayerOnLadder;
-        PlayerContinuousInputs["climb_down"] = Input.IsActionPressed("climb_down") && playerCB2D.PlayerOnLadder;
-        PlayerContinuousInputs["climb_down_ladder_top"] = Input.IsActionPressed("climb_down") && playerCB2D.IsOnFloor() && Player.PlayerAboveLadder.Count > 0;
+        PlayerContinuousInputs["climb_up"] = UpIntent && !DownIntent && !RightIntent && !LeftIntent && playerCB2D.PlayerOnLadder;
+        PlayerContinuousInputs["climb_down"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent && playerCB2D.PlayerOnLadder;
+        PlayerContinuousInputs["climb_down_ladder_top"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent && playerCB2D.IsOnFloor() && Player.PlayerAboveLadder.Count > 0;
 
         //Wall
-        PlayerContinuousInputs["wall_drop_down"] = Input.IsActionPressed("down");
+        PlayerContinuousInputs["wall_drop_down"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent;
+
+        //Jumping
+        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloorOnly() || playerCB2D.PlayerOnLadder || !GroundJumpTimer.IsStopped()))
+        {
+            PlayerInputBuffers["ground_jump"] = true;
+        }
+
+        if (Input.IsActionJustPressed("jump") && playerCB2D.IsOnWallOnly())
+        {
+            PlayerInputBuffers["wall_jump"] = true;
+        }
+
+        //TO DO: add a ground wall jump when in a corner using isonfloor() and isonwall() with a groundjump
+
+        //Wall Jump Out
+        if (playerCB2D.IsOnWallOnly() && RightIntent && !LeftIntent && !UpIntent && !DownIntent)
+        {
+            PlayerInputBuffers["wall_jump_right"] = true;
+            JumpOutWallCancel = false;
+        }
+
+        if (playerCB2D.IsOnWallOnly() && LeftIntent && !RightIntent && !UpIntent && !DownIntent)
+        {
+            PlayerInputBuffers["wall_jump_left"] = true;
+            JumpOutWallCancel = false;
+        }
+
+        //Wall Jump Out Cancel when direction is released
+        if (Input.IsActionJustReleased("move_left") || Input.IsActionJustReleased("move_right"))
+        {
+            JumpOutWallCancel = true;
+        }
+
+        if (playerCB2D.IsOnWall() && (UpIntent || DownIntent) && !RightIntent && !LeftIntent)
+        {
+            PlayerInputBuffers["wall_jump_left"] = false;
+            PlayerInputBuffers["wall_jump_right"] = false;
+        }
         #endregion
     }
     #endregion
 
-    #region Unhandled Input
-    public override void _UnhandledKeyInput(InputEvent @event)
+    #region Unhandled Input - Menus/UI Interaction
+    public override void _UnhandledInput(InputEvent @event)
     {
         #region General
-        //Player Interact
-        PlayerContinuousInputs["interact"] = Input.IsActionJustPressed("interact") && (GameManager.InteractablesEntered?.Count > 0);
-
         //Main Menu
         PlayerContinuousInputs["main_menu"] = Input.IsActionJustPressed("main_menu");
 
@@ -144,50 +227,6 @@ public partial class InputManager : Node
         PlayerContinuousInputs["engine_scale_down"] = Input.IsActionJustPressed("engine_scale_down");
         //Player Interact
         PlayerContinuousInputs["engine_scale_reset"] = Input.IsActionJustPressed("engine_scale_reset");
-        #endregion
-
-        #region Movement
-        //Player Jump
-        if (Input.IsActionJustPressed("jump") && (playerCB2D.IsOnFloor() || playerCB2D.PlayerOnLadder || !GroundJumpTimer.IsStopped()))
-        {
-            PlayerInputBuffers["ground_jump"] = true;
-        }
-
-        if (Input.IsActionJustPressed("jump") && playerCB2D.IsOnWall() || !WallJumpTimer.IsStopped())
-        {
-            PlayerInputBuffers["wall_jump"] = true;
-        }
-
-        //Wall Jump Out
-        if (playerCB2D.IsOnWall() && Input.IsActionPressed("wall_jump_right"))
-        {
-            PlayerInputBuffers["wall_jump_right"] = true;
-            JumpOutWallCancel = false;
-        }
-
-        if (playerCB2D.IsOnWall() && Input.IsActionPressed("wall_jump_left"))
-        {
-            PlayerInputBuffers["wall_jump_left"] = true;
-            JumpOutWallCancel = false;
-        }
-
-        //Wall Jump Out Cancel when direction is released
-        if (Input.IsActionJustReleased("wall_jump_left") || Input.IsActionJustReleased("wall_jump_right"))
-        {
-            JumpOutWallCancel = true;
-        }
-
-        if (playerCB2D.IsOnWall() && Input.IsActionJustPressed("up"))
-        {
-            PlayerInputBuffers["wall_jump_left"] = false;
-            PlayerInputBuffers["wall_jump_right"] = false;
-        }
-
-        if (playerCB2D.IsOnWall() && Input.IsActionJustPressed("down"))
-        {
-            PlayerInputBuffers["wall_jump_left"] = false;
-            PlayerInputBuffers["wall_jump_right"] = false;
-        }
         #endregion
     }
     #endregion

@@ -30,6 +30,8 @@ public partial class StateMachine : Node
     public float RunAccelerationModifier { get; set; } = 1.0f;
     public float RunAcceleration => BaseAcceleration * RunAccelerationModifier;
     public float smLadderDetachTimer { get; set; } = 0f;
+
+    public bool smTeleporting { get; set; }
     #endregion
 
     #region Animations
@@ -50,6 +52,12 @@ public partial class StateMachine : Node
     [Export] public float BaseJumpVelocity { get; private set; } = -750.0f;
     public float JumpModifier { get; set; } = 1.0f;
     public float smPlayerJumpVelocity => BaseJumpVelocity * JumpModifier;
+    public bool smDisableHorizontalInput { get; set; } = false;
+    public bool smDisableVerticalInput { get; set; } = false;
+    public bool smDisableUpInput { get; set; } = false;
+    public bool smDisableDownInput { get; set; } = false;
+    public bool smDisableRightInput { get; set; } = false;
+    public bool smDisableLeftInput { get; set; } = false;
     #endregion
 
     #region Methods
@@ -110,14 +118,9 @@ public partial class StateMachine : Node
         {
             smInputManager.GroundJumpTimer.Start();
         }
-
-        if (!smPlayerCB2D.IsOnWall() && wasOnWall)
-        {
-            smInputManager.GroundJumpTimer.Start();
-        }
     }
 
-    public override void _UnhandledKeyInput(InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
         CurrentState.HandleInput(@event);
     }
@@ -138,6 +141,36 @@ public partial class StateMachine : Node
     public void CurrentAnimationStartPlaying(StringName animName)
     {
         CurrentAnimationPlaying = animName;
+    }
+
+    public async void ResetPlayerState()
+    {
+        smTeleporting = true;
+        smWallCancel = true;
+
+        smPlayerVelocity = Vector2.Zero;
+
+        smWallDirection = 0;
+
+        smInputManager.PlayerInputBuffers["wall_jump"] = false;
+        smInputManager.PlayerInputBuffers["wall_jump_left"] = false;
+        smInputManager.PlayerInputBuffers["wall_jump_right"] = false;
+
+        //Clear Ladders
+        Player.PlayerAboveLadder.Clear();
+        GameManager.LaddersEntered.Clear();
+
+        TransitionToState("AIR STATE");
+
+        // Wait one physics frame for collisions to refresh
+        await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
+
+        smTeleporting = false;
+
+        // Prevent instant wall reattach after teleport
+        await ToSignal(GetTree().CreateTimer(0.2f), SceneTreeTimer.SignalName.Timeout);
+
+        smWallCancel = false;
     }
     #endregion
 }

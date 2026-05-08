@@ -206,14 +206,14 @@ public partial class GroundState : States
         #endregion
 
         #region Check if Character is Interacting with a Climbable Surface
-        if (InputManager.PlayerContinuousInputs["climb_up"])
+        if (!StateMachineScript.smTeleporting && InputManager.PlayerContinuousInputs["climb_up"])
         {
             GroundToClimb = false;
             ChangeToNewState(CLIMBINGSTATESTRING);
             return;
         }
 
-        if (InputManager.PlayerContinuousInputs["climb_down_ladder_top"])
+        if (!StateMachineScript.smTeleporting && InputManager.PlayerContinuousInputs["climb_down_ladder_top"])
         {
             CollisionShape2D shape2D = Player.PlayerAboveLadder.FirstOrDefault<CollisionShape2D>();
 

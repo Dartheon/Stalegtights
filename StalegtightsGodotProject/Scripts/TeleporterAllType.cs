@@ -111,7 +111,11 @@ public partial class TeleporterAllType : Area2D
     public void TeleportPlayer()
     {
         playerCB2D.GlobalPosition = teleportLocation;
+
         stateMachineScript.LastFacingDirection = playerFacingDirection;
+
+        stateMachineScript.ResetPlayerState();
+
         GD.Print($"Teleported to {Name} using DebugUI facing {playerFacingDirection}");
     }
     #endregion
@@ -165,15 +169,19 @@ public partial class TeleporterAllType : Area2D
     #region PlayerInteract
     public void PlayerInteract()
     {
-        if (linkedPortalLocation.teleportLocation == new Vector2())
+        if (linkedPortalLocation.teleportLocation == Vector2.Zero)
         {
             GD.PushWarning($"Linked Portal Is Not Set Up In Export Window: {Name}");
             return;
         }
 
         playerCB2D.GlobalPosition = linkedPortalLocation.teleportLocation;
+
         stateMachineScript.LastFacingDirection = playerFacingDirection;
-        GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name} using an Interactive Teleporter");
+
+        stateMachineScript.ResetPlayerState();
+
+        GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name}");
     }
     #endregion
 
@@ -193,8 +201,16 @@ public partial class TeleporterAllType : Area2D
             if (!teleportCooldown)
             {
                 linkedPortalLocation.teleportCooldown = true;
+
+                // Move player first
                 body.GlobalPosition = linkedPortalLocation.teleportLocation;
+
+                // Set facing direction
                 stateMachineScript.LastFacingDirection = playerFacingDirection;
+
+                // Fully reset player state
+                stateMachineScript.ResetPlayerState();
+
                 GD.Print($"Teleported to {linkedPortalLocation.Name} from {Name}");
             }
         }
