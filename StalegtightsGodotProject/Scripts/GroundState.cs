@@ -206,7 +206,7 @@ public partial class GroundState : States
         #endregion
 
         #region Check if Character is Interacting with a Climbable Surface
-        if (!StateMachineScript.smTeleporting && InputManager.PlayerContinuousInputs["climb_up"])
+        if (!StateMachineScript.smTeleporting && InputManager.PlayerContinuousInputs["climb_enter_ladder"])
         {
             GroundToClimb = false;
             ChangeToNewState(CLIMBINGSTATESTRING);

@@ -29,6 +29,7 @@ public partial class InputManager : Node
         { "climb_up", false },
         { "climb_down", false },
         { "climb_down_ladder_top", false },
+        { "climb_enter_ladder",false},
         { "wall_drop_down", false },
 
         //Menu
@@ -161,9 +162,10 @@ public partial class InputManager : Node
         PlayerContinuousInputs["crawling_right"] = Input.IsActionPressed("duck") && RightIntent;
 
         //Climbing
-        PlayerContinuousInputs["climb_up"] = UpIntent && !DownIntent && !RightIntent && !LeftIntent && playerCB2D.PlayerOnLadder;
-        PlayerContinuousInputs["climb_down"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent && playerCB2D.PlayerOnLadder;
+        PlayerContinuousInputs["climb_up"] = UpIntent && !DownIntent && playerCB2D.PlayerOnLadder;
+        PlayerContinuousInputs["climb_down"] = DownIntent && !UpIntent && playerCB2D.PlayerOnLadder;
         PlayerContinuousInputs["climb_down_ladder_top"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent && playerCB2D.IsOnFloor() && Player.PlayerAboveLadder.Count > 0;
+        PlayerContinuousInputs["climb_enter_ladder"] = UpIntent && !DownIntent && !RightIntent && !LeftIntent && playerCB2D.PlayerOnLadder;
 
         //Wall
         PlayerContinuousInputs["wall_drop_down"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent;

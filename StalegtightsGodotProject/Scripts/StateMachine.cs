@@ -110,7 +110,6 @@ public partial class StateMachine : Node
         CurrentState.PhysicsUpdate(delta);
 
         bool wasOnFloor = smPlayerCB2D.IsOnFloor();
-        bool wasOnWall = smPlayerCB2D.IsOnWall();
         smPlayerCB2D.Velocity = smPlayerVelocity;
         smPlayerCB2D.MoveAndSlide();
 
@@ -143,6 +142,8 @@ public partial class StateMachine : Node
         CurrentAnimationPlaying = animName;
     }
 
+    // add different method for teleporters vs portals
+    //debug ui to clear velocity and stuff while other interacting portals might keep velocity
     public async void ResetPlayerState()
     {
         smTeleporting = true;
