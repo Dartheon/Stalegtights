@@ -1,4 +1,4 @@
-[gd_scene load_steps=185 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=195 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
@@ -384,6 +384,8 @@ max_space = 1.2
 value_label = "LastFacingDirection"
 blend_mode = 1
 
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_megsn"]
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5v66d"]
 animation = &"WALL_DIVEOUT_LEFT"
 
@@ -424,7 +426,7 @@ blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ksbbd"]
 advance_mode = 2
-advance_expression = "!WallJumpOut && !WallDiveOut && !WallPowerSlideOut"
+advance_expression = "!WallJumpOut && !WallDiveOut && !WallPowerSlideOut && !LadderJump"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_k22kr"]
 advance_mode = 2
@@ -438,16 +440,22 @@ advance_expression = "WallJumpOut && !WallDiveOut && !WallPowerSlideOut"
 advance_mode = 2
 advance_expression = "!WallJumpOut && WallDiveOut && !WallPowerSlideOut"
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_omi2y"]
+advance_mode = 2
+advance_expression = "LadderJump && !WallJumpOut && !WallDiveOut && !WallPowerSlideOut"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_o3h8g"]
 states/GROUNDJUMP/node = SubResource("AnimationNodeBlendSpace1D_bhhdu")
 states/GROUNDJUMP/position = Vector2(462, 105)
+states/LADDERJUMP/node = SubResource("AnimationNodeBlendSpace1D_megsn")
+states/LADDERJUMP/position = Vector2(200, -108)
 states/WALLDIVEOUT/node = SubResource("AnimationNodeBlendSpace1D_m0x7a")
 states/WALLDIVEOUT/position = Vector2(-161, 83)
 states/WALLJUMPOUT/node = SubResource("AnimationNodeBlendSpace1D_5v66d")
 states/WALLJUMPOUT/position = Vector2(-161, 15)
 states/WALLPOWERSLIDEOUT/node = SubResource("AnimationNodeBlendSpace1D_x63xi")
 states/WALLPOWERSLIDEOUT/position = Vector2(-143, -64)
-transitions = ["Start", "GROUNDJUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "Start", "WALLPOWERSLIDEOUT", SubResource("AnimationNodeStateMachineTransition_k22kr"), "Start", "WALLJUMPOUT", SubResource("AnimationNodeStateMachineTransition_h4i3a"), "Start", "WALLDIVEOUT", SubResource("AnimationNodeStateMachineTransition_s7lb4")]
+transitions = ["Start", "GROUNDJUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "Start", "WALLPOWERSLIDEOUT", SubResource("AnimationNodeStateMachineTransition_k22kr"), "Start", "WALLJUMPOUT", SubResource("AnimationNodeStateMachineTransition_h4i3a"), "Start", "WALLDIVEOUT", SubResource("AnimationNodeStateMachineTransition_s7lb4"), "Start", "LADDERJUMP", SubResource("AnimationNodeStateMachineTransition_omi2y")]
 graph_offset = Vector2(-424, -304)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1e7my"]
@@ -456,39 +464,39 @@ graph_offset = Vector2(-424, -304)
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_rxg2u"]
 advance_mode = 2
-advance_expression = "!hasWeapon && !hasStalag"
+advance_expression = "!HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xixlo"]
 advance_mode = 2
-advance_expression = "hasWeapon && !hasStalag"
+advance_expression = "HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bfbt0"]
 advance_mode = 2
-advance_expression = "!hasWeapon && hasStalag"
+advance_expression = "!HasWeapon && HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wosd6"]
 advance_mode = 2
-advance_expression = "!hasWeapon && hasStalag"
+advance_expression = "!HasWeapon && HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hkrn1"]
 advance_mode = 2
-advance_expression = "hasWeapon && !hasStalag"
+advance_expression = "HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_y6y60"]
 advance_mode = 2
-advance_expression = "hasWeapon && !hasStalag"
+advance_expression = "HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vmcrb"]
 advance_mode = 2
-advance_expression = "!hasWeapon && !hasStalag"
+advance_expression = "!HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_teras"]
 advance_mode = 2
-advance_expression = "!hasWeapon && hasStalag"
+advance_expression = "!HasWeapon && HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8p516"]
 advance_mode = 2
-advance_expression = "!hasWeapon && !hasStalag"
+advance_expression = "!HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_52ee3"]
 "states/AIR NORMAL/node" = SubResource("AnimationNodeStateMachine_o3h8g")
@@ -593,20 +601,6 @@ x_label = "facingDirection"
 y_label = "verticalMovement"
 blend_mode = 1
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_glx4g"]
-animation = &"LADDER_JUMP_LEFT"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_miouo"]
-animation = &"LADDER_JUMP_RIGHT"
-
-[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_bfbt0"]
-blend_point_0/node = SubResource("AnimationNodeAnimation_glx4g")
-blend_point_0/pos = -1.0
-blend_point_1/node = SubResource("AnimationNodeAnimation_miouo")
-blend_point_1/pos = 1.0
-value_label = "facingDirection"
-blend_mode = 1
-
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_arntx"]
 animation = &"LADDER_SLIDE_DOWN"
 
@@ -615,49 +609,43 @@ blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3rw25"]
 advance_mode = 2
-advance_expression = "!groundToClimb"
+advance_expression = "!GroundToClimb && AirToClimb"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_u4y2r"]
 advance_mode = 2
-advance_expression = "groundToClimb"
+advance_expression = "GroundToClimb && !AirToClimb"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tbv6f"]
-advance_mode = 0
+switch_mode = 2
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vp15a"]
-advance_mode = 0
+switch_mode = 2
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fayk8"]
 advance_mode = 2
-advance_expression = "//!PlayerOnLadder
-//PlayerAboveLadder"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_omi2y"]
-advance_mode = 2
-advance_expression = "//PlayerState = \"CLIMB STATE\"
-//playerJump"
+advance_expression = "TopLadderUp && !LadderSlideDown"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ddly5"]
 advance_mode = 2
-advance_expression = "//slideDown"
+advance_expression = "LadderSlideDown && !TopLadderUp"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_lslt6"]
-"states/AIR TO CLIMB/node" = SubResource("AnimationNodeBlendSpace1D_avx33")
-"states/AIR TO CLIMB/position" = Vector2(217, 184)
+states/AIRTOCLIMB/node = SubResource("AnimationNodeBlendSpace1D_avx33")
+states/AIRTOCLIMB/position = Vector2(217, 184)
 states/CLIMBING/node = SubResource("AnimationNodeBlendSpace2D_rxg2u")
 states/CLIMBING/position = Vector2(471, 5)
 states/End/position = Vector2(1125, 4)
-"states/GROUND TO CLIMB/node" = SubResource("AnimationNodeBlendSpace2D_xixlo")
-"states/GROUND TO CLIMB/position" = Vector2(217, -154)
-"states/LADDER JUMP/node" = SubResource("AnimationNodeBlendSpace1D_bfbt0")
-"states/LADDER JUMP/position" = Vector2(746, 5)
+states/GROUNDTOCLIMB/node = SubResource("AnimationNodeBlendSpace2D_xixlo")
+states/GROUNDTOCLIMB/position = Vector2(217, -154)
 states/LADDER_SLIDE_DOWN/node = SubResource("AnimationNodeAnimation_arntx")
 states/LADDER_SLIDE_DOWN/position = Vector2(471, 184)
 states/Start/position = Vector2(-4, 5)
-"states/TOP LADDER UP/node" = SubResource("AnimationNodeBlendSpace1D_hkrn1")
-"states/TOP LADDER UP/position" = Vector2(471, -154)
-transitions = ["Start", "AIR TO CLIMB", SubResource("AnimationNodeStateMachineTransition_3rw25"), "Start", "GROUND TO CLIMB", SubResource("AnimationNodeStateMachineTransition_u4y2r"), "GROUND TO CLIMB", "CLIMBING", SubResource("AnimationNodeStateMachineTransition_tbv6f"), "AIR TO CLIMB", "CLIMBING", SubResource("AnimationNodeStateMachineTransition_vp15a"), "CLIMBING", "TOP LADDER UP", SubResource("AnimationNodeStateMachineTransition_fayk8"), "CLIMBING", "LADDER JUMP", SubResource("AnimationNodeStateMachineTransition_omi2y"), "CLIMBING", "LADDER_SLIDE_DOWN", SubResource("AnimationNodeStateMachineTransition_ddly5")]
-graph_offset = Vector2(-293, -195)
+states/TOPLADDERUP/node = SubResource("AnimationNodeBlendSpace1D_hkrn1")
+states/TOPLADDERUP/position = Vector2(471, -154)
+transitions = ["Start", "AIRTOCLIMB", SubResource("AnimationNodeStateMachineTransition_3rw25"), "Start", "GROUNDTOCLIMB", SubResource("AnimationNodeStateMachineTransition_u4y2r"), "GROUNDTOCLIMB", "CLIMBING", SubResource("AnimationNodeStateMachineTransition_tbv6f"), "AIRTOCLIMB", "CLIMBING", SubResource("AnimationNodeStateMachineTransition_vp15a"), "CLIMBING", "TOPLADDERUP", SubResource("AnimationNodeStateMachineTransition_fayk8"), "CLIMBING", "LADDER_SLIDE_DOWN", SubResource("AnimationNodeStateMachineTransition_ddly5")]
+graph_offset = Vector2(-463, -288)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_5v66d"]
 
@@ -665,25 +653,49 @@ graph_offset = Vector2(-293, -195)
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o2sks"]
 advance_mode = 2
-advance_expression = "!hasWeapon && !hasStalag"
+advance_expression = "!HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i10l2"]
 advance_mode = 2
-advance_expression = "!hasWeapon && hasStalag"
+advance_expression = "!HasWeapon && HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fgqou"]
 advance_mode = 2
-advance_expression = "hasWeapon && !hasStalag"
+advance_expression = "HasWeapon && !HasStalag"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jhxql"]
+advance_mode = 2
+advance_expression = "!HasStalag && HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ilb4b"]
+advance_mode = 2
+advance_expression = "!HasStalag && !HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tlew5"]
+advance_mode = 2
+advance_expression = "HasStalag && !HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_h55a1"]
+advance_mode = 2
+advance_expression = "!HasStalag && !HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dqj3d"]
+advance_mode = 2
+advance_expression = "!HasStalag && HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f6yay"]
+advance_mode = 2
+advance_expression = "HasStalag && !HasWeapon"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_bhhdu"]
 "states/CLIMB NORMAL/node" = SubResource("AnimationNodeStateMachine_lslt6")
 "states/CLIMB NORMAL/position" = Vector2(497, -28)
 "states/CLIMB STALAG/node" = SubResource("AnimationNodeStateMachine_5v66d")
-"states/CLIMB STALAG/position" = Vector2(497, 106)
+"states/CLIMB STALAG/position" = Vector2(752, 100)
 "states/CLIMB WEAPON/node" = SubResource("AnimationNodeStateMachine_x63xi")
-"states/CLIMB WEAPON/position" = Vector2(497, 241)
-transitions = ["Start", "CLIMB NORMAL", SubResource("AnimationNodeStateMachineTransition_o2sks"), "Start", "CLIMB STALAG", SubResource("AnimationNodeStateMachineTransition_i10l2"), "Start", "CLIMB WEAPON", SubResource("AnimationNodeStateMachineTransition_fgqou")]
-graph_offset = Vector2(-145, -73)
+"states/CLIMB WEAPON/position" = Vector2(497, 299)
+transitions = ["Start", "CLIMB NORMAL", SubResource("AnimationNodeStateMachineTransition_o2sks"), "Start", "CLIMB STALAG", SubResource("AnimationNodeStateMachineTransition_i10l2"), "Start", "CLIMB WEAPON", SubResource("AnimationNodeStateMachineTransition_fgqou"), "CLIMB NORMAL", "CLIMB WEAPON", SubResource("AnimationNodeStateMachineTransition_jhxql"), "CLIMB WEAPON", "CLIMB NORMAL", SubResource("AnimationNodeStateMachineTransition_ilb4b"), "CLIMB NORMAL", "CLIMB STALAG", SubResource("AnimationNodeStateMachineTransition_tlew5"), "CLIMB STALAG", "CLIMB NORMAL", SubResource("AnimationNodeStateMachineTransition_h55a1"), "CLIMB STALAG", "CLIMB WEAPON", SubResource("AnimationNodeStateMachineTransition_dqj3d"), "CLIMB WEAPON", "CLIMB STALAG", SubResource("AnimationNodeStateMachineTransition_f6yay")]
+graph_offset = Vector2(-200, -146)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_megsn"]
 
@@ -698,6 +710,8 @@ blend_point_0/node = SubResource("AnimationNodeAnimation_o3h8g")
 blend_point_0/pos = -1.0
 blend_point_1/node = SubResource("AnimationNodeAnimation_1e7my")
 blend_point_1/pos = 1.0
+min_space = -1.2
+max_space = 1.2
 value_label = "LastFacingDirection"
 blend_mode = 1
 
@@ -712,6 +726,8 @@ blend_point_0/node = SubResource("AnimationNodeAnimation_lslt6")
 blend_point_0/pos = -1.0
 blend_point_1/node = SubResource("AnimationNodeAnimation_ulo2v")
 blend_point_1/pos = 1.0
+min_space = -1.2
+max_space = 1.2
 value_label = "smPlayerVelocity.X"
 blend_mode = 1
 
@@ -761,58 +777,58 @@ blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_utwlt"]
 advance_mode = 2
-advance_expression = "!hasWeapon && !hasStalag && !isLanding"
+advance_expression = "!HasWeapon && !HasStalag && !IsLanding"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_kih0c"]
 advance_mode = 2
-advance_expression = "hasWeapon && !hasStalag && !isLanding"
+advance_expression = "HasWeapon && !HasStalag && !IsLanding"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lyrkg"]
 advance_mode = 2
-advance_expression = "hasWeapon && !hasStalag"
+advance_expression = "HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_c43xd"]
 advance_mode = 2
-advance_expression = "!hasWeapon && !hasStalag"
+advance_expression = "!HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wpo1r"]
 advance_mode = 2
-advance_expression = "hasStalag && !hasWeapon && !isLanding"
+advance_expression = "HasStalag && !HasWeapon && !IsLanding"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pqity"]
 advance_mode = 2
-advance_expression = "hasWeapon && !hasStalag"
+advance_expression = "HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_opqna"]
 advance_mode = 2
-advance_expression = "hasStalag && !hasWeapon"
+advance_expression = "HasStalag && !HasWeapon"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_00okb"]
 advance_mode = 2
-advance_expression = "!hasStalag && !hasWeapon"
+advance_expression = "!HasStalag && !HasWeapon"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6hr71"]
 advance_mode = 2
-advance_expression = "hasStalag && !hasWeapon"
+advance_expression = "HasStalag && !HasWeapon"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fvoow"]
 advance_mode = 2
-advance_expression = "isLanding"
+advance_expression = "IsLanding"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_v5fqo"]
 switch_mode = 2
 advance_mode = 2
-advance_expression = "!hasWeapon && !hasStalag"
+advance_expression = "!HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yf17c"]
 switch_mode = 2
 advance_mode = 2
-advance_expression = "hasStalag && !hasWeapon"
+advance_expression = "HasStalag && !HasWeapon"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_awd2i"]
 switch_mode = 2
 advance_mode = 2
-advance_expression = "hasWeapon && !hasStalag"
+advance_expression = "HasWeapon && !HasStalag"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_yoq75"]
 states/End/position = Vector2(1113, 327)
@@ -910,24 +926,48 @@ graph_offset = Vector2(-338, -178)
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_75iyv"]
 advance_mode = 2
-advance_expression = "!hasStalag && !hasWeapon"
+advance_expression = "!HasStalag && !HasWeapon"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yrofn"]
 advance_mode = 2
-advance_expression = "hasStalag && !hasWeapon"
+advance_expression = "HasStalag && !HasWeapon"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5gg6q"]
 advance_mode = 2
-advance_expression = "!hasStalag && hasWeapon"
+advance_expression = "!HasStalag && HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fsa4a"]
+advance_mode = 2
+advance_expression = "!HasStalag && !HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6f3s4"]
+advance_mode = 2
+advance_expression = "!HasStalag && HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_l3y8b"]
+advance_mode = 2
+advance_expression = "HasStalag && !HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ujsok"]
+advance_mode = 2
+advance_expression = "!HasStalag && !HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_txwsf"]
+advance_mode = 2
+advance_expression = "HasStalag && !HasWeapon"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_01r87"]
+advance_mode = 2
+advance_expression = "!HasStalag && HasWeapon"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ksbbd"]
 "states/WALL NORMAL/node" = SubResource("AnimationNodeStateMachine_ulo2v")
-"states/WALL NORMAL/position" = Vector2(550, -64)
+"states/WALL NORMAL/position" = Vector2(500, -59)
 "states/WALL STALAG/node" = SubResource("AnimationNodeStateMachine_1iu4k")
-"states/WALL STALAG/position" = Vector2(550, 100)
+"states/WALL STALAG/position" = Vector2(721, 100)
 "states/WALL WEAPON/node" = SubResource("AnimationNodeStateMachine_m0x7a")
-"states/WALL WEAPON/position" = Vector2(550, 286)
-transitions = ["Start", "WALL NORMAL", SubResource("AnimationNodeStateMachineTransition_75iyv"), "Start", "WALL STALAG", SubResource("AnimationNodeStateMachineTransition_yrofn"), "Start", "WALL WEAPON", SubResource("AnimationNodeStateMachineTransition_5gg6q")]
+"states/WALL WEAPON/position" = Vector2(489, 251)
+transitions = ["Start", "WALL NORMAL", SubResource("AnimationNodeStateMachineTransition_75iyv"), "Start", "WALL STALAG", SubResource("AnimationNodeStateMachineTransition_yrofn"), "Start", "WALL WEAPON", SubResource("AnimationNodeStateMachineTransition_5gg6q"), "WALL WEAPON", "WALL NORMAL", SubResource("AnimationNodeStateMachineTransition_fsa4a"), "WALL NORMAL", "WALL WEAPON", SubResource("AnimationNodeStateMachineTransition_6f3s4"), "WALL NORMAL", "WALL STALAG", SubResource("AnimationNodeStateMachineTransition_l3y8b"), "WALL STALAG", "WALL NORMAL", SubResource("AnimationNodeStateMachineTransition_ujsok"), "WALL WEAPON", "WALL STALAG", SubResource("AnimationNodeStateMachineTransition_txwsf"), "WALL STALAG", "WALL WEAPON", SubResource("AnimationNodeStateMachineTransition_01r87")]
 graph_offset = Vector2(-182, -212)
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_glx4g"]
@@ -1046,14 +1086,14 @@ tree_root = SubResource("AnimationNodeBlendTree_52ee3")
 advance_expression_base_node = NodePath("../PLAYERSTATEMACHINE")
 anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/GROUNDJUMP/blend_position" = 0
+"parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/LADDERJUMP/blend_position" = 0
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/WALLDIVEOUT/blend_position" = 0
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/WALLJUMPOUT/blend_position" = 0
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/WALLPOWERSLIDEOUT/blend_position" = 0
-"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/AIR TO CLIMB/blend_position" = 0
+"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/AIRTOCLIMB/blend_position" = 0
 "parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/CLIMBING/blend_position" = Vector2(0, 0)
-"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/GROUND TO CLIMB/blend_position" = Vector2(-1, 0.993232)
-"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/LADDER JUMP/blend_position" = 0
-"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/TOP LADDER UP/blend_position" = 0
+"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/GROUNDTOCLIMB/blend_position" = Vector2(-1, 0.993232)
+"parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/TOPLADDERUP/blend_position" = 0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position" = 0.0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position" = -0.457213
 "parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position" = -0.566972

@@ -21,7 +21,7 @@ public partial class ClimbingState : States
     #endregion
 
     #region Animations
-    private bool ladderJump = false;
+    //
     #endregion
 
     #region Movement
@@ -62,8 +62,6 @@ public partial class ClimbingState : States
         #endregion
 
         #region Animations
-        StateMachineScript.groundToClimb = GroundToClimb;
-        ladderJump = false;
         //TO ADD:
         //if entering from air
         //else if entering from ground
@@ -110,7 +108,7 @@ public partial class ClimbingState : States
             StateMachineScript.smLadderDetachTimer = 1.0f;
             InputManager.PlayerInputBuffers["ground_jump"] = false;
 
-            ladderJump = true;
+            StateMachineScript.LadderJump = true;
 
             ChangeToNewState(AIRSTATESTRING);
             return;

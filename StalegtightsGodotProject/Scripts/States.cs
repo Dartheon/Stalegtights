@@ -28,10 +28,7 @@ public partial class States : Node
     #endregion
 
     #region Animations
-    public bool HasWeapon { get; protected set; } = false;
-    public bool HasStalag { get; protected set; } = false;
-    public bool IsLanding { get; protected set; } = false;
-    public bool GroundToClimb { get; protected set; } = false;
+    //
     #endregion
 
     #region Movement

@@ -71,10 +71,7 @@ public partial class AirState : States
         #endregion
 
         #region Animations
-        //Used for testing, will be handled different later
-        StateMachineScript.hasStalag = HasStalag;
-        StateMachineScript.hasWeapon = HasWeapon;
-        StateMachineScript.groundToClimb = GroundToClimb;
+        //
         #endregion
 
         #region Movement
@@ -149,7 +146,9 @@ public partial class AirState : States
 
         if (!StateMachineScript.smTeleporting && PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
         {
-            GroundToClimb = true;
+            StateMachineScript.AirToClimb = true;
+            StateMachineScript.GroundToClimb = false;
+
             ChangeToNewState(CLIMBINGSTATESTRING);
             return;
         }
@@ -257,7 +256,7 @@ public partial class AirState : States
         #region Check if the Character is Grounded
         if (!StateMachineScript.smTeleporting && PlayerCB2D.IsOnFloor())
         {
-            IsLanding = false; //for the animation tree
+            StateMachineScript.IsLanding = true; //for the animation tree
 
             ChangeToNewState(GROUNDSTATESTRING);
             return;
@@ -332,8 +331,7 @@ public partial class AirState : States
         #endregion
 
         #region Animations
-        StateMachineScript.isLanding = IsLanding;
-        StateMachineScript.groundToClimb = GroundToClimb;
+        //
         #endregion
 
         #region Movement

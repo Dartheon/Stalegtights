@@ -131,8 +131,7 @@ public partial class WallState : States
         #endregion
 
         #region Animations
-        StateMachineScript.hasStalag = HasStalag;
-        StateMachineScript.hasWeapon = HasWeapon;
+        //
         #endregion
 
         #region Movement
@@ -392,6 +391,7 @@ public partial class WallState : States
             StateMachineScript.WallDiveOut = true;
             StateMachineScript.WallJumpOut = false;
             StateMachineScript.WallPowerSlideOut = false;
+            StateMachineScript.LadderJump = false;
         }
         //Wall Jump Out
         else if (jumpOut)
@@ -399,12 +399,14 @@ public partial class WallState : States
             StateMachineScript.WallJumpOut = true;
             StateMachineScript.WallDiveOut = false;
             StateMachineScript.WallPowerSlideOut = false;
+            StateMachineScript.LadderJump = false;
         }
         else if (powerJumpOut)
         {
             StateMachineScript.WallPowerSlideOut = true;
             StateMachineScript.WallJumpOut = false;
             StateMachineScript.WallDiveOut = false;
+            StateMachineScript.LadderJump = false;
         }
 
         //sets the jump velocity for the player to trigger

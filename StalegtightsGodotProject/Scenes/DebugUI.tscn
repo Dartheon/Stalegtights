@@ -216,10 +216,11 @@ offset_left = 1115.0
 offset_top = 150.0
 offset_right = 1445.0
 offset_bottom = 260.0
+scale = Vector2(0.889241, 1.16667)
 
 [node name="PlayerAnimPlaybackClimbNormal" type="Label" parent="Animation/AnimationVBoxContainer5"]
 layout_mode = 2
-text = "ClimbNormal:"
+text = "ClimbNormal: GROUNDTOCLIMB"
 label_settings = SubResource("LabelSettings_swdn5")
 
 [node name="PlayerAnimPlaybackClimbWeapon" type="Label" parent="Animation/AnimationVBoxContainer5"]

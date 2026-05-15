@@ -12,7 +12,7 @@ public partial class DebugUI : Control
     private SaveLoadManager slManager;
     private SoundManager soundManager;
     private GameManager gameManager;
-    private StateMachine stateMachine;
+    private StateMachine stateMachineScript;
     private GroundState groundStateScript;
     #endregion
 
@@ -130,32 +130,32 @@ public partial class DebugUI : Control
         soundManager = GetNode<SoundManager>("/root/SoundManager");
         slManager = GetNode<SaveLoadManager>("/root/SaveLoadManager");
         gameManager = GetNode<GameManager>("/root/GameManager");
-        stateMachine = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
+        stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
         groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
 
         bgmMenu = slManager.BGMMenu;
 
         //Animation Playback
         //VBox1
-        statemachinePlaybackState = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/playback");
-        statemachinePlaybackGround = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/playback");
-        statemachinePlaybackAir = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/playback");
-        statemachinePlaybackWall = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/playback");
-        statemachinePlaybackClimb = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/playback");
+        statemachinePlaybackState = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/playback");
+        statemachinePlaybackGround = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/playback");
+        statemachinePlaybackAir = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/playback");
+        statemachinePlaybackWall = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/playback");
+        statemachinePlaybackClimb = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/playback");
         //VBox2
-        statemachinePlaybackGroundNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/playback"); statemachinePlaybackGroundWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND WEAPON/playback"); statemachinePlaybackGroundStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND STALAG/playback");
+        statemachinePlaybackGroundNormal = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/playback"); statemachinePlaybackGroundWeapon = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND WEAPON/playback"); statemachinePlaybackGroundStalag = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND STALAG/playback");
         //VBox3
-        statemachinePlaybackAirNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/playback");
-        statemachinePlaybackAirWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR WEAPON/playback");
-        statemachinePlaybackAirStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR STALAG/playback");
+        statemachinePlaybackAirNormal = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/playback");
+        statemachinePlaybackAirWeapon = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR WEAPON/playback");
+        statemachinePlaybackAirStalag = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR STALAG/playback");
         //VBox4
-        statemachinePlaybackWallNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/playback");
-        statemachinePlaybackWallWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL WEAPON/playback");
-        statemachinePlaybackWallStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL STALAG/playback");
+        statemachinePlaybackWallNormal = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/playback");
+        statemachinePlaybackWallWeapon = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL WEAPON/playback");
+        statemachinePlaybackWallStalag = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL STALAG/playback");
         //VBox5
-        statemachinePlaybackClimbNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/playback");
-        statemachinePlaybackClimbWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB WEAPON/playback");
-        statemachinePlaybackClimbStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB STALAG/playback");
+        statemachinePlaybackClimbNormal = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/playback");
+        statemachinePlaybackClimbWeapon = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB WEAPON/playback");
+        statemachinePlaybackClimbStalag = (AnimationNodeStateMachinePlayback)stateMachineScript.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB STALAG/playback");
 
         //Color Rect Boxes
         generalBoxSize = GetNode<ColorRect>("General/GeneralColorRect").Size;
@@ -252,15 +252,15 @@ public partial class DebugUI : Control
         GetNode<ColorRect>("Engine/EngineColorRect").Size = engineBoxSize;
 
         //General Text
-        playerStatelabelGeneral.Text = $"State: {stateMachine.CurrentState.Name}";
-        playerVelocityGeneral.Text = $"Velocity.X: {stateMachine.smPlayerVelocity.X:0.00}\nVelocity.Y: {stateMachine.smPlayerVelocity.Y:0.00}";
+        playerStatelabelGeneral.Text = $"State: {stateMachineScript.CurrentState.Name}";
+        playerVelocityGeneral.Text = $"Velocity.X: {stateMachineScript.smPlayerVelocity.X:0.00}\nVelocity.Y: {stateMachineScript.smPlayerVelocity.Y:0.00}";
         /*playerJumpTypeAll.Text = ("Jump Type: ") + stateMachine.JumpType + "\n" + ("JTypeHold: ") + stateMachine.JumpTypeHold;
         playerJumpBuffer.Text = ("JBuffer: ") + stateMachine.JumpInputBuffer;*/
 
         //Animation Text
         //VBox1
         playerSpriteFrame.Text = $"Sprite Frame: {GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame}";
-        playerCurrentAnim.Text = $"Anim: {stateMachine.CurrentAnimationPlaying}";
+        playerCurrentAnim.Text = $"Anim: {stateMachineScript.CurrentAnimationPlaying}";
         playerAnimPlaybackState.Text = $"AnimState: {statemachinePlaybackState.GetCurrentNode()}";
         playerAnimPlaybackGround.Text = $"GroundState: {statemachinePlaybackGround.GetCurrentNode()}";
         playerAnimPlaybackAir.Text = $"AirState: {statemachinePlaybackAir.GetCurrentNode()}";
@@ -310,10 +310,10 @@ public partial class DebugUI : Control
         CreateTeleporterButtons();
 
         //Pickup Text
-        gravity.Text = $"Gravity: {stateMachine.smGravity:F0}";
+        gravity.Text = $"Gravity: {stateMachineScript.smGravity:F0}";
         playerSpeed.Text = $"Speed: {groundStateScript.GroundMoveSpeed:F0}";
-        acceleration.Text = $"Accel: {stateMachine.RunAcceleration:F0}";
-        jumpHeight.Text = $"Jump: {stateMachine.smPlayerJumpVelocity:F0}";
+        acceleration.Text = $"Accel: {stateMachineScript.RunAcceleration:F0}";
+        jumpHeight.Text = $"Jump: {stateMachineScript.smPlayerJumpVelocity:F0}";
 
         //Engine Text
         engineScale.Text = $"Engine Scale: {Engine.TimeScale}";

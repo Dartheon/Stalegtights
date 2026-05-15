@@ -21,7 +21,6 @@ public partial class GroundState : States
     StateMachineScript.LastFacingDirection                       - int
     StateMachineScript.PlayerAnimIdle                            - bool
     StateMachineScript.PlayerAnimTree                            - AnimationTree
-    StateMachineScript.isJumping                                 - bool
     StateMachineScript.smInputManager.PlayerInputBuffers[string] - bool
     */
     #endregion
@@ -73,11 +72,7 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
-        //Used for setting the bools used to change the AnimationTree though Expressions
-        StateMachineScript.hasStalag = HasStalag;
-        StateMachineScript.hasWeapon = HasWeapon;
-        StateMachineScript.isLanding = IsLanding;
-        StateMachineScript.groundToClimb = GroundToClimb;
+        //
         #endregion
 
         #region Movement
@@ -141,6 +136,7 @@ public partial class GroundState : States
             StateMachineScript.WallDiveOut = false;
             StateMachineScript.WallJumpOut = false;
             StateMachineScript.WallPowerSlideOut = false;
+            StateMachineScript.LadderJump = false;
 
             ChangeToNewState(AIRSTATESTRING);
             return;
@@ -212,7 +208,9 @@ public partial class GroundState : States
         #region Check if Character is Interacting with a Climbable Surface
         if (!StateMachineScript.smTeleporting && InputManager.PlayerContinuousInputs["climb_enter_ladder"])
         {
-            GroundToClimb = false;
+            StateMachineScript.GroundToClimb = true;
+            StateMachineScript.AirToClimb = false;
+
             ChangeToNewState(CLIMBINGSTATESTRING);
             return;
         }
@@ -225,7 +223,10 @@ public partial class GroundState : States
             {
                 PlayerScript.PlayerOnLadder = true;
                 shape2D.GetParent().GetParent().CallDeferred("OnWayDisableLadderTop", shape2D);
-                GroundToClimb = false;
+
+                StateMachineScript.GroundToClimb = true;
+                StateMachineScript.AirToClimb = false;
+
                 ChangeToNewState(CLIMBINGSTATESTRING);
                 return;
             }
@@ -374,10 +375,7 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
-        //Due to how the AnimationTree Expressions check bools it works if the bools are reversed when setting them to change the states
-        IsLanding = true;
-        StateMachineScript.isLanding = IsLanding;
-        StateMachineScript.groundToClimb = GroundToClimb;
+        StateMachineScript.IsLanding = false;
         #endregion
 
         #region Movement

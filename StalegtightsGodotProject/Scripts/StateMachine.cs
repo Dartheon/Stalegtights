@@ -41,10 +41,16 @@ public partial class StateMachine : Node
     public string PlayerState { get; private set; } = "DEFAULT STATE"; //Used for animation tree transitions between state machines
     public int LastFacingDirection { get; set; } = 1; //Identifies the Players last facing direction used for animation blend
     public bool PlayerAnimIdle { get; set; } //Checks for player movement
-    public bool hasWeapon = false; //bool to see if player is holding weapon
-    public bool hasStalag = false; //bool to see if player is holding stalag
-    public bool isLanding = false; //bool to see if player is jumping
-    public bool groundToClimb = false; //bool to check whether climbing starts from ground or air
+    public bool HasWeapon { get; set; } = false; //bool to see if player is holding weapon
+    public bool HasStalag { get; set; } = false; //bool to see if player is holding stalag
+    //GroundState
+    public bool IsLanding { get; set; } = false; //bool to see if player is jumping
+    //ClimbState
+    public bool GroundToClimb { get; set; } = false; //bool to check whether climbing starts from ground or air
+    public bool AirToClimb { get; set; } = false;
+    public bool LadderJump { get; set; } = false;
+    public bool TopLadderUp { get; set; } = false;
+    public bool LadderSlideDown { get; set; } = false;
     //WallState
     public bool WallStomp { get; set; } = false;
     public bool WallCling { get; set; } = false;
