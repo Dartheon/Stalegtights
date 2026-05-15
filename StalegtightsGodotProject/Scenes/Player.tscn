@@ -1,4 +1,4 @@
-[gd_scene load_steps=169 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=185 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
@@ -304,6 +304,30 @@ resource_name = "TOP_LADDER_UP_LEFT"
 [sub_resource type="Animation" id="Animation_kih0c"]
 resource_name = "TOP_LADDER_UP_RIGHT"
 
+[sub_resource type="Animation" id="Animation_wosd6"]
+resource_name = "WALL_CLING_IDLE_LEFT"
+
+[sub_resource type="Animation" id="Animation_hkrn1"]
+resource_name = "WALL_CLING_IDLE_RIGHT"
+
+[sub_resource type="Animation" id="Animation_wpo1r"]
+resource_name = "WALL_SLIDEDOWN_LEFT"
+
+[sub_resource type="Animation" id="Animation_pqity"]
+resource_name = "WALL_SLIDEDOWN_RIGHT"
+
+[sub_resource type="Animation" id="Animation_opqna"]
+resource_name = "WALL_JUMPOUT_LEFT"
+
+[sub_resource type="Animation" id="Animation_00okb"]
+resource_name = "WALL_JUMPOUT_RIGHT"
+
+[sub_resource type="Animation" id="Animation_6hr71"]
+resource_name = "WALL_DIVEOUT_LEFT"
+
+[sub_resource type="Animation" id="Animation_y6y60"]
+resource_name = "WALL_DIVEOUT_RIGHT"
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_glx4g"]
 _data = {
 &"AIR_TO_LADDER_LEFT": SubResource("Animation_5v66d"),
@@ -333,7 +357,15 @@ _data = {
 &"TOP_LADDER_DOWN_LEFT": SubResource("Animation_8flut"),
 &"TOP_LADDER_DOWN_RIGHT": SubResource("Animation_u7x0b"),
 &"TOP_LADDER_UP_LEFT": SubResource("Animation_utwlt"),
-&"TOP_LADDER_UP_RIGHT": SubResource("Animation_kih0c")
+&"TOP_LADDER_UP_RIGHT": SubResource("Animation_kih0c"),
+&"WALL_CLING_IDLE_LEFT": SubResource("Animation_wosd6"),
+&"WALL_CLING_IDLE_RIGHT": SubResource("Animation_hkrn1"),
+&"WALL_DIVEOUT_LEFT": SubResource("Animation_6hr71"),
+&"WALL_DIVEOUT_RIGHT": SubResource("Animation_y6y60"),
+&"WALL_JUMPOUT_LEFT": SubResource("Animation_opqna"),
+&"WALL_JUMPOUT_RIGHT": SubResource("Animation_00okb"),
+&"WALL_SLIDEDOWN_LEFT": SubResource("Animation_wpo1r"),
+&"WALL_SLIDEDOWN_RIGHT": SubResource("Animation_pqity")
 }
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bhhdu"]
@@ -347,14 +379,48 @@ blend_point_0/node = SubResource("AnimationNodeAnimation_bhhdu")
 blend_point_0/pos = -1.0
 blend_point_1/node = SubResource("AnimationNodeAnimation_megsn")
 blend_point_1/pos = 1.0
+min_space = -1.2
+max_space = 1.2
 value_label = "LastFacingDirection"
 blend_mode = 1
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5v66d"]
+animation = &"WALL_DIVEOUT_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x63xi"]
+animation = &"WALL_DIVEOUT_RIGHT"
+
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_m0x7a"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_5v66d")
+blend_point_0/pos = 1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_x63xi")
+blend_point_1/pos = -1.0
+min_space = -1.2
+max_space = 1.2
+value_label = "smWallDirection"
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i2e8t"]
+animation = &"WALL_JUMPOUT_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qidb7"]
+animation = &"WALL_JUMPOUT_RIGHT"
 
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_5v66d"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_i2e8t")
+blend_point_0/pos = 1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_qidb7")
+blend_point_1/pos = -1.0
+min_space = -1.2
+max_space = 1.2
+value_label = "smWallDirection"
+blend_mode = 1
 
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_x63xi"]
+min_space = -1.2
+max_space = 1.2
+value_label = "smWallDirectionS"
+blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ksbbd"]
 advance_mode = 2
@@ -373,16 +439,16 @@ advance_mode = 2
 advance_expression = "!WallJumpOut && WallDiveOut && !WallPowerSlideOut"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_o3h8g"]
-states/JUMP/node = SubResource("AnimationNodeBlendSpace1D_bhhdu")
-states/JUMP/position = Vector2(437, 100)
+states/GROUNDJUMP/node = SubResource("AnimationNodeBlendSpace1D_bhhdu")
+states/GROUNDJUMP/position = Vector2(462, 105)
 states/WALLDIVEOUT/node = SubResource("AnimationNodeBlendSpace1D_m0x7a")
-states/WALLDIVEOUT/position = Vector2(536, -151)
+states/WALLDIVEOUT/position = Vector2(-161, 83)
 states/WALLJUMPOUT/node = SubResource("AnimationNodeBlendSpace1D_5v66d")
-states/WALLJUMPOUT/position = Vector2(497, -233)
+states/WALLJUMPOUT/position = Vector2(-161, 15)
 states/WALLPOWERSLIDEOUT/node = SubResource("AnimationNodeBlendSpace1D_x63xi")
-states/WALLPOWERSLIDEOUT/position = Vector2(430, -300)
-transitions = ["Start", "JUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "Start", "WALLPOWERSLIDEOUT", SubResource("AnimationNodeStateMachineTransition_k22kr"), "Start", "WALLJUMPOUT", SubResource("AnimationNodeStateMachineTransition_h4i3a"), "Start", "WALLDIVEOUT", SubResource("AnimationNodeStateMachineTransition_s7lb4")]
-graph_offset = Vector2(-313, -370)
+states/WALLPOWERSLIDEOUT/position = Vector2(-143, -64)
+transitions = ["Start", "GROUNDJUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "Start", "WALLPOWERSLIDEOUT", SubResource("AnimationNodeStateMachineTransition_k22kr"), "Start", "WALLJUMPOUT", SubResource("AnimationNodeStateMachineTransition_h4i3a"), "Start", "WALLDIVEOUT", SubResource("AnimationNodeStateMachineTransition_s7lb4")]
+graph_offset = Vector2(-424, -304)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1e7my"]
 
@@ -762,13 +828,41 @@ states/Start/position = Vector2(51, 327)
 transitions = ["Start", "GROUND NORMAL", SubResource("AnimationNodeStateMachineTransition_utwlt"), "Start", "GROUND WEAPON", SubResource("AnimationNodeStateMachineTransition_kih0c"), "GROUND NORMAL", "GROUND WEAPON", SubResource("AnimationNodeStateMachineTransition_lyrkg"), "GROUND WEAPON", "GROUND NORMAL", SubResource("AnimationNodeStateMachineTransition_c43xd"), "Start", "GROUND STALAG", SubResource("AnimationNodeStateMachineTransition_wpo1r"), "GROUND STALAG", "GROUND WEAPON", SubResource("AnimationNodeStateMachineTransition_pqity"), "GROUND WEAPON", "GROUND STALAG", SubResource("AnimationNodeStateMachineTransition_opqna"), "GROUND STALAG", "GROUND NORMAL", SubResource("AnimationNodeStateMachineTransition_00okb"), "GROUND NORMAL", "GROUND STALAG", SubResource("AnimationNodeStateMachineTransition_6hr71"), "Start", "LANDING", SubResource("AnimationNodeStateMachineTransition_fvoow"), "LANDING", "GROUND NORMAL", SubResource("AnimationNodeStateMachineTransition_v5fqo"), "LANDING", "GROUND STALAG", SubResource("AnimationNodeStateMachineTransition_yf17c"), "LANDING", "GROUND WEAPON", SubResource("AnimationNodeStateMachineTransition_awd2i")]
 graph_offset = Vector2(1, 14)
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o2sks"]
+animation = &"WALL_CLING_IDLE_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3rw25"]
+animation = &"WALL_CLING_IDLE_RIGHT"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_yoq75"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_o2sks")
+blend_point_0/pos = 1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_3rw25")
+blend_point_1/pos = -1.0
+min_space = -1.2
+max_space = 1.2
+value_label = "FacingDirection"
+blend_mode = 1
+
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_miouo"]
 
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_1e7my"]
 
-[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_lslt6"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1iu4k"]
+animation = &"WALL_SLIDEDOWN_LEFT"
 
-[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_yoq75"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_m0x7a"]
+animation = &"WALL_SLIDEDOWN_RIGHT"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_lslt6"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_1iu4k")
+blend_point_0/pos = 1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_m0x7a")
+blend_point_1/pos = -1.0
+min_space = -1.2
+max_space = 1.2
+value_label = "FacingDirection"
+blend_mode = 1
 
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_ulo2v"]
 
@@ -796,17 +890,18 @@ advance_mode = 2
 advance_expression = "WallStomp && WallCling && !WallSlideDown"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ulo2v"]
-states/POWERSLIDEDOWN/node = SubResource("AnimationNodeBlendSpace1D_miouo")
-states/POWERSLIDEDOWN/position = Vector2(499, 367)
-states/POWERSLIDEUP/node = SubResource("AnimationNodeBlendSpace1D_1e7my")
-states/POWERSLIDEUP/position = Vector2(639, 254)
-states/SLIDEDOWN/node = SubResource("AnimationNodeBlendSpace1D_lslt6")
-states/SLIDEDOWN/position = Vector2(576, 100)
+states/End/position = Vector2(1002, 100)
 states/WALLIDLE/node = SubResource("AnimationNodeBlendSpace1D_yoq75")
 states/WALLIDLE/position = Vector2(374, 100)
+states/WALLPOWERSLIDEDOWN/node = SubResource("AnimationNodeBlendSpace1D_miouo")
+states/WALLPOWERSLIDEDOWN/position = Vector2(671, 299)
+states/WALLPOWERSLIDEUP/node = SubResource("AnimationNodeBlendSpace1D_1e7my")
+states/WALLPOWERSLIDEUP/position = Vector2(671, -79)
+states/WALLSLIDEDOWN/node = SubResource("AnimationNodeBlendSpace1D_lslt6")
+states/WALLSLIDEDOWN/position = Vector2(666, 100)
 states/WALLSTOMP/node = SubResource("AnimationNodeBlendSpace1D_ulo2v")
 states/WALLSTOMP/position = Vector2(374, -54)
-transitions = ["Start", "WALLIDLE", SubResource("AnimationNodeStateMachineTransition_wenux"), "WALLIDLE", "SLIDEDOWN", SubResource("AnimationNodeStateMachineTransition_vy33c"), "SLIDEDOWN", "WALLIDLE", SubResource("AnimationNodeStateMachineTransition_h1ppb"), "SLIDEDOWN", "POWERSLIDEDOWN", SubResource("AnimationNodeStateMachineTransition_rocfp"), "SLIDEDOWN", "POWERSLIDEUP", SubResource("AnimationNodeStateMachineTransition_uytvf"), "WALLIDLE", "WALLSTOMP", SubResource("AnimationNodeStateMachineTransition_ed4yo")]
+transitions = ["Start", "WALLIDLE", SubResource("AnimationNodeStateMachineTransition_wenux"), "WALLIDLE", "WALLSLIDEDOWN", SubResource("AnimationNodeStateMachineTransition_vy33c"), "WALLSLIDEDOWN", "WALLIDLE", SubResource("AnimationNodeStateMachineTransition_h1ppb"), "WALLSLIDEDOWN", "WALLPOWERSLIDEDOWN", SubResource("AnimationNodeStateMachineTransition_rocfp"), "WALLSLIDEDOWN", "WALLPOWERSLIDEUP", SubResource("AnimationNodeStateMachineTransition_uytvf"), "WALLIDLE", "WALLSTOMP", SubResource("AnimationNodeStateMachineTransition_ed4yo")]
 graph_offset = Vector2(-338, -178)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1iu4k"]
@@ -918,6 +1013,7 @@ graph_offset = Vector2(5, 43)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
+graph_offset = Vector2(0, -177)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(250, 100)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_kih0c")
@@ -949,7 +1045,7 @@ libraries = {
 tree_root = SubResource("AnimationNodeBlendTree_52ee3")
 advance_expression_base_node = NodePath("../PLAYERSTATEMACHINE")
 anim_player = NodePath("../AnimationPlayer")
-"parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/JUMP/blend_position" = 0
+"parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/GROUNDJUMP/blend_position" = 0
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/WALLDIVEOUT/blend_position" = 0
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/WALLJUMPOUT/blend_position" = 0
 "parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/WALLPOWERSLIDEOUT/blend_position" = 0
@@ -961,10 +1057,10 @@ anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position" = 0.0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position" = -0.457213
 "parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position" = -0.566972
-"parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/POWERSLIDEDOWN/blend_position" = 0
-"parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/POWERSLIDEUP/blend_position" = 0
-"parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/SLIDEDOWN/blend_position" = 0
-"parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLIDLE/blend_position" = 0
+"parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLIDLE/blend_position" = 0.782272
+"parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLPOWERSLIDEDOWN/blend_position" = 0
+"parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLPOWERSLIDEUP/blend_position" = 0
+"parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLSLIDEDOWN/blend_position" = 0.124498
 "parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLSTOMP/blend_position" = 0
 parameters/TimeScale/scale = 1.0
 

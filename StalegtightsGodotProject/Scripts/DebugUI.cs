@@ -259,8 +259,8 @@ public partial class DebugUI : Control
 
         //Animation Text
         //VBox1
-        playerSpriteFrame.Text = $"Frame: {GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame}";
-        playerCurrentAnim.Text = $"CurrentAnim: {stateMachine.CurrentAnimationPlaying}";
+        playerSpriteFrame.Text = $"Sprite Frame: {GetNode<Sprite2D>("/root/Main/World/Player/PlayerSprite").Frame}";
+        playerCurrentAnim.Text = $"Anim: {stateMachine.CurrentAnimationPlaying}";
         playerAnimPlaybackState.Text = $"AnimState: {statemachinePlaybackState.GetCurrentNode()}";
         playerAnimPlaybackGround.Text = $"GroundState: {statemachinePlaybackGround.GetCurrentNode()}";
         playerAnimPlaybackAir.Text = $"AirState: {statemachinePlaybackAir.GetCurrentNode()}";

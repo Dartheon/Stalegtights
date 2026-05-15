@@ -124,7 +124,10 @@ public partial class WallState : States
         #endregion
 
         #region General
-        //
+        if (!wallJumpOutTimer.IsStopped())
+        {
+            wallJumpOutTimer.Stop();
+        }
         #endregion
 
         #region Animations
@@ -151,6 +154,10 @@ public partial class WallState : States
         #endregion
 
         #region Animations
+        //Normal
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLIDLE/blend_position", StateMachineScript.smWallDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLSLIDEDOWN/blend_position", StateMachineScript.smWallDirection);
+
         StateMachineScript.WallSlideDown = wallSlideTimer > 0.01f ? true : false;
         StateMachineScript.WallCling = wallSlideTimer > 0.01f ? false : true;
         #endregion
@@ -360,7 +367,10 @@ public partial class WallState : States
         #endregion
 
         #region General
-        //
+        if (!wallJumpOutTimer.IsStopped())
+        {
+            wallJumpOutTimer.Stop();
+        }
         #endregion
 
         #region Animations
@@ -370,7 +380,6 @@ public partial class WallState : States
 
         #region Movement
         StateMachineScript.smWallDirection = 0;
-        wallDetachTimer.Stop();
         #endregion
     }
 

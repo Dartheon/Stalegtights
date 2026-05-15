@@ -102,7 +102,10 @@ public partial class AirState : States
         }
 
         //Sets the blend using te LastFacingPosition
-        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/JUMP/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/GROUNDJUMP/blend_position", StateMachineScript.LastFacingDirection);
+        //WallJumps -  based off wall direction to keep consistant
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/WALLJUMPOUT/blend_position", StateMachineScript.smWallDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/WALLDIVEOUT/blend_position", StateMachineScript.smWallDirection);
         #endregion
     }
 

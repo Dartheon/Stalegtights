@@ -16,6 +16,10 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = 1.0
+offset_right = 28.0
+offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_swdn5")
@@ -97,15 +101,16 @@ offset_left = 400.0
 offset_top = 42.0
 offset_right = 776.0
 offset_bottom = 234.0
+scale = Vector2(0.718865, 0.97105)
 
 [node name="PlayerSpriteFrame" type="Label" parent="Animation/AnimationVBoxContainer"]
 layout_mode = 2
-text = "Frame: "
+text = "Sprite Frame: 999"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="PlayerCurrentAnim" type="Label" parent="Animation/AnimationVBoxContainer"]
 layout_mode = 2
-text = "Frame: "
+text = "Anim: CLIMB_WALL_DIAGONAL_RIGHT_DOWN"
 label_settings = SubResource("LabelSettings_33s7u")
 
 [node name="PlayerAnimPlaybackState" type="Label" parent="Animation/AnimationVBoxContainer"]
@@ -140,6 +145,7 @@ offset_left = 780.0
 offset_top = 20.0
 offset_right = 1110.0
 offset_bottom = 130.0
+scale = Vector2(1.01241, 0.997537)
 
 [node name="PlayerAnimPlaybackGroundNormal" type="Label" parent="Animation/AnimationVBoxContainer2"]
 layout_mode = 2
@@ -186,10 +192,11 @@ offset_left = 1115.0
 offset_top = 20.0
 offset_right = 1445.0
 offset_bottom = 130.0
+scale = Vector2(0.933333, 1)
 
 [node name="PlayerAnimPlaybackWallNormal" type="Label" parent="Animation/AnimationVBoxContainer4"]
 layout_mode = 2
-text = "WallNormal:"
+text = "WallNormal: WALLSLIDEDOWN"
 label_settings = SubResource("LabelSettings_swdn5")
 
 [node name="PlayerAnimPlaybackWallWeapon" type="Label" parent="Animation/AnimationVBoxContainer4"]
