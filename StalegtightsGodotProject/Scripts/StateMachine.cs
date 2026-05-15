@@ -45,6 +45,15 @@ public partial class StateMachine : Node
     public bool hasStalag = false; //bool to see if player is holding stalag
     public bool isLanding = false; //bool to see if player is jumping
     public bool groundToClimb = false; //bool to check whether climbing starts from ground or air
+    //WallState
+    public bool WallStomp { get; set; } = false;
+    public bool WallCling { get; set; } = false;
+    public bool WallSlideDown { get; set; } = false;
+    public bool WallJumpOut { get; set; } = false;
+    public bool WallDiveOut { get; set; } = false;
+    public bool WallPowerSlideOut { get; set; } = false;
+    public bool WallPowerSlideUp { get; set; } = false;
+    public bool WallPowerSlideDown { get; set; } = false;
     #endregion
 
     #region Movement

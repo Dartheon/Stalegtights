@@ -22,7 +22,9 @@ public partial class WallState : States
     #endregion
 
     #region Animations
-    //
+    private bool wallDive = false;
+    private bool jumpOut = false;
+    private bool powerJumpOut = false;
     #endregion
 
     #region Movement
@@ -126,7 +128,8 @@ public partial class WallState : States
         #endregion
 
         #region Animations
-        //
+        StateMachineScript.hasStalag = HasStalag;
+        StateMachineScript.hasWeapon = HasWeapon;
         #endregion
 
         #region Movement
@@ -148,7 +151,8 @@ public partial class WallState : States
         #endregion
 
         #region Animations
-        //
+        StateMachineScript.WallSlideDown = wallSlideTimer > 0.01f ? true : false;
+        StateMachineScript.WallCling = wallSlideTimer > 0.01f ? false : true;
         #endregion
     }
 
@@ -187,6 +191,7 @@ public partial class WallState : States
         {
             if (InputManager.PlayerInputBuffers["wall_jump"] && InputManager.PlayerInputBuffers["wall_jump_right"])
             {
+                wallDive = true;
                 WallJump(-jumpOutPower, jumpVerticalPower);
                 return;
             }
@@ -195,6 +200,7 @@ public partial class WallState : States
         {
             if (InputManager.PlayerInputBuffers["wall_jump"] && InputManager.PlayerInputBuffers["wall_jump_left"])
             {
+                wallDive = true;
                 WallJump(jumpOutPower, jumpVerticalPower);
                 return;
             }
@@ -219,6 +225,7 @@ public partial class WallState : States
         #region Detect Jumping Off
         if (StateMachineScript.smWallDirection != 0 && InputManager.PlayerInputBuffers["wall_jump"])
         {
+            jumpOut = true;
             WallJump(-wallDirection * jumpHorizontalPower, jumpStrength);
             return;
         }
@@ -357,7 +364,8 @@ public partial class WallState : States
         #endregion
 
         #region Animations
-        //
+        StateMachineScript.WallCling = false;
+        StateMachineScript.WallSlideDown = false;
         #endregion
 
         #region Movement
@@ -369,12 +377,37 @@ public partial class WallState : States
     //Wall State Methods
     public void WallJump(float jumpHorizontal, float jumpUpStrength)
     {
+        //Diving Out
+        if (wallDive)
+        {
+            StateMachineScript.WallDiveOut = true;
+            StateMachineScript.WallJumpOut = false;
+            StateMachineScript.WallPowerSlideOut = false;
+        }
+        //Wall Jump Out
+        else if (jumpOut)
+        {
+            StateMachineScript.WallJumpOut = true;
+            StateMachineScript.WallDiveOut = false;
+            StateMachineScript.WallPowerSlideOut = false;
+        }
+        else if (powerJumpOut)
+        {
+            StateMachineScript.WallPowerSlideOut = true;
+            StateMachineScript.WallJumpOut = false;
+            StateMachineScript.WallDiveOut = false;
+        }
+
         //sets the jump velocity for the player to trigger
         StateMachineScript.smPlayerVelocity = new(jumpHorizontal, jumpUpStrength);
 
         InputManager.PlayerInputBuffers["wall_jump"] = false;
         InputManager.PlayerInputBuffers["wall_jump_right"] = false;
         InputManager.PlayerInputBuffers["wall_jump_left"] = false;
+
+        wallDive = false;
+        jumpOut = false;
+        powerJumpOut = false;
 
 
         //Cancels the players ability to reattach to the wall immediatly after jumping

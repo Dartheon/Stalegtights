@@ -138,6 +138,10 @@ public partial class GroundState : States
             InputManager.PlayerInputBuffers["ground_jump"] = false;
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
 
+            StateMachineScript.WallDiveOut = false;
+            StateMachineScript.WallJumpOut = false;
+            StateMachineScript.WallPowerSlideOut = false;
+
             ChangeToNewState(AIRSTATESTRING);
             return;
         }

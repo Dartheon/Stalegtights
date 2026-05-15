@@ -145,14 +145,17 @@ public partial class DebugUI : Control
         //VBox2
         statemachinePlaybackGroundNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/playback"); statemachinePlaybackGroundWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND WEAPON/playback"); statemachinePlaybackGroundStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/GROUND STATE/GROUND STALAG/playback");
         //VBox3
-        statemachinePlaybackAirNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/playback"); statemachinePlaybackAirWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR WEAPON/playback"); statemachinePlaybackAirStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR STALAG/playback");
+        statemachinePlaybackAirNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR NORMAL/playback");
+        statemachinePlaybackAirWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR WEAPON/playback");
+        statemachinePlaybackAirStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/AIR STATE/AIR STALAG/playback");
         //VBox4
-        //Animation Tree not currently populated with Nodes, Uncomment when populated
-        /*statemachinePlaybackWallNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/playback"); statemachinePlaybackWallWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL WEAPON/playback"); statemachinePlaybackWallStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL STALAG/playback");*/
+        statemachinePlaybackWallNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/playback");
+        statemachinePlaybackWallWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL WEAPON/playback");
+        statemachinePlaybackWallStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/WALL STATE/WALL STALAG/playback");
         //VBox5
         statemachinePlaybackClimbNormal = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/playback");
-        /*statemachinePlaybackClimbWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB WEAPON/playback"); 
-        statemachinePlaybackClimbStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB STALAG/playback");*/
+        statemachinePlaybackClimbWeapon = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB WEAPON/playback");
+        statemachinePlaybackClimbStalag = (AnimationNodeStateMachinePlayback)stateMachine.PlayerAnimTree.Get("parameters/PlayerStateMachine/CLIMB STATE/CLIMB STALAG/playback");
 
         //Color Rect Boxes
         generalBoxSize = GetNode<ColorRect>("General/GeneralColorRect").Size;
@@ -272,14 +275,14 @@ public partial class DebugUI : Control
         playerAnimPlaybackAirWeapon.Text = $"AirWeapon: {statemachinePlaybackAirWeapon.GetCurrentNode()}";
         playerAnimPlaybackAirStalag.Text = $"AirStalag: {statemachinePlaybackAirStalag.GetCurrentNode()}";
         //VBox4
-        //Animation Tree not populated, Need to populate Tree before uncommenting
-        /*playerAnimPlaybackWallNormal.Text = $"WallNormal: {statemachinePlaybackWallNormal.GetCurrentNode()}";
+        playerAnimPlaybackWallNormal.Text = $"WallNormal: {statemachinePlaybackWallNormal.GetCurrentNode()}";
         playerAnimPlaybackWallWeapon.Text = $"WallWeapon: {statemachinePlaybackWallWeapon.GetCurrentNode()}";
-        playerAnimPlaybackWallStalag.Text = $"WallStalag: {statemachinePlaybackWallStalag.GetCurrentNode()}";*/
+        playerAnimPlaybackWallStalag.Text = $"WallStalag: {statemachinePlaybackWallStalag.GetCurrentNode()}";
         //VBox5
         playerAnimPlaybackClimbNormal.Text = $"ClimbNormal: {statemachinePlaybackClimbNormal.GetCurrentNode()}";
-        /*playerAnimPlaybackClimbWeapon.Text = $"ClimbWeapon: {statemachinePlaybackClimbWeapon.GetCurrentNode()}";
-        playerAnimPlaybackClimbStalag.Text = $"ClimbStalag: {statemachinePlaybackClimbStalag.GetCurrentNode()}";*/
+        playerAnimPlaybackClimbWeapon.Text = $"ClimbWeapon: {statemachinePlaybackClimbWeapon.GetCurrentNode()}";
+        playerAnimPlaybackClimbStalag.Text = $"ClimbStalag: {statemachinePlaybackClimbStalag.GetCurrentNode()}";
+
         //Ground State Text
 
 
