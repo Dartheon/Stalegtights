@@ -13,6 +13,8 @@ public partial class ClimbingState : States
     PlayerScript        - Player
     Gravity             - Float
     PlayerJumpVelocity  - Float
+    ToClimbBranch       - String
+    LadderClimbBranch   - String
     */
 
     /*Variables from StateMachine that need direct Referenece
@@ -108,7 +110,7 @@ public partial class ClimbingState : States
             StateMachineScript.smLadderDetachTimer = 1.0f;
             InputManager.PlayerInputBuffers["ground_jump"] = false;
 
-            StateMachineScript.LadderJump = true;
+            StateMachineScript.AirJumpBranch = "LadderJump";
 
             ChangeToNewState(AIRSTATESTRING);
             return;

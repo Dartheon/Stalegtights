@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 public partial class StateMachine : Node
@@ -41,25 +42,24 @@ public partial class StateMachine : Node
     public string PlayerState { get; private set; } = "DEFAULT STATE"; //Used for animation tree transitions between state machines
     public int LastFacingDirection { get; set; } = 1; //Identifies the Players last facing direction used for animation blend
     public bool PlayerAnimIdle { get; set; } //Checks for player movement
-    public bool HasWeapon { get; set; } = false; //bool to see if player is holding weapon
-    public bool HasStalag { get; set; } = false; //bool to see if player is holding stalag
+
+    //TO DO: Could possibly move all Animation Branches to a Global Script to clean up the StateMachineScript if needed, Just need to change different States Script to point to the Global instead of here and point variables from here to the Global
+    //All States
+    public string CharacterStateBranch { get; set; } = "DEFAULT"; //Used for HasWeapon or HasStalag or HasNormal; To see if player is holding Weapon,Stalag or is Normal
+
+    //AirState
+    public string AirJumpBranch { get; set; } = "DEFAULT"; //Used for WallJumpOut, WallDiveOut, WallPowerSlideOut, GroundJump, LadderJump
+
     //GroundState
-    public bool IsLanding { get; set; } = false; //bool to see if player is jumping
+    public bool IsLandingBranch { get; set; } = false; //bool to see if player is landing from being in the air
+
     //ClimbState
-    public bool GroundToClimb { get; set; } = false; //bool to check whether climbing starts from ground or air
-    public bool AirToClimb { get; set; } = false;
-    public bool LadderJump { get; set; } = false;
-    public bool TopLadderUp { get; set; } = false;
-    public bool LadderSlideDown { get; set; } = false;
+    public string ToClimbBranch { get; set; } = "DEFAULT"; //Used for GroundToClimb, AirToClimb; To check whether climbing starts from ground or air
+    public string LadderClimbBranch { get; set; } = "DEFAULT"; //Used for TopLadderUp, LadderSlideDown
+
     //WallState
-    public bool WallStomp { get; set; } = false;
-    public bool WallCling { get; set; } = false;
-    public bool WallSlideDown { get; set; } = false;
-    public bool WallJumpOut { get; set; } = false;
-    public bool WallDiveOut { get; set; } = false;
-    public bool WallPowerSlideOut { get; set; } = false;
-    public bool WallPowerSlideUp { get; set; } = false;
-    public bool WallPowerSlideDown { get; set; } = false;
+    public string WallActionBranch { get; set; } = "DEFAULT"; //Used for WallCling, WallSlideDown, WallStomp
+    public string WallPowerSlideBranch { get; set; } = "DEFAULT"; //Used for WallPowerSlideUp, WallPowerSlideDown
     #endregion
 
     #region Movement
@@ -85,6 +85,8 @@ public partial class StateMachine : Node
 
         PlayerAnimTree = GetNode<AnimationTree>("/root/Main/World/Player/PlayerAnimationTree");
         PlayerCB2DAnimPlayer = GetNode<AnimationPlayer>("/root/Main/World/Player/AnimationPlayer");
+
+        CharacterStateBranch = "HasNormal"; //To be set somewhere else later, here for testing until other states are ready to use
 
         //Sets the State Nodes and Initializes them in order
         foreach (Node stateNode in GetChildren())
@@ -152,6 +154,8 @@ public partial class StateMachine : Node
         SMPreviousState = key;
     }
 
+    //signal method
+    //doesn't show looping animations
     public void CurrentAnimationStartPlaying(StringName animName)
     {
         CurrentAnimationPlaying = animName;

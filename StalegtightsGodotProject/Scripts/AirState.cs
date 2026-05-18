@@ -14,6 +14,7 @@ public partial class AirState : States
     Player              - CharacterBody2D
     PlayerScript        - Player
     Gravity             - Float
+    AirJumpBranch       - String
     */
 
     /*Variables from StateMachine that need direct Referenece
@@ -146,8 +147,7 @@ public partial class AirState : States
 
         if (!StateMachineScript.smTeleporting && PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
         {
-            StateMachineScript.AirToClimb = true;
-            StateMachineScript.GroundToClimb = false;
+            StateMachineScript.ToClimbBranch = "AirToClimb";
 
             ChangeToNewState(CLIMBINGSTATESTRING);
             return;
@@ -256,7 +256,7 @@ public partial class AirState : States
         #region Check if the Character is Grounded
         if (!StateMachineScript.smTeleporting && PlayerCB2D.IsOnFloor())
         {
-            StateMachineScript.IsLanding = true; //for the animation tree
+            StateMachineScript.IsLandingBranch = true; //for the animation tree
 
             ChangeToNewState(GROUNDSTATESTRING);
             return;

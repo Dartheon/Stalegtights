@@ -13,11 +13,10 @@ public partial class GroundState : States
     PlayerCB2D          - CharacterBody2D
     PlayerScript        - Player
     Gravity             - Float
+    IsLandingBranch     - String
     */
     /*Variables from StateMachine that need direct Referenece
     StateMachineScript.smPlayerVelocity                          - Vector2
-    StateMachineScript.hasWeapon                                 - bool
-    StateMachineScript.hasStalag                                 - bool
     StateMachineScript.LastFacingDirection                       - int
     StateMachineScript.PlayerAnimIdle                            - bool
     StateMachineScript.PlayerAnimTree                            - AnimationTree
@@ -133,10 +132,7 @@ public partial class GroundState : States
             InputManager.PlayerInputBuffers["ground_jump"] = false;
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
 
-            StateMachineScript.WallDiveOut = false;
-            StateMachineScript.WallJumpOut = false;
-            StateMachineScript.WallPowerSlideOut = false;
-            StateMachineScript.LadderJump = false;
+            StateMachineScript.AirJumpBranch = "GroundJump";
 
             ChangeToNewState(AIRSTATESTRING);
             return;
@@ -208,8 +204,7 @@ public partial class GroundState : States
         #region Check if Character is Interacting with a Climbable Surface
         if (!StateMachineScript.smTeleporting && InputManager.PlayerContinuousInputs["climb_enter_ladder"])
         {
-            StateMachineScript.GroundToClimb = true;
-            StateMachineScript.AirToClimb = false;
+            StateMachineScript.ToClimbBranch = "GroundToClimb";
 
             ChangeToNewState(CLIMBINGSTATESTRING);
             return;
@@ -224,8 +219,7 @@ public partial class GroundState : States
                 PlayerScript.PlayerOnLadder = true;
                 shape2D.GetParent().GetParent().CallDeferred("OnWayDisableLadderTop", shape2D);
 
-                StateMachineScript.GroundToClimb = true;
-                StateMachineScript.AirToClimb = false;
+                StateMachineScript.ToClimbBranch = "GroundToClimb";
 
                 ChangeToNewState(CLIMBINGSTATESTRING);
                 return;
@@ -375,7 +369,7 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
-        StateMachineScript.IsLanding = false;
+        StateMachineScript.IsLandingBranch = false;
         #endregion
 
         #region Movement

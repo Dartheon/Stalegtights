@@ -9,10 +9,12 @@ public partial class WallState : States
 
     #region General
     /*References from StateMachine
-    Player              - CharacterBody2D
-    PlayerScript        - Player
-    Gravity             - Float
-    PlayerJumpVelocity  - Float
+    Player                  - CharacterBody2D
+    PlayerScript            - Player
+    Gravity                 - Float
+    PlayerJumpVelocity      - Float
+    WallActionBranch        - String
+    WallPowerSlideBranch    - String
     */
 
     /*Variables from StateMachine that need direct Referenece
@@ -157,8 +159,7 @@ public partial class WallState : States
         StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLIDLE/blend_position", StateMachineScript.smWallDirection);
         StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLSLIDEDOWN/blend_position", StateMachineScript.smWallDirection);
 
-        StateMachineScript.WallSlideDown = wallSlideTimer > 0.01f ? true : false;
-        StateMachineScript.WallCling = wallSlideTimer > 0.01f ? false : true;
+        StateMachineScript.WallActionBranch = wallSlideTimer > 0.01f ? "WallSlideDown" : "WallCling";
         #endregion
     }
 
@@ -373,8 +374,7 @@ public partial class WallState : States
         #endregion
 
         #region Animations
-        StateMachineScript.WallCling = false;
-        StateMachineScript.WallSlideDown = false;
+        //
         #endregion
 
         #region Movement
@@ -388,25 +388,16 @@ public partial class WallState : States
         //Diving Out
         if (wallDive)
         {
-            StateMachineScript.WallDiveOut = true;
-            StateMachineScript.WallJumpOut = false;
-            StateMachineScript.WallPowerSlideOut = false;
-            StateMachineScript.LadderJump = false;
+            StateMachineScript.AirJumpBranch = "WallDiveOut";
         }
         //Wall Jump Out
         else if (jumpOut)
         {
-            StateMachineScript.WallJumpOut = true;
-            StateMachineScript.WallDiveOut = false;
-            StateMachineScript.WallPowerSlideOut = false;
-            StateMachineScript.LadderJump = false;
+            StateMachineScript.AirJumpBranch = "WallJumpOut";
         }
         else if (powerJumpOut)
         {
-            StateMachineScript.WallPowerSlideOut = true;
-            StateMachineScript.WallJumpOut = false;
-            StateMachineScript.WallDiveOut = false;
-            StateMachineScript.LadderJump = false;
+            StateMachineScript.AirJumpBranch = "WallPowerSlideOut";
         }
 
         //sets the jump velocity for the player to trigger
