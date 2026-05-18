@@ -23,7 +23,7 @@ public partial class ClimbingState : States
     #endregion
 
     #region Animations
-    //
+    private float animDirectionY;
     #endregion
 
     #region Movement
@@ -85,7 +85,20 @@ public partial class ClimbingState : States
         #endregion
 
         #region Animations
-        //Blend Postions set to animplayer in statemachine
+        //Set horizontal input as long as input is not 0
+        if (InputManager.HorizontalInput != 0)
+        {
+            //Updates the LastFacingDirection based on Input
+            StateMachineScript.LastFacingDirection = Mathf.Sign(InputManager.HorizontalInput);
+        }
+
+        animDirectionY = Mathf.Sign(StateMachineScript.smPlayerVelocity.Y);
+
+        //Sets the blend Value in the AnimationTree
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/GROUNDTOCLIMB/blend_position.x", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/GROUNDTOCLIMB/blend_position.y", animDirectionY);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/AIRTOCLIMB/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/CLIMB STATE/CLIMB NORMAL/CLIMBING/blend_position", InputManager.HorizontalInput);
         #endregion
     }
 

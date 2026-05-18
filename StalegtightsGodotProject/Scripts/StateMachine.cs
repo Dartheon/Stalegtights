@@ -41,7 +41,7 @@ public partial class StateMachine : Node
     public StringName CurrentAnimationPlaying { get; set; } = "";
     public string PlayerState { get; private set; } = "DEFAULT STATE"; //Used for animation tree transitions between state machines
     public int LastFacingDirection { get; set; } = 1; //Identifies the Players last facing direction used for animation blend
-    public bool PlayerAnimIdle { get; set; } //Checks for player movement
+    //public bool PlayerAnimIdle { get; set; } //Checks for player movement
 
     //TO DO: Could possibly move all Animation Branches to a Global Script to clean up the StateMachineScript if needed, Just need to change different States Script to point to the Global instead of here and point variables from here to the Global
     //All States
@@ -52,6 +52,9 @@ public partial class StateMachine : Node
 
     //GroundState
     public bool IsLandingBranch { get; set; } = false; //bool to see if player is landing from being in the air
+    public string GroundMoveBranch { get; set; } = "DEFAULT"; //Used for GroundIdle and GroundRunning
+    //public string GroundLowMovementBranch { get; set; } = "DEFAULT"; //Used for GroundDucking, GroundCrawling, GroundRolling, GroundIdle
+    //public string GroundRunMovementBranch { get; set; } = "DEFAULT"; //Used for GroundBreaking, GroundSliding, GroundRolling
 
     //ClimbState
     public string ToClimbBranch { get; set; } = "DEFAULT"; //Used for GroundToClimb, AirToClimb; To check whether climbing starts from ground or air
@@ -107,6 +110,7 @@ public partial class StateMachine : Node
 
     public override void _Process(double delta)
     {
+        GD.Print(GroundMoveBranch);
         CurrentState.Update(delta);
 
         if (smLadderDetachTimer > 0)

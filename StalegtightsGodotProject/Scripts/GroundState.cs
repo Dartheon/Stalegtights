@@ -92,7 +92,11 @@ public partial class GroundState : States
 
         #region Animations
         //Sets the Idle bool to true or false
-        StateMachineScript.PlayerAnimIdle = StateMachineScript.smPlayerVelocity.X == 0.0f ? true : false;
+        //StateMachineScript.PlayerAnimIdle = StateMachineScript.smPlayerVelocity.X == 0.0f ? true : false;
+        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f && !InputManager.DownIntent)
+        {
+            StateMachineScript.GroundMoveBranch = "GroundIdle";
+        }
 
         //Set horizontal input as long as input is not 0
         if (InputManager.HorizontalInput != 0)
@@ -104,10 +108,14 @@ public partial class GroundState : States
         }
 
         //Sets the blend Value in the AnimationTree
-        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/RUN/blend_position", AnimHorizontal);
-
-        // Apply to animations
-        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/IDLE/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDIDLE/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDRUN/blend_position", AnimHorizontal);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDDUCKING/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDCRAWLING/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDBRAKING/blend_position", AnimHorizontal);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDROLLING/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDSLIDING/blend_position", StateMachineScript.LastFacingDirection);
+        StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDPOWERSLIDE/blend_position", StateMachineScript.LastFacingDirection);
         StateMachineScript.PlayerAnimTree.Set("parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position", StateMachineScript.LastFacingDirection);
         #endregion
     }
@@ -132,7 +140,7 @@ public partial class GroundState : States
             InputManager.PlayerInputBuffers["ground_jump"] = false;
             StateMachineScript.smPlayerVelocity.Y = PlayerJumpVelocity;
 
-            StateMachineScript.AirJumpBranch = "GroundJump";
+            StateMachineScript.AirJumpBranch = "GroundRunningJump";
 
             ChangeToNewState(AIRSTATESTRING);
             return;
@@ -165,7 +173,8 @@ public partial class GroundState : States
         if (InputManager.PlayerContinuousInputs["duck"])
         {
             //add code for ducking
-            GD.Print("Ducking");
+            //GD.Print("Ducking");
+            StateMachineScript.GroundMoveBranch = "GroundDucking";
         }
         #endregion
 
@@ -173,13 +182,16 @@ public partial class GroundState : States
         if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
         {
             //add code for crawling
-            GD.Print("Crawling");
+            //GD.Print("Crawling");
+            StateMachineScript.GroundMoveBranch = "GroundCrawling";
         }
         #endregion
 
         #region Detect Input for Moving Right or Left
-        if (InputManager.HorizontalInput != 0)
+        if (InputManager.HorizontalInput != 0 && !InputManager.DownIntent)
         {
+            StateMachineScript.GroundMoveBranch = "GroundRunning";
+
             if (Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && StateMachineScript.smPlayerVelocity.X != 0)
             {
                 StateMachineScript.BaseAcceleration = 200.0f;

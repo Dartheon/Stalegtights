@@ -155,11 +155,11 @@ public partial class InputManager : Node
         RightIntent = HorizontalInput > 0.5f;
 
         //Ducking - Needs Changing to new Input Intent
-        PlayerContinuousInputs["duck"] = Input.IsActionPressed("duck");
+        PlayerContinuousInputs["duck"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent && playerCB2D.IsOnFloor() && stateMachineScript.smPlayerVelocity == Vector2.Zero;
 
         //Crawling - Needs More Testing with Intents
-        PlayerContinuousInputs["crawling_left"] = Input.IsActionPressed("duck") && LeftIntent;
-        PlayerContinuousInputs["crawling_right"] = Input.IsActionPressed("duck") && RightIntent;
+        PlayerContinuousInputs["crawling_left"] = DownIntent && LeftIntent && !RightIntent && !UpIntent;
+        PlayerContinuousInputs["crawling_right"] = DownIntent && RightIntent && !LeftIntent && !UpIntent;
 
         //Climbing
         PlayerContinuousInputs["climb_up"] = UpIntent && !DownIntent && playerCB2D.PlayerOnLadder;
