@@ -1,8 +1,8 @@
-[gd_scene load_steps=250 format=3 uid="uid://dg6nvqnpa8et1"]
+[gd_scene load_steps=254 format=3 uid="uid://dg6nvqnpa8et1"]
 
 [ext_resource type="Script" uid="uid://b3mg3kvsxhylw" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="Script" uid="uid://dbf4uslu6i08h" path="res://Scripts/StateMachine.cs" id="2_52ee3"]
-[ext_resource type="Texture2D" uid="uid://b1lmax25tkkax" path="res://Sprites/Spike_Jump-To-Run_Test.png" id="2_bhhdu"]
+[ext_resource type="Texture2D" uid="uid://b8035s00iyxx7" path="res://Sprites/Spike_Idle_v5Test.png" id="2_megsn"]
 [ext_resource type="Script" uid="uid://ttliqt6i2fqt" path="res://Scripts/GroundState.cs" id="3_bhhdu"]
 [ext_resource type="Script" uid="uid://gag34jhae8xb" path="res://Scripts/AirState.cs" id="4_megsn"]
 [ext_resource type="Script" uid="uid://c43t60qkrjp8c" path="res://Scripts/WallState.cs" id="5_yoq75"]
@@ -10,9 +10,8 @@
 [ext_resource type="Script" uid="uid://m61immn8iknm" path="res://Scripts/DeathState.cs" id="7_glx4g"]
 [ext_resource type="PackedScene" uid="uid://dj4sgt4tnpydc" path="res://Scenes/PlayerCamera.tscn" id="9_megsn"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qbkls"]
-radius = 29.0
-height = 96.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_megsn"]
+size = Vector2(100, 119)
 
 [sub_resource type="Animation" id="Animation_5v66d"]
 resource_name = "AIR_TO_LADDER_LEFT"
@@ -91,6 +90,8 @@ resource_name = "GROUND_TO_LADDER_RIGHT"
 
 [sub_resource type="Animation" id="Animation_megsn"]
 resource_name = "IDLE_LEFT"
+loop_mode = 1
+step = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -110,14 +111,16 @@ tracks/1/path = NodePath("PlayerSprite:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
-"values": [0]
+"values": [24, 25, 26, 27, 28]
 }
 
 [sub_resource type="Animation" id="Animation_bhhdu"]
 resource_name = "IDLE_RIGHT"
+loop_mode = 1
+step = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -137,10 +140,10 @@ tracks/1/path = NodePath("PlayerSprite:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
-"values": [0]
+"values": [24, 25, 26, 27, 28]
 }
 
 [sub_resource type="Animation" id="Animation_miouo"]
@@ -434,11 +437,38 @@ max_space = 1.2
 value_label = "LastFacingDirection"
 blend_mode = 1
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kih0c"]
+animation = &"JUMP_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_lyrkg"]
+animation = &"JUMP_RIGHT"
+
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_ksbbd"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_kih0c")
+blend_point_0/pos = -1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_lyrkg")
+blend_point_1/pos = 1.0
+min_space = -1.2
+max_space = 1.2
+value_label = "FacingDirection"
+blend_mode = 1
 
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_i2e8t"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_c43xd"]
+animation = &"JUMP_RIGHT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_avx33"]
+animation = &"JUMP_LEFT"
+
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_megsn"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_c43xd")
+blend_point_0/pos = 1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_avx33")
+blend_point_1/pos = -1.0
+min_space = -1.2
+max_space = 1.2
+blend_mode = 1
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5v66d"]
 animation = &"WALL_DIVEOUT_LEFT"
@@ -528,7 +558,7 @@ states/WALLJUMPOUT/position = Vector2(-161, 15)
 states/WALLPOWERSLIDEOUT/node = SubResource("AnimationNodeBlendSpace1D_x63xi")
 states/WALLPOWERSLIDEOUT/position = Vector2(-143, -64)
 transitions = ["Start", "GROUNDREGULARJUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "Start", "WALLPOWERSLIDEOUT", SubResource("AnimationNodeStateMachineTransition_k22kr"), "Start", "WALLJUMPOUT", SubResource("AnimationNodeStateMachineTransition_h4i3a"), "Start", "WALLDIVEOUT", SubResource("AnimationNodeStateMachineTransition_s7lb4"), "Start", "LADDERJUMP", SubResource("AnimationNodeStateMachineTransition_omi2y"), "Start", "GROUNDRUNNINGJUMP", SubResource("AnimationNodeStateMachineTransition_opjds"), "Start", "GROUNDHIGHJUMP", SubResource("AnimationNodeStateMachineTransition_6626w"), "Start", "GROUNDSHORTJUMP", SubResource("AnimationNodeStateMachineTransition_867uf")]
-graph_offset = Vector2(-367, -311)
+graph_offset = Vector2(-368, -68)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1e7my"]
 
@@ -1318,6 +1348,7 @@ graph_offset = Vector2(5, 43)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
+graph_offset = Vector2(0, -112)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(250, 100)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_kih0c")
@@ -1326,19 +1357,23 @@ nodes/output/position = Vector2(900, 150)
 node_connections = [&"TimeScale", 0, &"PlayerStateMachine", &"output", 0, &"TimeScale"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bhhdu"]
-size = Vector2(85, 95)
+size = Vector2(100, 90)
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_mask = 3
 script = ExtResource("1_rpqav")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
-texture = ExtResource("2_bhhdu")
+texture = ExtResource("2_megsn")
 hframes = 24
+vframes = 2
+region_enabled = true
+region_rect = Rect2(0, 32, 3072, 252)
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="."]
-position = Vector2(1, 31)
-shape = SubResource("CapsuleShape2D_qbkls")
+modulate = Color(0.675714, 0.804455, 0.5507, 1)
+position = Vector2(1.5, 3.5)
+shape = SubResource("RectangleShape2D_megsn")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -1382,7 +1417,8 @@ collision_mask = 3
 input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea2D"]
-position = Vector2(-0.5, 30)
+modulate = Color(0.756665, 0.510806, 0.447058, 1)
+position = Vector2(2, 18)
 shape = SubResource("RectangleShape2D_bhhdu")
 
 [node name="PLAYERSTATEMACHINE" type="Node" parent="."]
