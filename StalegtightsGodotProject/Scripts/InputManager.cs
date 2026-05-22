@@ -5,6 +5,7 @@ public partial class InputManager : Node
 {
     #region Variables
     private StateMachine stateMachineScript;
+    private GroundState groundStateScript;
     private Player playerCB2D;
     private MenuUI menuUI;
 
@@ -16,6 +17,7 @@ public partial class InputManager : Node
         { "wall_jump", false },
         { "wall_jump_right",false},
         { "wall_jump_left",false},
+        { "roll",false},
     };
 
     //These inputs are for continuous key presses that the bool needs to be reset in the code
@@ -31,6 +33,8 @@ public partial class InputManager : Node
         { "climb_down_ladder_top", false },
         { "climb_enter_ladder",false},
         { "wall_drop_down", false },
+        { "slide",false },
+        { "power_slide",false },
 
         //Menu
         { "pause_menu", false },
@@ -67,6 +71,7 @@ public partial class InputManager : Node
     public override void _Ready()
     {
         stateMachineScript = GetNode<StateMachine>("/root/Main/World/Player/PLAYERSTATEMACHINE");
+        groundStateScript = GetNode<GroundState>("/root/Main/World/Player/PLAYERSTATEMACHINE/GROUND STATE");
         playerCB2D = GetNode<Player>("/root/Main/World/Player");
         menuUI = GetNode<MenuUI>("/root/Main/UILayer/MenuUI");
         GroundJumpTimer = GetNode<Timer>("GroundJumpTimer");
@@ -154,12 +159,18 @@ public partial class InputManager : Node
         LeftIntent = HorizontalInput < -0.5f;
         RightIntent = HorizontalInput > 0.5f;
 
-        //Ducking - Needs Changing to new Input Intent
+        //Rolling
+        PlayerInputBuffers["roll"] = Input.IsActionJustPressed("roll") && (LeftIntent || RightIntent) && playerCB2D.IsOnFloor();
+
+        //Sliding
+        PlayerContinuousInputs["slide"] = Input.IsActionPressed("slide") && playerCB2D.IsOnFloor();
+
+        //Ducking
         PlayerContinuousInputs["duck"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent && playerCB2D.IsOnFloor() && stateMachineScript.smPlayerVelocity == Vector2.Zero;
 
-        //Crawling - Needs More Testing with Intents
-        PlayerContinuousInputs["crawling_left"] = DownIntent && LeftIntent && !RightIntent && !UpIntent;
-        PlayerContinuousInputs["crawling_right"] = DownIntent && RightIntent && !LeftIntent && !UpIntent;
+        //Crawling
+        PlayerContinuousInputs["crawling_left"] = DownIntent && LeftIntent && !RightIntent && !UpIntent && stateMachineScript.smPlayerVelocity.X > -(groundStateScript.GroundMoveSpeed / 30);
+        PlayerContinuousInputs["crawling_right"] = DownIntent && RightIntent && !LeftIntent && !UpIntent && stateMachineScript.smPlayerVelocity.X < (groundStateScript.GroundMoveSpeed / 30);
 
         //Climbing
         PlayerContinuousInputs["climb_up"] = UpIntent && !DownIntent && playerCB2D.PlayerOnLadder;

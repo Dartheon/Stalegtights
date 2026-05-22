@@ -52,15 +52,15 @@ public partial class StateMachine : Node
 
     //GroundState
     public bool IsLandingBranch { get; set; } = false; //bool to see if player is landing from being in the air
-    public string GroundMoveBranch { get; set; } = "DEFAULT"; //Used for GroundIdle and GroundRunning
-    //public string GroundLowMovementBranch { get; set; } = "DEFAULT"; //Used for GroundDucking, GroundCrawling, GroundRolling, GroundIdle
-    //public string GroundRunMovementBranch { get; set; } = "DEFAULT"; //Used for GroundBreaking, GroundSliding, GroundRolling
+    public string GroundMoveBranch { get; set; } = "DEFAULT"; //Used for GroundIdle, GroundRunning, GroundDucking, GroundCrawling, GroundRolling, GroundBreaking, GroundSliding, GroundPowerSlide
 
     //ClimbState
+    //Might combine the two into one large string
     public string ToClimbBranch { get; set; } = "DEFAULT"; //Used for GroundToClimb, AirToClimb; To check whether climbing starts from ground or air
     public string LadderClimbBranch { get; set; } = "DEFAULT"; //Used for TopLadderUp, LadderSlideDown
 
     //WallState
+    //Might combine the two into one large string
     public string WallActionBranch { get; set; } = "DEFAULT"; //Used for WallCling, WallSlideDown, WallStomp
     public string WallPowerSlideBranch { get; set; } = "DEFAULT"; //Used for WallPowerSlideUp, WallPowerSlideDown
     #endregion
@@ -110,7 +110,6 @@ public partial class StateMachine : Node
 
     public override void _Process(double delta)
     {
-        GD.Print(GroundMoveBranch);
         CurrentState.Update(delta);
 
         if (smLadderDetachTimer > 0)

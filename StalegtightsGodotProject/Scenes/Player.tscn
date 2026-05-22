@@ -47,6 +47,42 @@ resource_name = "CLIMB_WALL_HORIZONTAL_LEFT"
 [sub_resource type="Animation" id="Animation_m0x7a"]
 resource_name = "CLIMB_WALL_HORIZONTAL_RIGHT"
 
+[sub_resource type="Animation" id="Animation_awd2i"]
+resource_name = "GROUND_BRAKING_LEFT"
+
+[sub_resource type="Animation" id="Animation_o2sks"]
+resource_name = "GROUND_BRAKING_RIGHT"
+
+[sub_resource type="Animation" id="Animation_8p516"]
+resource_name = "GROUND_CRAWLING_LEFT"
+
+[sub_resource type="Animation" id="Animation_fvoow"]
+resource_name = "GROUND_CRAWLING_RIGHT"
+
+[sub_resource type="Animation" id="Animation_vmcrb"]
+resource_name = "GROUND_DUCKING_LEFT"
+
+[sub_resource type="Animation" id="Animation_teras"]
+resource_name = "GROUND_DUCKING_RIGHT"
+
+[sub_resource type="Animation" id="Animation_tbv6f"]
+resource_name = "GROUND_POWERSLIDING_LEFT"
+
+[sub_resource type="Animation" id="Animation_vp15a"]
+resource_name = "GROUND_POWERSLIDING_RIGHT"
+
+[sub_resource type="Animation" id="Animation_v5fqo"]
+resource_name = "GROUND_ROLLING_LEFT"
+
+[sub_resource type="Animation" id="Animation_yf17c"]
+resource_name = "GROUND_ROLLING_RIGHT"
+
+[sub_resource type="Animation" id="Animation_3rw25"]
+resource_name = "GROUND_SLIDING_LEFT"
+
+[sub_resource type="Animation" id="Animation_u4y2r"]
+resource_name = "GROUND_SLIDING_RIGHT"
+
 [sub_resource type="Animation" id="Animation_i2e8t"]
 resource_name = "GROUND_TO_LADDER_LEFT"
 
@@ -235,6 +271,7 @@ tracks/1/keys = {
 [sub_resource type="Animation" id="Animation_ksbbd"]
 resource_name = "RUN_LEFT"
 length = 0.5
+loop_mode = 1
 step = 0.0625
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -264,6 +301,7 @@ tracks/1/keys = {
 [sub_resource type="Animation" id="Animation_yoq75"]
 resource_name = "RUN_RIGHT"
 length = 0.5
+loop_mode = 1
 step = 0.0625
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -325,42 +363,6 @@ resource_name = "WALL_SLIDEDOWN_LEFT"
 
 [sub_resource type="Animation" id="Animation_pqity"]
 resource_name = "WALL_SLIDEDOWN_RIGHT"
-
-[sub_resource type="Animation" id="Animation_vmcrb"]
-resource_name = "GROUND_DUCKING_LEFT"
-
-[sub_resource type="Animation" id="Animation_teras"]
-resource_name = "GROUND_DUCKING_RIGHT"
-
-[sub_resource type="Animation" id="Animation_8p516"]
-resource_name = "GROUND_CRAWLING_LEFT"
-
-[sub_resource type="Animation" id="Animation_fvoow"]
-resource_name = "GROUND_CRAWLING_RIGHT"
-
-[sub_resource type="Animation" id="Animation_v5fqo"]
-resource_name = "GROUND_ROLLING_LEFT"
-
-[sub_resource type="Animation" id="Animation_yf17c"]
-resource_name = "GROUND_ROLLING_RIGHT"
-
-[sub_resource type="Animation" id="Animation_awd2i"]
-resource_name = "GROUND_BRAKING_LEFT"
-
-[sub_resource type="Animation" id="Animation_o2sks"]
-resource_name = "GROUND_BRAKING_RIGHT"
-
-[sub_resource type="Animation" id="Animation_3rw25"]
-resource_name = "GROUND_SLIDING_LEFT"
-
-[sub_resource type="Animation" id="Animation_u4y2r"]
-resource_name = "GROUND_SLIDING_RIGHT"
-
-[sub_resource type="Animation" id="Animation_tbv6f"]
-resource_name = "GROUND_POWERSLIDING_LEFT"
-
-[sub_resource type="Animation" id="Animation_vp15a"]
-resource_name = "GROUND_POWERSLIDING_RIGHT"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_glx4g"]
 _data = {
@@ -510,13 +512,13 @@ advance_expression = "AirJumpBranch == \"GroundShortJump\""
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_o3h8g"]
 states/GROUNDHIGHJUMP/node = SubResource("AnimationNodeBlendSpace1D_o3h8g")
-states/GROUNDHIGHJUMP/position = Vector2(462, 271)
+states/GROUNDHIGHJUMP/position = Vector2(418, 284)
 states/GROUNDREGULARJUMP/node = SubResource("AnimationNodeBlendSpace1D_bhhdu")
 states/GROUNDREGULARJUMP/position = Vector2(462, 105)
 states/GROUNDRUNNINGJUMP/node = SubResource("AnimationNodeBlendSpace1D_ksbbd")
 states/GROUNDRUNNINGJUMP/position = Vector2(462, 190)
 states/GROUNDSHORTJUMP/node = SubResource("AnimationNodeBlendSpace1D_i2e8t")
-states/GROUNDSHORTJUMP/position = Vector2(462, 421)
+states/GROUNDSHORTJUMP/position = Vector2(321, 423)
 states/LADDERJUMP/node = SubResource("AnimationNodeBlendSpace1D_megsn")
 states/LADDERJUMP/position = Vector2(200, -108)
 states/WALLDIVEOUT/node = SubResource("AnimationNodeBlendSpace1D_m0x7a")
@@ -526,7 +528,7 @@ states/WALLJUMPOUT/position = Vector2(-161, 15)
 states/WALLPOWERSLIDEOUT/node = SubResource("AnimationNodeBlendSpace1D_x63xi")
 states/WALLPOWERSLIDEOUT/position = Vector2(-143, -64)
 transitions = ["Start", "GROUNDREGULARJUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "Start", "WALLPOWERSLIDEOUT", SubResource("AnimationNodeStateMachineTransition_k22kr"), "Start", "WALLJUMPOUT", SubResource("AnimationNodeStateMachineTransition_h4i3a"), "Start", "WALLDIVEOUT", SubResource("AnimationNodeStateMachineTransition_s7lb4"), "Start", "LADDERJUMP", SubResource("AnimationNodeStateMachineTransition_omi2y"), "Start", "GROUNDRUNNINGJUMP", SubResource("AnimationNodeStateMachineTransition_opjds"), "Start", "GROUNDHIGHJUMP", SubResource("AnimationNodeStateMachineTransition_6626w"), "Start", "GROUNDSHORTJUMP", SubResource("AnimationNodeStateMachineTransition_867uf")]
-graph_offset = Vector2(-415, -116)
+graph_offset = Vector2(-367, -311)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1e7my"]
 
@@ -1316,7 +1318,6 @@ graph_offset = Vector2(5, 43)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
-graph_offset = Vector2(-243.421, -115.603)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(250, 100)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_kih0c")
@@ -1366,7 +1367,7 @@ anim_player = NodePath("../AnimationPlayer")
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDIDLE/blend_position" = 0.0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDPOWERSLIDE/blend_position" = 0
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDROLLING/blend_position" = 0
-"parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDRUN/blend_position" = -0.457213
+"parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDRUN/blend_position" = 0.249825
 "parameters/PlayerStateMachine/GROUND STATE/GROUND NORMAL/GROUNDSLIDING/blend_position" = 0
 "parameters/PlayerStateMachine/GROUND STATE/LANDING/blend_position" = -0.566972
 "parameters/PlayerStateMachine/WALL STATE/WALL NORMAL/WALLIDLE/blend_position" = 0.782272
