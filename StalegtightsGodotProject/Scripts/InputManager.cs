@@ -165,18 +165,29 @@ public partial class InputManager : Node
         //Sliding
         PlayerContinuousInputs["slide"] = Input.IsActionPressed("slide") && playerCB2D.IsOnFloor();
 
+        if (PlayerContinuousInputs["slide"] && groundStateScript.CurrentMovementState != GroundState.GroundMovementStates.Sliding)
+        {
+            groundStateScript.CurrentSlideState = GroundState.GroundSlideState.InitialSlide;
+            groundStateScript.SlideTimer = 0f;
+        }
+
+        if (!PlayerContinuousInputs["slide"])
+        {
+            groundStateScript.SlideCancel = false;
+        }
+
         //Ducking
         PlayerContinuousInputs["duck"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent && playerCB2D.IsOnFloor() && stateMachineScript.smPlayerVelocity == Vector2.Zero;
 
         //Crawling
-        PlayerContinuousInputs["crawling_left"] = DownIntent && LeftIntent && !RightIntent && !UpIntent && stateMachineScript.smPlayerVelocity.X > -(groundStateScript.GroundMoveSpeed / 30);
-        PlayerContinuousInputs["crawling_right"] = DownIntent && RightIntent && !LeftIntent && !UpIntent && stateMachineScript.smPlayerVelocity.X < (groundStateScript.GroundMoveSpeed / 30);
+        PlayerContinuousInputs["crawling_left"] = DownIntent && LeftIntent && !RightIntent && !UpIntent && stateMachineScript.smPlayerVelocity.X > -groundStateScript.CrawlGroundSpeed;
+        PlayerContinuousInputs["crawling_right"] = DownIntent && RightIntent && !LeftIntent && !UpIntent && stateMachineScript.smPlayerVelocity.X < groundStateScript.CrawlGroundSpeed;
 
         //Climbing
         PlayerContinuousInputs["climb_up"] = UpIntent && !DownIntent && playerCB2D.PlayerOnLadder;
         PlayerContinuousInputs["climb_down"] = DownIntent && !UpIntent && playerCB2D.PlayerOnLadder;
         PlayerContinuousInputs["climb_down_ladder_top"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent && playerCB2D.IsOnFloor() && Player.PlayerAboveLadder.Count > 0;
-        PlayerContinuousInputs["climb_enter_ladder"] = UpIntent && !DownIntent && !RightIntent && !LeftIntent && playerCB2D.PlayerOnLadder;
+        PlayerContinuousInputs["climb_enter_ladder"] = UpIntent && !DownIntent && !RightIntent && !LeftIntent && playerCB2D.PlayerOnLadder && Player.PlayerAboveLadder.Count == 0;
 
         //Wall
         PlayerContinuousInputs["wall_drop_down"] = DownIntent && !UpIntent && !RightIntent && !LeftIntent;

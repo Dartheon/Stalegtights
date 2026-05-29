@@ -30,7 +30,8 @@ public partial class GroundState : States
     #endregion
 
     #region Movement
-    private enum GroundMovementStates
+    //Enum to switch between different ground movement states to prevent incorrect movement being applied to player
+    public enum GroundMovementStates
     {
         Idle,
         Running,
@@ -43,12 +44,27 @@ public partial class GroundState : States
         DEFAULT
     }
 
-    private GroundMovementStates currentMovementState = GroundMovementStates.DEFAULT;
+    public GroundMovementStates CurrentMovementState { get; set; } = GroundMovementStates.DEFAULT;
 
     [Export] public float BaseSpeed { get; private set; } = 500.0f; //characters speed
     public float MoveSpeedModifier { get; set; } = 1.0f;
     public float GroundMoveSpeed => BaseSpeed * MoveSpeedModifier;
 
+    //Enum to switch between different Sliding States
+    public enum GroundSlideState
+    {
+        InitialSlide,
+        ControlledSlide,
+        DEFAULT
+    }
+
+    public GroundSlideState CurrentSlideState { get; set; } = GroundSlideState.DEFAULT;
+    public float SlideTimer { get; set; } = 0f;
+    public bool SlideCancel { get; set; } = false;
+    private float controlledTime;
+    private float friction;
+
+    //Enum for switching between the different jumps
     public enum GroundJumpState
     {
         RegularJump,
@@ -59,7 +75,9 @@ public partial class GroundState : States
         DEFAULT
 
     }
-    public GroundJumpState JumpState = GroundJumpState.DEFAULT;
+    public GroundJumpState CurrentJumpState { get; set; } = GroundJumpState.DEFAULT;
+
+    public float CrawlGroundSpeed { get; set; } = 150.0f;
     #endregion
     #endregion
 
@@ -71,7 +89,9 @@ public partial class GroundState : States
         #endregion
 
         #region General
-        currentMovementState = GroundMovementStates.Idle;
+        CurrentMovementState = GroundMovementStates.Idle;
+        CurrentSlideState = GroundSlideState.InitialSlide;
+        CurrentJumpState = GroundJumpState.RegularJump;
         #endregion
 
         #region Animations
@@ -118,13 +138,6 @@ public partial class GroundState : States
         #endregion
 
         #region Animations
-        //Sets the Idle bool to true or false
-        //StateMachineScript.PlayerAnimIdle = StateMachineScript.smPlayerVelocity.X == 0.0f ? true : false;
-        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f && !InputManager.LeftIntent && !InputManager.RightIntent && !InputManager.UpIntent && !InputManager.DownIntent)
-        {
-            currentMovementState = GroundMovementStates.Idle;
-        }
-
         //Set horizontal input as long as input is not 0
         if (InputManager.HorizontalInput != 0)
         {
@@ -200,39 +213,14 @@ public partial class GroundState : States
         #endregion
 
         #region Movement
-        #region Detect Input for Moving Right or Left
-        if (InputManager.HorizontalInput != 0 && !InputManager.DownIntent && !InputManager.UpIntent)
+        GD.Print($"Current: {CurrentMovementState} B: {StateMachineScript.GroundMoveBranch}");
+        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f && !InputManager.LeftIntent && !InputManager.RightIntent && !InputManager.UpIntent && !InputManager.DownIntent)
         {
-            if (currentMovementState != GroundMovementStates.Ducking && currentMovementState != GroundMovementStates.PowerSliding)
-            {
-                currentMovementState = GroundMovementStates.Running;
-            }
+            CurrentMovementState = GroundMovementStates.Idle;
         }
-        else
-        {
-            if (currentMovementState == GroundMovementStates.Running)
-            {
-                StateMachineScript.BaseAcceleration = 20.0f;
-
-                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0, StateMachineScript.RunAcceleration);
-                //Switch to Crawling from Running
-                if ((InputManager.DownIntent && InputManager.RightIntent) || (InputManager.DownIntent && InputManager.LeftIntent))
-                {
-                    currentMovementState = GroundMovementStates.Crawling;
-                }
-                //Switch to Ducking from Running
-                else if (InputManager.DownIntent && !InputManager.RightIntent && !InputManager.LeftIntent)
-                {
-                    currentMovementState = GroundMovementStates.Ducking;
-                }
-            }
-        }
-        #endregion
-
-        GD.Print(currentMovementState, StateMachineScript.GroundMoveBranch);
 
         //Switch for actioning what the Player is doing while on the ground
-        switch (currentMovementState)
+        switch (CurrentMovementState)
         {
             case GroundMovementStates.Ducking:
                 //Animation
@@ -244,7 +232,7 @@ public partial class GroundState : States
                 //Switch to Crawling from Ducking
                 if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
-                    currentMovementState = GroundMovementStates.Crawling;
+                    CurrentMovementState = GroundMovementStates.Crawling;
                 }
                 //Jump out of Duck to High Jump 
                 else if (InputManager.PlayerInputBuffers["ground_jump"])
@@ -258,13 +246,14 @@ public partial class GroundState : States
                 {
                     //Animation
                     StateMachineScript.GroundMoveBranch = "GroundCrawling";
+
                     //Movement
-                    //TO DO: add crawling movement that is slower that walking speed
+                    StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * CrawlGroundSpeed, 20f);
 
                     //Switch to Rolling from Crawling
                     if (InputManager.PlayerInputBuffers["roll"])
                     {
-                        currentMovementState = GroundMovementStates.Rolling;
+                        CurrentMovementState = GroundMovementStates.Rolling;
                     }
                     //Jump out of Crawl to High Jump
                     else if (InputManager.PlayerInputBuffers["ground_jump"])
@@ -275,12 +264,12 @@ public partial class GroundState : States
                 //Switch to Ducking from Crawling
                 else if (InputManager.PlayerContinuousInputs["duck"])
                 {
-                    currentMovementState = GroundMovementStates.Ducking;
+                    CurrentMovementState = GroundMovementStates.Ducking;
                 }
                 //Switch back to Ducking from Crawling
                 else
                 {
-                    currentMovementState = GroundMovementStates.Ducking;
+                    CurrentMovementState = GroundMovementStates.Ducking;
                 }
                 break;
 
@@ -289,38 +278,28 @@ public partial class GroundState : States
                 StateMachineScript.GroundMoveBranch = "GroundRunning";
 
                 //Movement
-                if (Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && StateMachineScript.smPlayerVelocity.X != 0)
-                {
-                    StateMachineScript.BaseAcceleration = 200.0f;
-                }
-                else
-                {
-                    StateMachineScript.BaseAcceleration = 20.0f;
-                }
-
-                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
-                //StateMachineScript.smPlayerVelocity.X += InputManager.HorizontalInput * StateMachineScript.RunAcceleration;
-                //StateMachineScript.smPlayerVelocity.X = Mathf.Clamp(StateMachineScript.smPlayerVelocity.X, -GroundMoveSpeed * -InputManager.HorizontalInput, GroundMoveSpeed * InputManager.HorizontalInput);
+                PlayerHorizontalMovement();
 
                 //TO DO: add logic for braking
 
                 //Switch to Sliding from Running
-                if (InputManager.PlayerContinuousInputs["slide"])
+                if (InputManager.PlayerContinuousInputs["slide"] && !SlideCancel && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > (GroundMoveSpeed / 35))
                 {
-                    currentMovementState = GroundMovementStates.Sliding;
+                    SlideCancel = true;
+                    CurrentMovementState = GroundMovementStates.Sliding;
                 }
 
                 //TO DO: add logic for running jump outside of switch
                 //TO DO: add logic for short hop jump outside of switch
 
                 //Move to Crawling from Running
-                if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
+                else if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
-                    currentMovementState = GroundMovementStates.Crawling;
+                    CurrentMovementState = GroundMovementStates.Crawling;
                 }
-                else if (InputManager.UpIntent && !InputManager.RightIntent && !InputManager.LeftIntent)
+                else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
                 {
-                    currentMovementState = GroundMovementStates.Idle;
+                    CurrentMovementState = GroundMovementStates.Idle;
                 }
                 break;
 
@@ -347,18 +326,59 @@ public partial class GroundState : States
                 //Movement
                 if (InputManager.PlayerContinuousInputs["slide"])
                 {
-                    //TO DO: add slide enum for movement
+                    //deciding which slide state to use
+                    SlideTimer += (float)delta;
+
+                    if (SlideTimer > 0.5f)
+                    {
+                        CurrentSlideState = GroundSlideState.ControlledSlide;
+                    }
+
+                    //to use the Slide state enum to run movement code
+                    switch (CurrentSlideState)
+                    {
+                        case GroundSlideState.InitialSlide:
+                            //
+                            break;
+                        case GroundSlideState.ControlledSlide:
+                            controlledTime = SlideTimer - 0.5f;
+                            friction = Mathf.Lerp(50f, 1200f, Mathf.Clamp(controlledTime / 1.25f, 0f, 1f));
+
+                            //Using exponential decay
+                            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0, friction * (float)delta);
+
+                            if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
+                            {
+                                CurrentMovementState = GroundMovementStates.Running;
+                            }
+                            break;
+                        default:
+                            GD.PushWarning($"No Acceptable SlideState entered in Movement Enum: {CurrentSlideState}");
+                            break;
+                    }
 
                     //Switch to Rolling from Sliding
                     if (InputManager.PlayerInputBuffers["roll"])
                     {
-                        currentMovementState = GroundMovementStates.Rolling;
+                        CurrentMovementState = GroundMovementStates.Rolling;
                     }
                     //Switch to PowerSliding from Sliding
                     else if (InputManager.PlayerContinuousInputs["power_slide"])
                     {
-                        currentMovementState = GroundMovementStates.PowerSliding;
+                        CurrentMovementState = GroundMovementStates.PowerSliding;
                     }
+                }
+                else if (InputManager.HorizontalInput != 0 && !InputManager.DownIntent && !InputManager.UpIntent && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.01f)
+                {
+                    CurrentMovementState = GroundMovementStates.Running;
+                }
+                else if (InputManager.HorizontalInput == 0 && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.01f)
+                {
+                    CurrentMovementState = GroundMovementStates.Running;
+                }
+                else if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
+                {
+                    CurrentMovementState = GroundMovementStates.Crawling;
                 }
                 break;
 
@@ -373,12 +393,12 @@ public partial class GroundState : States
                 //Switch to sliding from Rolling
                 if (InputManager.PlayerContinuousInputs["slide"])
                 {
-                    currentMovementState = GroundMovementStates.Sliding;
+                    CurrentMovementState = GroundMovementStates.Sliding;
                 }
                 //Switch to Crawling from Rolling
                 if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
-                    currentMovementState = GroundMovementStates.Crawling;
+                    CurrentMovementState = GroundMovementStates.Crawling;
                 }
                 break;
 
@@ -388,17 +408,22 @@ public partial class GroundState : States
 
                 //Movement
                 StateMachineScript.smPlayerVelocity.X = 0;
-                //TO DO: add jumping for regular and short hop
+
+                //Idle to Running
+                if (InputManager.HorizontalInput != 0 && !InputManager.DownIntent && !InputManager.UpIntent && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
+                {
+                    CurrentMovementState = GroundMovementStates.Running;
+                }
 
                 //Switch from Idle to Ducking
                 if (InputManager.PlayerContinuousInputs["duck"])
                 {
-                    currentMovementState = GroundMovementStates.Ducking;
+                    CurrentMovementState = GroundMovementStates.Ducking;
                 }
                 break;
 
             default:
-                GD.PushWarning($"No Acceptable GroundState entered in Movement Enum: {currentMovementState}");
+                GD.PushWarning($"No Acceptable GroundState entered in Movement Enum: {CurrentMovementState}");
                 break;
         }
 
@@ -554,6 +579,25 @@ public partial class GroundState : States
         #region Movement
         //
         #endregion
+    }
+    #endregion
+
+    #region Methods
+    public void PlayerHorizontalMovement()
+    {
+        if (CurrentMovementState == GroundMovementStates.Running)
+        {
+            if (Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && StateMachineScript.smPlayerVelocity.X != 0)
+            {
+                StateMachineScript.BaseAcceleration = 20.0f;
+            }
+            else
+            {
+                StateMachineScript.BaseAcceleration = 10.0f;
+            }
+
+            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
+        }
     }
     #endregion
 }
