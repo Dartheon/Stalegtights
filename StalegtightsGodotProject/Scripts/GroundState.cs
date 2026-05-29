@@ -49,6 +49,8 @@ public partial class GroundState : States
     [Export] public float BaseSpeed { get; private set; } = 500.0f; //characters speed
     public float MoveSpeedModifier { get; set; } = 1.0f;
     public float GroundMoveSpeed => BaseSpeed * MoveSpeedModifier;
+    public float CrawlGroundSpeed { get; set; } = 150.0f;
+    public float RollGroundSpeed { get; set; } = 300.0f;
 
     //Enum to switch between different Sliding States
     public enum GroundSlideState
@@ -77,7 +79,8 @@ public partial class GroundState : States
     }
     public GroundJumpState CurrentJumpState { get; set; } = GroundJumpState.DEFAULT;
 
-    public float CrawlGroundSpeed { get; set; } = 150.0f;
+    private bool rollFinish = false;
+    private float targetRollSpeed;
     #endregion
     #endregion
 
@@ -347,7 +350,11 @@ public partial class GroundState : States
                             //Using exponential decay
                             StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0, friction * (float)delta);
 
-                            if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
+                            if ((InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"]) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
+                            {
+                                CurrentMovementState = GroundMovementStates.Crawling;
+                            }
+                            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
                             {
                                 CurrentMovementState = GroundMovementStates.Running;
                             }
@@ -390,15 +397,30 @@ public partial class GroundState : States
                 StateMachineScript.GroundMoveBranch = "GroundRolling";
 
                 //Movement
+                targetRollSpeed = Mathf.Max(Mathf.Abs(StateMachineScript.smPlayerVelocity.X), RollGroundSpeed);
+
+                targetRollSpeed *= Mathf.Sign(StateMachineScript.smPlayerVelocity.X);
+
+                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, targetRollSpeed, 20f);
+
                 //Switch to sliding from Rolling
-                if (InputManager.PlayerContinuousInputs["slide"])
+                if (InputManager.PlayerContinuousInputs["slide"] && !SlideCancel)
                 {
                     CurrentMovementState = GroundMovementStates.Sliding;
                 }
                 //Switch to Crawling from Rolling
-                if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
+                else if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
                     CurrentMovementState = GroundMovementStates.Crawling;
+                }
+                else if (InputManager.HorizontalInput != 0 && rollFinish)
+                {
+                    rollFinish = false;
+                    CurrentMovementState = GroundMovementStates.Running;
+                }
+                else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.01f)
+                {
+                    CurrentMovementState = GroundMovementStates.Idle;
                 }
                 break;
 
