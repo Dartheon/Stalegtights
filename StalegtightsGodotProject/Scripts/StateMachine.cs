@@ -28,8 +28,11 @@ public partial class StateMachine : Node
     public float GravityModifier { get; set; } = 1.0f;
     public float smGravity => BaseGravity * GravityModifier;
     public float BaseAcceleration { get; set; } = 20.0f;
+    public float BaseDeceleration { get; set; } = 10.0f;
     public float RunAccelerationModifier { get; set; } = 1.0f;
+    public float RunDecelerationModifier { get; set; } = 1.0f;
     public float RunAcceleration => BaseAcceleration * RunAccelerationModifier;
+    public float RunDeceleration => BaseDeceleration * RunDecelerationModifier;
     public float smLadderDetachTimer { get; set; } = 0f;
 
     public bool smTeleporting { get; set; }

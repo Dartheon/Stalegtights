@@ -6,6 +6,7 @@ public partial class GroundState : States
     #region Variables
     #region DEBUG
     //DEBUG Variables Go Here...
+    private float debugtimer;
     #endregion
 
     #region General
@@ -82,6 +83,8 @@ public partial class GroundState : States
     [Export] public bool RollFinish { get; set; } = false;
     private float targetRollSpeed;
     private float rollTimer = 0f;
+    private float brakeTime = 0.40000013f;
+    private float brakeFrames;
     #endregion
     #endregion
 
@@ -210,6 +213,20 @@ public partial class GroundState : States
     {
         #region DEBUG
         //DEBUG Variables Go Here...
+        GD.Print(debugtimer);
+        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) == GroundMoveSpeed)
+        {
+            debugtimer = 0;
+        }
+        else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0 && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) != GroundMoveSpeed)
+        {
+            debugtimer += (float)delta;
+
+        }
+        else if (StateMachineScript.smPlayerVelocity.X == 0)
+        {
+            GD.Print($"Final time: {debugtimer}");
+        }
         #endregion
 
         #region Animations
@@ -237,11 +254,13 @@ public partial class GroundState : States
                 if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
                     CurrentMovementState = GroundMovementStates.Crawling;
+                    break;
                 }
                 //Jump out of Duck to High Jump 
                 else if (InputManager.PlayerInputBuffers["ground_jump"])
                 {
                     //TO DO: add High Jump logic outside of switch
+                    break;
                 }
                 break;
 
@@ -259,22 +278,26 @@ public partial class GroundState : States
                     {
                         rollTimer = 0f;
                         CurrentMovementState = GroundMovementStates.Rolling;
+                        break;
                     }
                     //Jump out of Crawl to High Jump
                     else if (InputManager.PlayerInputBuffers["ground_jump"])
                     {
                         //TO DO: add High Jump logic outside of switch
+                        break;
                     }
                 }
                 //Switch to Ducking from Crawling
                 else if (InputManager.PlayerContinuousInputs["duck"])
                 {
                     CurrentMovementState = GroundMovementStates.Ducking;
+                    break;
                 }
                 //Switch back to Ducking from Crawling
                 else
                 {
                     CurrentMovementState = GroundMovementStates.Ducking;
+                    break;
                 }
                 break;
 
@@ -285,13 +308,18 @@ public partial class GroundState : States
                 //Movement
                 PlayerHorizontalMovement();
 
-                //TO DO: add logic for braking
+                if (InputManager.HorizontalInput != 0 && InputManager.HorizontalInput != StateMachineScript.LastFacingDirection && !InputManager.UpIntent && !InputManager.DownIntent && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 300f)
+                {
+                    CurrentMovementState = GroundMovementStates.Braking;
+                    break;
+                }
 
                 //Switch to Sliding from Running
-                if (InputManager.PlayerContinuousInputs["slide"] && !SlideCancel && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > (GroundMoveSpeed / 35))
+                else if (InputManager.PlayerContinuousInputs["slide"] && !SlideCancel && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > (GroundMoveSpeed / 35))
                 {
                     SlideCancel = true;
                     CurrentMovementState = GroundMovementStates.Sliding;
+                    break;
                 }
 
                 //TO DO: add logic for running jump outside of switch
@@ -301,10 +329,12 @@ public partial class GroundState : States
                 else if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
                     CurrentMovementState = GroundMovementStates.Crawling;
+                    break;
                 }
                 else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
                 {
                     CurrentMovementState = GroundMovementStates.Idle;
+                    break;
                 }
                 break;
 
@@ -313,6 +343,10 @@ public partial class GroundState : States
                 StateMachineScript.GroundMoveBranch = "GroundBraking";
 
                 //Movement
+                if (InputManager.HorizontalInput != 0)
+                {
+                    CurrentMovementState = GroundMovementStates.Running;
+                }
 
                 break;
 
@@ -337,6 +371,7 @@ public partial class GroundState : States
                     if (SlideTimer > 0.5f)
                     {
                         CurrentSlideState = GroundSlideState.ControlledSlide;
+                        break;
                     }
 
                     //to use the Slide state enum to run movement code
@@ -355,10 +390,12 @@ public partial class GroundState : States
                             if ((InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"]) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
                             {
                                 CurrentMovementState = GroundMovementStates.Crawling;
+                                break;
                             }
                             else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
                             {
                                 CurrentMovementState = GroundMovementStates.Running;
+                                break;
                             }
                             break;
                         default:
@@ -371,24 +408,29 @@ public partial class GroundState : States
                     {
                         rollTimer = 0f;
                         CurrentMovementState = GroundMovementStates.Rolling;
+                        break;
                     }
                     //Switch to PowerSliding from Sliding
                     else if (InputManager.PlayerContinuousInputs["power_slide"])
                     {
                         CurrentMovementState = GroundMovementStates.PowerSliding;
+                        break;
                     }
                 }
                 else if (InputManager.HorizontalInput != 0 && !InputManager.DownIntent && !InputManager.UpIntent && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.01f)
                 {
                     CurrentMovementState = GroundMovementStates.Running;
+                    break;
                 }
                 else if (InputManager.HorizontalInput == 0 && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.01f)
                 {
                     CurrentMovementState = GroundMovementStates.Running;
+                    break;
                 }
                 else if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
                     CurrentMovementState = GroundMovementStates.Crawling;
+                    break;
                 }
                 break;
 
@@ -417,22 +459,26 @@ public partial class GroundState : States
                 if (InputManager.PlayerContinuousInputs["slide"] && !SlideCancel)
                 {
                     CurrentMovementState = GroundMovementStates.Sliding;
+                    break;
                 }
                 //Switch to Crawling from Rolling
                 else if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
                     RollFinish = false;
                     CurrentMovementState = GroundMovementStates.Crawling;
+                    break;
                 }
                 else if (InputManager.HorizontalInput != 0 && RollFinish)
                 {
                     RollFinish = false;
                     CurrentMovementState = GroundMovementStates.Running;
+                    break;
                 }
                 else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.01f && RollFinish)
                 {
                     RollFinish = false;
                     CurrentMovementState = GroundMovementStates.Idle;
+                    break;
                 }
                 break;
 
@@ -447,12 +493,14 @@ public partial class GroundState : States
                 if (InputManager.HorizontalInput != 0 && !InputManager.DownIntent && !InputManager.UpIntent && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
                 {
                     CurrentMovementState = GroundMovementStates.Running;
+                    break;
                 }
 
                 //Switch from Idle to Ducking
                 if (InputManager.PlayerContinuousInputs["duck"])
                 {
                     CurrentMovementState = GroundMovementStates.Ducking;
+                    break;
                 }
                 break;
 
@@ -623,14 +671,21 @@ public partial class GroundState : States
         {
             if (Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && StateMachineScript.smPlayerVelocity.X != 0)
             {
-                StateMachineScript.BaseAcceleration = 20.0f;
+                //brakeFrames = brakeTime * Engine.PhysicsTicksPerSecond;
+
+                //StateMachineScript.BaseDeceleration = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / brakeFrames;
+                StateMachineScript.BaseDeceleration = 20.0f;
+
+                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunDeceleration);
             }
             else
             {
                 StateMachineScript.BaseAcceleration = 10.0f;
+
+                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
             }
 
-            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
+
         }
     }
     #endregion
