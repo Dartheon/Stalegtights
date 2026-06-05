@@ -79,8 +79,9 @@ public partial class GroundState : States
     }
     public GroundJumpState CurrentJumpState { get; set; } = GroundJumpState.DEFAULT;
 
-    private bool rollFinish = false;
+    [Export] public bool RollFinish { get; set; } = false;
     private float targetRollSpeed;
+    private float rollTimer = 0f;
     #endregion
     #endregion
 
@@ -256,6 +257,7 @@ public partial class GroundState : States
                     //Switch to Rolling from Crawling
                     if (InputManager.PlayerInputBuffers["roll"])
                     {
+                        rollTimer = 0f;
                         CurrentMovementState = GroundMovementStates.Rolling;
                     }
                     //Jump out of Crawl to High Jump
@@ -367,6 +369,7 @@ public partial class GroundState : States
                     //Switch to Rolling from Sliding
                     if (InputManager.PlayerInputBuffers["roll"])
                     {
+                        rollTimer = 0f;
                         CurrentMovementState = GroundMovementStates.Rolling;
                     }
                     //Switch to PowerSliding from Sliding
@@ -397,6 +400,13 @@ public partial class GroundState : States
                 StateMachineScript.GroundMoveBranch = "GroundRolling";
 
                 //Movement
+                rollTimer += (float)delta;
+
+                if (rollTimer > 2f)
+                {
+                    RollFinish = true;
+                }
+
                 targetRollSpeed = Mathf.Max(Mathf.Abs(StateMachineScript.smPlayerVelocity.X), RollGroundSpeed);
 
                 targetRollSpeed *= Mathf.Sign(StateMachineScript.smPlayerVelocity.X);
@@ -411,15 +421,17 @@ public partial class GroundState : States
                 //Switch to Crawling from Rolling
                 else if (InputManager.PlayerContinuousInputs["crawling_left"] || InputManager.PlayerContinuousInputs["crawling_right"])
                 {
+                    RollFinish = false;
                     CurrentMovementState = GroundMovementStates.Crawling;
                 }
-                else if (InputManager.HorizontalInput != 0 && rollFinish)
+                else if (InputManager.HorizontalInput != 0 && RollFinish)
                 {
-                    rollFinish = false;
+                    RollFinish = false;
                     CurrentMovementState = GroundMovementStates.Running;
                 }
-                else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.01f)
+                else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0.01f && RollFinish)
                 {
+                    RollFinish = false;
                     CurrentMovementState = GroundMovementStates.Idle;
                 }
                 break;

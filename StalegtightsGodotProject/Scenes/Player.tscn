@@ -72,9 +72,11 @@ resource_name = "GROUND_POWERSLIDING_RIGHT"
 
 [sub_resource type="Animation" id="Animation_v5fqo"]
 resource_name = "GROUND_ROLLING_LEFT"
+length = 5.0
 
 [sub_resource type="Animation" id="Animation_yf17c"]
 resource_name = "GROUND_ROLLING_RIGHT"
+length = 5.0
 
 [sub_resource type="Animation" id="Animation_3rw25"]
 resource_name = "GROUND_SLIDING_LEFT"
@@ -1348,7 +1350,6 @@ graph_offset = Vector2(5, 43)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
-graph_offset = Vector2(0, -112)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(250, 100)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_kih0c")
