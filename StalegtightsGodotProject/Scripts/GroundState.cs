@@ -83,8 +83,11 @@ public partial class GroundState : States
     [Export] public bool RollFinish { get; set; } = false;
     private float targetRollSpeed;
     private float rollTimer = 0f;
-    private float brakeTime = 0.40000013f;
-    private float brakeFrames;
+    private float brakeRate;
+    private bool braking = false;
+
+    private const float BrakeStopTime = 0.40000013f;
+    private const float BrakeSpeedThreshold = 300f;
     #endregion
     #endregion
 
@@ -302,6 +305,54 @@ public partial class GroundState : States
                 break;
 
             case GroundMovementStates.Running:
+
+                // Animation
+                StateMachineScript.GroundMoveBranch = "GroundRunning";
+
+                // Enter braking if moving fast enough and opposite direction pressed
+                if (
+                    InputManager.HorizontalInput != 0 &&
+                    Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) &&
+                    Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > BrakeSpeedThreshold
+                )
+                {
+                    EnterBraking();
+                    break;
+                }
+
+                // Movement
+                PlayerHorizontalMovement();
+
+                // Switch to Sliding from Running
+                if (
+                    InputManager.PlayerContinuousInputs["slide"] &&
+                    !SlideCancel &&
+                    Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > (GroundMoveSpeed / 35)
+                )
+                {
+                    SlideCancel = true;
+                    CurrentMovementState = GroundMovementStates.Sliding;
+                    break;
+                }
+
+                // Move to Crawling from Running
+                else if (
+                    InputManager.PlayerContinuousInputs["crawling_left"] ||
+                    InputManager.PlayerContinuousInputs["crawling_right"]
+                )
+                {
+                    CurrentMovementState = GroundMovementStates.Crawling;
+                    break;
+                }
+
+                else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 0.01f)
+                {
+                    CurrentMovementState = GroundMovementStates.Idle;
+                    break;
+                }
+
+                break;
+            /*case GroundMovementStates.Running:
                 //Animation
                 StateMachineScript.GroundMoveBranch = "GroundRunning";
 
@@ -336,9 +387,29 @@ public partial class GroundState : States
                     CurrentMovementState = GroundMovementStates.Idle;
                     break;
                 }
-                break;
+                break;*/
 
             case GroundMovementStates.Braking:
+
+                // Animation
+                StateMachineScript.GroundMoveBranch = "GroundBraking";
+
+                // Decelerate using cached value
+                StateMachineScript.smPlayerVelocity.X =
+                    Mathf.MoveToward(
+                        StateMachineScript.smPlayerVelocity.X,
+                        0,
+                        StateMachineScript.RunDeceleration);
+
+                // Finished braking
+                if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 1f)
+                {
+                    braking = false;
+                    CurrentMovementState = GroundMovementStates.Running;
+                }
+
+                break;
+            /*case GroundMovementStates.Braking:
                 //Animation
                 StateMachineScript.GroundMoveBranch = "GroundBraking";
 
@@ -348,7 +419,7 @@ public partial class GroundState : States
                     CurrentMovementState = GroundMovementStates.Running;
                 }
 
-                break;
+                break;*/
 
             case GroundMovementStates.PowerSliding:
                 //Animation
@@ -667,13 +738,54 @@ public partial class GroundState : States
     #region Methods
     public void PlayerHorizontalMovement()
     {
+        if (CurrentMovementState != GroundMovementStates.Running)
+            return;
+
+        // No Input = Coast to stop
+        if (Mathf.IsZeroApprox(InputManager.HorizontalInput))
+        {
+            if (!braking)
+            {
+                BeginCoast();
+            }
+
+            StateMachineScript.smPlayerVelocity.X =
+                Mathf.MoveToward(
+                    StateMachineScript.smPlayerVelocity.X,
+                    0,
+                    StateMachineScript.RunDeceleration);
+
+            if (Mathf.IsZeroApprox(StateMachineScript.smPlayerVelocity.X))
+            {
+                braking = false;
+            }
+
+            return;
+        }
+
+        // Input Exists
+        braking = false;
+
+        StateMachineScript.BaseAcceleration = 10.0f;
+
+        StateMachineScript.smPlayerVelocity.X =
+            Mathf.MoveToward(
+                StateMachineScript.smPlayerVelocity.X,
+                InputManager.HorizontalInput * GroundMoveSpeed,
+                StateMachineScript.RunAcceleration);
+    }
+    /*public void PlayerHorizontalMovement()
+    {
         if (CurrentMovementState == GroundMovementStates.Running)
         {
+            
+
             if (Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && StateMachineScript.smPlayerVelocity.X != 0)
             {
-                //brakeFrames = brakeTime * Engine.PhysicsTicksPerSecond;
-
-                //StateMachineScript.BaseDeceleration = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / brakeFrames;
+                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0, StateMachineScript.RunDeceleration);
+            }
+            /*if (Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && StateMachineScript.smPlayerVelocity.X != 0)
+            {
                 StateMachineScript.BaseDeceleration = 20.0f;
 
                 StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunDeceleration);
@@ -685,8 +797,31 @@ public partial class GroundState : States
                 StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
             }
 
+            if (Mathf.IsZeroApprox(StateMachineScript.smPlayerVelocity.X))
+            {
 
+            }
         }
+    }*/
+
+    private void EnterBraking()
+    {
+        braking = true;
+
+        StateMachineScript.BaseDeceleration =
+            Mathf.Abs(StateMachineScript.smPlayerVelocity.X) /
+            (BrakeStopTime * Engine.PhysicsTicksPerSecond);
+
+        CurrentMovementState = GroundMovementStates.Braking;
+    }
+
+    private void BeginCoast()
+    {
+        braking = true;
+
+        StateMachineScript.BaseDeceleration =
+            Mathf.Abs(StateMachineScript.smPlayerVelocity.X) /
+            (BrakeStopTime * Engine.PhysicsTicksPerSecond);
     }
     #endregion
 }
