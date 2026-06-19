@@ -570,7 +570,7 @@ states/WALLJUMPOUT/position = Vector2(-161, 15)
 states/WALLPOWERSLIDEOUT/node = SubResource("AnimationNodeBlendSpace1D_x63xi")
 states/WALLPOWERSLIDEOUT/position = Vector2(-143, -64)
 transitions = ["Start", "GROUNDREGULARJUMP", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "Start", "WALLPOWERSLIDEOUT", SubResource("AnimationNodeStateMachineTransition_k22kr"), "Start", "WALLJUMPOUT", SubResource("AnimationNodeStateMachineTransition_h4i3a"), "Start", "WALLDIVEOUT", SubResource("AnimationNodeStateMachineTransition_s7lb4"), "Start", "LADDERJUMP", SubResource("AnimationNodeStateMachineTransition_omi2y"), "Start", "GROUNDRUNNINGJUMP", SubResource("AnimationNodeStateMachineTransition_opjds"), "Start", "GROUNDHIGHJUMP", SubResource("AnimationNodeStateMachineTransition_6626w"), "Start", "GROUNDSHORTJUMP", SubResource("AnimationNodeStateMachineTransition_867uf")]
-graph_offset = Vector2(-368, -68)
+graph_offset = Vector2(-649, -169)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1e7my"]
 
@@ -737,11 +737,23 @@ blend_point_3/name = &"3"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_arntx"]
 animation = &"LADDER_SLIDE_DOWN"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rxg2u"]
+animation = &"TOP_LADDER_UP_LEFT"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xixlo"]
+animation = &"TOP_LADDER_UP_RIGHT"
+
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_hkrn1"]
 min_space = -1.2
 max_space = 1.2
 value_label = "LastFacing Direction"
 blend_mode = 1
+blend_point_0/node = SubResource("AnimationNodeAnimation_rxg2u")
+blend_point_0/pos = -1.0
+blend_point_0/name = &"TOP_LADDER_UP_LEFT"
+blend_point_1/node = SubResource("AnimationNodeAnimation_xixlo")
+blend_point_1/pos = 1.0
+blend_point_1/name = &"TOP_LADDER_UP_RIGHT"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3rw25"]
 advance_mode = 2
@@ -1088,7 +1100,7 @@ states/GROUNDSLIDING/node = SubResource("AnimationNodeBlendSpace1D_1g8ls")
 states/GROUNDSLIDING/position = Vector2(960, 242)
 states/Start/position = Vector2(702, 12)
 transitions = ["Start", "GROUNDIDLE", SubResource("AnimationNodeStateMachineTransition_avx33"), "GROUNDIDLE", "GROUNDDUCKING", SubResource("AnimationNodeStateMachineTransition_7j56s"), "GROUNDDUCKING", "GROUNDIDLE", SubResource("AnimationNodeStateMachineTransition_24qlq"), "GROUNDDUCKING", "GROUNDCRAWLING", SubResource("AnimationNodeStateMachineTransition_wc235"), "GROUNDCRAWLING", "GROUNDDUCKING", SubResource("AnimationNodeStateMachineTransition_ibc4f"), "GROUNDCRAWLING", "GROUNDROLLING", SubResource("AnimationNodeStateMachineTransition_b4mdf"), "GROUNDROLLING", "GROUNDCRAWLING", SubResource("AnimationNodeStateMachineTransition_p08dw"), "GROUNDROLLING", "GROUNDSLIDING", SubResource("AnimationNodeStateMachineTransition_ygeqm"), "GROUNDSLIDING", "GROUNDROLLING", SubResource("AnimationNodeStateMachineTransition_r3wjv"), "GROUNDSLIDING", "GROUNDPOWERSLIDE", SubResource("AnimationNodeStateMachineTransition_yg2vm"), "GROUNDPOWERSLIDE", "GROUNDROLLING", SubResource("AnimationNodeStateMachineTransition_cqava"), "GROUNDRUN", "GROUNDSLIDING", SubResource("AnimationNodeStateMachineTransition_6m422"), "GROUNDSLIDING", "GROUNDRUN", SubResource("AnimationNodeStateMachineTransition_rmrb7"), "GROUNDRUN", "GROUNDBREAKING", SubResource("AnimationNodeStateMachineTransition_njfn6"), "GROUNDBREAKING", "GROUNDROLLING", SubResource("AnimationNodeStateMachineTransition_5vo8g"), "Start", "GROUNDRUN", SubResource("AnimationNodeStateMachineTransition_yiptt"), "GROUNDIDLE", "GROUNDRUN", SubResource("AnimationNodeStateMachineTransition_megsn"), "GROUNDRUN", "GROUNDIDLE", SubResource("AnimationNodeStateMachineTransition_yoq75"), "GROUNDBREAKING", "GROUNDRUN", SubResource("AnimationNodeStateMachineTransition_6ilcf"), "GROUNDROLLING", "GROUNDRUN", SubResource("AnimationNodeStateMachineTransition_6id3a"), "GROUNDCRAWLING", "GROUNDRUN", SubResource("AnimationNodeStateMachineTransition_w1x0d"), "GROUNDRUN", "GROUNDCRAWLING", SubResource("AnimationNodeStateMachineTransition_ovjwc")]
-graph_offset = Vector2(83, -199)
+graph_offset = Vector2(248, -70)
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_hkrn1"]
 graph_offset = Vector2(-54, -85)
@@ -1397,6 +1409,7 @@ graph_offset = Vector2(5, 43)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
+graph_offset = Vector2(0, -3.0517578e-05)
 nodes/output/position = Vector2(900, 150)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(250, 100)

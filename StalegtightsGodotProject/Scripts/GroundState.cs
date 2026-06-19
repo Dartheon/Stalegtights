@@ -678,7 +678,7 @@ public partial class GroundState : States
     #endregion
 
     #region Methods
-    public void PlayerHorizontalMovement()
+    /*public void PlayerHorizontalMovement()
     {
         if (CurrentMovementState != GroundMovementStates.Running) { return; }
 
@@ -723,6 +723,58 @@ public partial class GroundState : States
         }
 
         StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
+    }*/
+
+    public void PlayerHorizontalMovement()
+    {
+        if (CurrentMovementState != GroundMovementStates.Running && CurrentMovementState != GroundMovementStates.Braking) { return; }
+
+        // NO INPUT: rolling stop / coast
+        if (Mathf.IsZeroApprox(InputManager.HorizontalInput))
+        {
+            CurrentMovementState = GroundMovementStates.Running;
+
+            StateMachineScript.BaseDeceleration = StateMachineScript.BaseDeceleration * Mathf.Lerp(1.4f, 0.35f, Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f));
+
+            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, StateMachineScript.RunDeceleration);
+
+            return;
+        }
+
+        // OPPOSITE INPUT
+        if (Mathf.Abs(InputManager.HorizontalInput) > 0.01f && Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(InputManager.HorizontalInput))
+        {
+            // Very low speed: skip brake animation, just turn around
+            if (Mathf.Abs(InputManager.HorizontalInput) <= GroundMoveSpeed * 0.24f)
+            {
+                CurrentMovementState = GroundMovementStates.Running;
+
+                StateMachineScript.BaseAcceleration = StateMachineScript.BaseAcceleration * 1.8f;
+
+                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
+
+                return;
+            }
+
+            // Higher speed: enter braking
+            if (Mathf.Abs(InputManager.HorizontalInput) >= GroundMoveSpeed * 0.35f)
+            {
+                CurrentMovementState = GroundMovementStates.Braking;
+
+                StateMachineScript.BaseDeceleration = StateMachineScript.GroundBrakeDeceleration;
+
+                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, StateMachineScript.RunDeceleration);
+
+                return;
+            }
+        }
+
+        // NORMAL ACCELERATION
+        CurrentMovementState = GroundMovementStates.Running;
+
+        StateMachineScript.BaseAcceleration = StateMachineScript.BaseAcceleration * Mathf.Lerp(1.0f, 0.35f, Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f) * Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f));
+
+        StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
     }
 
     private void EnterBraking()
@@ -749,93 +801,4 @@ Only then adjust the low-speed turnaround threshold.
 GroundAcceleration = 30f;
 GroundDeceleration = 20f;
 GroundBrakeDeceleration = 55f;
-
-turnaroundThreshold = GroundMoveSpeed * 0.12f;
-brakeThreshold = GroundMoveSpeed * 0.35f;
-public void PlayerHorizontalMovement()
-{
-    if (CurrentMovementState != GroundMovementStates.Running &&
-        CurrentMovementState != GroundMovementStates.Braking)
-    {
-        return;
-    }
-
-    float inputX = InputManager.HorizontalInput;
-    float velocityX = StateMachineScript.smPlayerVelocity.X;
-    float speed = Mathf.Abs(velocityX);
-    float speedPercent = Mathf.Clamp(speed / GroundMoveSpeed, 0f, 1f);
-
-    float turnaroundThreshold = GroundMoveSpeed * 0.12f;
-    float brakeThreshold = GroundMoveSpeed * 0.35f;
-
-    // NO INPUT: rolling stop / coast
-    if (Mathf.IsZeroApprox(inputX))
-    {
-        CurrentMovementState = GroundMovementStates.Running;
-
-        float coastMultiplier = Mathf.Lerp(1.4f, 0.35f, speedPercent);
-        StateMachineScript.BaseDeceleration = GroundDeceleration * coastMultiplier;
-
-        StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(
-            velocityX,
-            0f,
-            StateMachineScript.RunDeceleration
-        );
-
-        return;
-    }
-
-    float inputDirection = Mathf.Sign(inputX);
-    float velocityDirection = Mathf.Sign(velocityX);
-    bool reversing = speed > 0.01f && inputDirection != velocityDirection;
-
-    // OPPOSITE INPUT
-    if (reversing)
-    {
-        // Very low speed: skip brake animation, just turn around
-        if (speed <= turnaroundThreshold)
-        {
-            CurrentMovementState = GroundMovementStates.Running;
-
-            StateMachineScript.BaseAcceleration = GroundAcceleration * 1.8f;
-
-            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(
-                velocityX,
-                inputX * GroundMoveSpeed,
-                StateMachineScript.RunAcceleration
-            );
-
-            return;
-        }
-
-        // Higher speed: enter braking
-        if (speed >= brakeThreshold)
-        {
-            CurrentMovementState = GroundMovementStates.Braking;
-
-            StateMachineScript.BaseDeceleration = GroundBrakeDeceleration;
-
-            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(
-                velocityX,
-                0f,
-                StateMachineScript.RunDeceleration
-            );
-
-            return;
-        }
-    }
-
-    // NORMAL ACCELERATION
-    CurrentMovementState = GroundMovementStates.Running;
-
-    float curvedSpeedPercent = speedPercent * speedPercent;
-    float accelMultiplier = Mathf.Lerp(1.0f, 0.35f, curvedSpeedPercent);
-
-    StateMachineScript.BaseAcceleration = GroundAcceleration * accelMultiplier;
-
-    StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(
-        velocityX,
-        inputX * GroundMoveSpeed,
-        StateMachineScript.RunAcceleration
-    );
-}*/
+*/
