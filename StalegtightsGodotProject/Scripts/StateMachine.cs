@@ -27,8 +27,8 @@ public partial class StateMachine : Node
     public float BaseGravity { get; private set; } = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
     public float GravityModifier { get; set; } = 1.0f;
     public float smGravity => BaseGravity * GravityModifier;
-    public float BaseAcceleration { get; set; } = 30.0f;
-    public float BaseDeceleration { get; set; } = 20.0f;
+    public float BaseAcceleration { get; set; } = 20.0f;
+    public float BaseDeceleration { get; set; } = 10.0f;
     public float GroundBrakeDeceleration { get; set; } = 55f;
     public float RunAccelerationModifier { get; set; } = 1.0f;
     public float RunDecelerationModifier { get; set; } = 1.0f;

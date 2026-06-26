@@ -734,7 +734,7 @@ public partial class GroundState : States
         {
             CurrentMovementState = GroundMovementStates.Running;
 
-            StateMachineScript.BaseDeceleration = StateMachineScript.BaseDeceleration * Mathf.Lerp(1.4f, 0.35f, Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f));
+            StateMachineScript.BaseDeceleration = StateMachineScript.BaseDeceleration * Mathf.Lerp(1.8f, 0.15f, Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f));
 
             StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, StateMachineScript.RunDeceleration);
 
@@ -772,7 +772,7 @@ public partial class GroundState : States
         // NORMAL ACCELERATION
         CurrentMovementState = GroundMovementStates.Running;
 
-        StateMachineScript.BaseAcceleration = StateMachineScript.BaseAcceleration * Mathf.Lerp(1.0f, 0.35f, Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f) * Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f));
+        StateMachineScript.BaseAcceleration = StateMachineScript.BaseAcceleration * Mathf.Lerp(1.0f, 0.20f, Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f) * Mathf.Clamp(Mathf.Abs(InputManager.HorizontalInput) / GroundMoveSpeed, 0f, 1f));
 
         StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
     }

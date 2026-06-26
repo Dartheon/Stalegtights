@@ -783,7 +783,7 @@ advance_expression = "LadderClimbBranch == \"LadderSlideDown\""
 states/AIRTOCLIMB/node = SubResource("AnimationNodeBlendSpace1D_avx33")
 states/AIRTOCLIMB/position = Vector2(217, 184)
 states/CLIMBING/node = SubResource("AnimationNodeBlendSpace2D_rxg2u")
-states/CLIMBING/position = Vector2(471, 5)
+states/CLIMBING/position = Vector2(471, 4)
 states/End/position = Vector2(1125, 4)
 states/GROUNDTOCLIMB/node = SubResource("AnimationNodeBlendSpace2D_xixlo")
 states/GROUNDTOCLIMB/position = Vector2(217, -154)
@@ -1409,7 +1409,6 @@ graph_offset = Vector2(5, 43)
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_kih0c"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_52ee3"]
-graph_offset = Vector2(0, -3.0517578e-05)
 nodes/output/position = Vector2(900, 150)
 nodes/PlayerStateMachine/node = SubResource("AnimationNodeStateMachine_utwlt")
 nodes/PlayerStateMachine/position = Vector2(250, 100)
