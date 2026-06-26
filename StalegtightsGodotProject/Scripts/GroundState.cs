@@ -678,6 +678,7 @@ public partial class GroundState : States
     #endregion
 
     #region Methods
+
     /*public void PlayerHorizontalMovement()
     {
         if (CurrentMovementState != GroundMovementStates.Running) { return; }
