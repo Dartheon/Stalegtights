@@ -228,7 +228,7 @@ public partial class GroundState : States
         #region DEBUG
         //DEBUG Variables Go Here...
         GD.Print(debugtimer);
-        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) == GroundMoveSpeed)
+        if (InputManager.HorizontalInput != 0)
         {
             debugtimer = 0;
         }
@@ -747,7 +747,7 @@ public partial class GroundState : States
             float curve = DecelerationCurve.Sample(t);
 
             StateMachineScript.BaseDeceleration =
-                Mathf.Lerp(2f, 26f, curve);
+                Mathf.Lerp(1.3f, 17.3f, curve);
 
             StateMachineScript.smPlayerVelocity.X =
                 Mathf.MoveToward(
