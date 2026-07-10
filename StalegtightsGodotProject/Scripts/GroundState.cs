@@ -91,15 +91,15 @@ public partial class GroundState : States
 
     [Export] public Curve DecelerationCurve;
 
-    //private float brakeStartSpeed = 0f;
-    //private float brakeDirection = 0f;
-
     private bool isBraking = false;
     private bool brakeWasReverse = false;
     private float brakeTimer = 0f;
     private const float BrakeDuration = 1.1f;
-    private const float BrakeThresholdPercent = 0.30f;
+    private const float BrakeThresholdPercent = 0.5f;
     private const float CoastTime = 0.5f;
+
+    private float brakeStartSpeed = 0f;
+    private float currentBrakeDuration = 0f;
     #endregion
     #endregion
 
@@ -686,8 +686,116 @@ public partial class GroundState : States
     #endregion
 
     #region Methods
-
     public void PlayerHorizontalMovement()
+    {
+        if (CurrentMovementState != GroundMovementStates.Running) { return; }
+
+        //----------------------------------------------------
+        // 1. HARD SNAP (LOW SPEED DIRECTION SWITCH)
+        //----------------------------------------------------
+        if (!Mathf.IsZeroApprox(InputManager.HorizontalInput) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0f && Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= GroundMoveSpeed * BrakeThresholdPercent)
+        {
+            isBraking = false;
+            brakeTimer = 0f;
+            brakeWasReverse = false;
+
+            StateMachineScript.smPlayerVelocity.X = InputManager.HorizontalInput * GroundMoveSpeed * 0.01f;
+            return;
+        }
+
+        //----------------------------------------------------
+        // 2. BRAKE CANCELLATION
+        //----------------------------------------------------
+        if (isBraking && !Mathf.IsZeroApprox(InputManager.HorizontalInput) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0f && Mathf.Sign(InputManager.HorizontalInput) == Mathf.Sign(StateMachineScript.smPlayerVelocity.X))
+        {
+            isBraking = false;
+            brakeTimer = 0f;
+        }
+
+        //----------------------------------------------------
+        // 3. START BRAKING
+        //----------------------------------------------------
+        if (!isBraking)
+        {
+            if (Mathf.IsZeroApprox(InputManager.HorizontalInput))
+            {
+                if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= GroundMoveSpeed * BrakeThresholdPercent)
+                {
+                    StateMachineScript.smPlayerVelocity.X = 0f;
+                    return;
+                }
+
+                isBraking = true;
+                brakeWasReverse = false;
+                brakeTimer = 0f;
+
+                brakeStartSpeed = Mathf.Abs(StateMachineScript.smPlayerVelocity.X);
+
+                currentBrakeDuration = BrakeDuration * (brakeStartSpeed / GroundMoveSpeed);
+
+                currentBrakeDuration = Mathf.Max(0.05f, currentBrakeDuration);
+            }
+            else if (!Mathf.IsZeroApprox(InputManager.HorizontalInput) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0f && Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > GroundMoveSpeed * BrakeThresholdPercent)
+            {
+                isBraking = true;
+                brakeWasReverse = true;
+                brakeTimer = 0f;
+
+                brakeStartSpeed = Mathf.Abs(StateMachineScript.smPlayerVelocity.X);
+
+                currentBrakeDuration = BrakeDuration * (brakeStartSpeed / GroundMoveSpeed);
+
+                currentBrakeDuration = Mathf.Max(0.05f, currentBrakeDuration);
+            }
+        }
+
+        //----------------------------------------------------
+        // 4. BRAKING
+        //----------------------------------------------------
+        if (isBraking)
+        {
+            brakeTimer += 1f / Engine.PhysicsTicksPerSecond;
+
+            if (brakeTimer < CoastTime * (currentBrakeDuration / BrakeDuration))
+            {
+                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, 0.35f);
+            }
+            else
+            {
+                float t = (brakeTimer - CoastTime * (currentBrakeDuration / BrakeDuration)) / (currentBrakeDuration - CoastTime * (currentBrakeDuration / BrakeDuration));
+
+                t = Mathf.Clamp(t, 0f, 1f);
+
+                StateMachineScript.BaseDeceleration = Mathf.Lerp(1.0f, 16f, DecelerationCurve.Sample(t));
+
+                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, StateMachineScript.BaseDeceleration);
+            }
+
+            if (brakeTimer >= currentBrakeDuration || Mathf.IsZeroApprox(StateMachineScript.smPlayerVelocity.X))
+            {
+                StateMachineScript.smPlayerVelocity.X = 0f;
+                isBraking = false;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        //----------------------------------------------------
+        // 5. NORMAL ACCELERATION
+        //----------------------------------------------------
+        float accelCurve = 1f - Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / GroundMoveSpeed;
+
+        accelCurve = Mathf.Max(0.40f, accelCurve);
+        accelCurve *= accelCurve;
+
+        StateMachineScript.BaseAcceleration = 20f * accelCurve;
+
+        StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
+    }
+
+    /*public void PlayerHorizontalMovement()
     {
         if (CurrentMovementState != GroundMovementStates.Running)
             return;
@@ -828,7 +936,7 @@ public partial class GroundState : States
             StateMachineScript.smPlayerVelocity.X,
             input * GroundMoveSpeed,
             StateMachineScript.RunAcceleration);
-    }
+    }*/
 
     /*public void PlayerHorizontalMovement()
     {
