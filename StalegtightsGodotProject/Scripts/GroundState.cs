@@ -731,7 +731,8 @@ public partial class GroundState : States
 
                 brakeStartSpeed = Mathf.Abs(StateMachineScript.smPlayerVelocity.X);
 
-                currentBrakeDuration = BrakeDuration * (brakeStartSpeed / GroundMoveSpeed);
+                //Changing the float at the end of the POW with change the stop time at lower that max speed - 1.5f is about 0.4 seconds
+                currentBrakeDuration = BrakeDuration * Mathf.Pow(brakeStartSpeed / GroundMoveSpeed, 1.5f);
 
                 currentBrakeDuration = Mathf.Max(0.05f, currentBrakeDuration);
             }
@@ -743,7 +744,7 @@ public partial class GroundState : States
 
                 brakeStartSpeed = Mathf.Abs(StateMachineScript.smPlayerVelocity.X);
 
-                currentBrakeDuration = BrakeDuration * (brakeStartSpeed / GroundMoveSpeed);
+                currentBrakeDuration = BrakeDuration * Mathf.Pow(brakeStartSpeed / GroundMoveSpeed, 1.5f);
 
                 currentBrakeDuration = Mathf.Max(0.05f, currentBrakeDuration);
             }
