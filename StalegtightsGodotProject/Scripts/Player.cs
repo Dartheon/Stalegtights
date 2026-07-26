@@ -9,6 +9,7 @@ public partial class Player : CharacterBody2D
     private SoundManager soundManager;
     private GameManager gameManager;
     private InputManager inputManager;
+    private StateMachine stateMachineScript;
     #endregion
 
     #region Sound Queue
@@ -26,6 +27,13 @@ public partial class Player : CharacterBody2D
     public bool PlayerOnLadder { get; set; } = false;
     private float previousLadderPosX = 0.1f;
     public static HashSet<CollisionShape2D> PlayerAboveLadder { get; private set; } = new();
+
+    private RayCast2D stepUpRightHigh;
+    private RayCast2D stepUpRightLow;
+    private RayCast2D stepUpLeftHigh;
+    private RayCast2D stepUpLeftLow;
+
+    private float stepHeight = 32f;
     #endregion
     #endregion
 
@@ -37,11 +45,18 @@ public partial class Player : CharacterBody2D
         soundManager = GetNode<SoundManager>("/root/SoundManager");
         gameManager = GetNode<GameManager>("/root/GameManager");
         inputManager = GetNode<InputManager>("/root/InputManager");
+        stateMachineScript = GetNode<StateMachine>("PLAYERSTATEMACHINE");
 
         Position = spawnPosition;
 
         //assign to new variables to shorten code
         sfxPlayer = slManager.SFXPlayer;
+
+        //Raycasts for step up
+        stepUpRightHigh = GetNode<RayCast2D>("StepUpRightCastHigh");
+        stepUpRightLow = GetNode<RayCast2D>("StepUpRightCastLow");
+        stepUpLeftHigh = GetNode<RayCast2D>("StepUpLeftCastHigh");
+        stepUpLeftLow = GetNode<RayCast2D>("StepUpLeftCastLow");
     }
     #endregion
 
@@ -51,6 +66,23 @@ public partial class Player : CharacterBody2D
         {
             InteractActivate();
             inputManager.PlayerContinuousInputs["interact"] = false;
+        }
+
+        if (stepUpRightLow.IsColliding() && !stepUpRightHigh.IsColliding() && inputManager.RightIntent)
+        {
+            if (stateMachineScript.PlayerState == "GROUND STATE")
+            {
+                // Step upright
+                GlobalPosition += Vector2.Up * stepHeight;
+            }
+        }
+        else if (stepUpLeftLow.IsColliding() && !stepUpLeftHigh.IsColliding() && inputManager.LeftIntent)
+        {
+            if (stateMachineScript.PlayerState == "GROUND STATE")
+            {
+                // Step upleft
+                GlobalPosition += Vector2.Up * stepHeight;
+            }
         }
     }
 
@@ -130,6 +162,7 @@ public partial class Player : CharacterBody2D
     #endregion
 
     #region Player Signals
+    //Interactable Area2D Entered
     public void OnInteractBodyEntered(Area2D area)
     {
         if (area != null && area.IsInGroup("Interactable"))
@@ -153,6 +186,7 @@ public partial class Player : CharacterBody2D
         }
     }
 
+    //Interactable Area2D Exit
     public void OnInteractBodyExited(Area2D area)
     {
         if (area != null && area.IsInGroup("Interactable"))

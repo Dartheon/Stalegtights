@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://dj4sgt4tnpydc" path="res://Scenes/PlayerCamera.tscn" id="9_megsn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_megsn"]
-size = Vector2(100, 119)
+size = Vector2(80, 115)
 
 [sub_resource type="Animation" id="Animation_5v66d"]
 resource_name = "AIR_TO_LADDER_LEFT"
@@ -1433,7 +1433,7 @@ region_rect = Rect2(0, 32, 3072, 252)
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="." unique_id=1181027536]
 modulate = Color(0.675714, 0.804455, 0.5507, 1)
-position = Vector2(1.5, 3.5)
+position = Vector2(-0.5, 5.5)
 shape = SubResource("RectangleShape2D_megsn")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=217634241]
@@ -1477,7 +1477,7 @@ input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea2D" unique_id=136192799]
 modulate = Color(0.756665, 0.510806, 0.447058, 1)
-position = Vector2(2, 18)
+position = Vector2(3, 22)
 shape = SubResource("RectangleShape2D_bhhdu")
 
 [node name="PLAYERSTATEMACHINE" type="Node" parent="." unique_id=673330011]
@@ -1502,6 +1502,22 @@ script = ExtResource("7_glx4g")
 
 [node name="PlayerCamera" parent="." unique_id=730007022 instance=ExtResource("9_megsn")]
 unique_name_in_owner = true
+
+[node name="StepUpRightCastHigh" type="RayCast2D" parent="." unique_id=615328339]
+position = Vector2(0, 6)
+target_position = Vector2(45, 0)
+
+[node name="StepUpRightCastLow" type="RayCast2D" parent="." unique_id=472882705]
+position = Vector2(0, 52)
+target_position = Vector2(45, 0)
+
+[node name="StepUpLeftCastHigh" type="RayCast2D" parent="." unique_id=1130431462]
+position = Vector2(0, 6)
+target_position = Vector2(-45, 0)
+
+[node name="StepUpLeftCastLow" type="RayCast2D" parent="." unique_id=391467959]
+position = Vector2(0, 52)
+target_position = Vector2(-45, 0)
 
 [connection signal="animation_started" from="PlayerAnimationTree" to="PLAYERSTATEMACHINE" method="CurrentAnimationStartPlaying"]
 [connection signal="area_entered" from="InteractArea2D" to="." method="OnInteractBodyEntered"]

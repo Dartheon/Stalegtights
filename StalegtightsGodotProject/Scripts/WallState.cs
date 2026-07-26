@@ -33,7 +33,7 @@ public partial class WallState : States
     private int enteringDirection; //holds the direction player was when entering the wall
     private int wallDirection;
     private Timer wallDetachTimer;
-    private float waitTimer = 1.0f; //used to control how long player attaches to the wall after no input is detected to hold to wall
+    private float waitTimer = .5f; //used to control how long player attaches to the wall after no input is detected to hold to wall
 
     private Timer wallJumpOutTimer;
     private float jumpOutWaitTimer = 1.0f;
@@ -145,6 +145,7 @@ public partial class WallState : States
 
         wallSlideState = WallSlideState.InitialJump;
         StateMachineScript.smPlayerVelocity = Vector2.Zero;
+        InputManager.PlayerInputBuffers["wall_jump"] = false;
         #endregion
     }
 
