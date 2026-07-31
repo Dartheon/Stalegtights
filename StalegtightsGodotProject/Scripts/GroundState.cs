@@ -567,7 +567,9 @@ public partial class GroundState : States
         #endregion
 
         #region Check if Character is Interacting with a Wall
-        if (PlayerCB2D.IsOnWall())
+        bool onWallDetect = (StateMachineScript.smRaycastWallDetectLeftLow.IsColliding() && StateMachineScript.smRaycastWallDetectLeftHigh.IsColliding()) || (StateMachineScript.smRaycastWallDetectRightLow.IsColliding() && StateMachineScript.smRaycastWallDetectRightHigh.IsColliding());
+
+        if (onWallDetect)
         {
             Vector2 wallNormal = PlayerCB2D.GetWallNormal();
 

@@ -258,7 +258,9 @@ public partial class WallState : States
 
         #region Movement
         #region Check to see if still on wall - if character collider is still interacting with the wall
-        if (PlayerCB2D.IsOnWall() && ((!InputManager.LeftIntent && !InputManager.RightIntent) || (StateMachineScript.smWallDirection < 0 && InputManager.RightIntent) || (StateMachineScript.smWallDirection > 0 && InputManager.LeftIntent)))
+        bool onWallDetect = (StateMachineScript.smRaycastWallDetectLeftLow.IsColliding() && StateMachineScript.smRaycastWallDetectLeftHigh.IsColliding()) || (StateMachineScript.smRaycastWallDetectRightLow.IsColliding() && StateMachineScript.smRaycastWallDetectRightHigh.IsColliding());
+
+        if (onWallDetect && ((!InputManager.LeftIntent && !InputManager.RightIntent) || (StateMachineScript.smWallDirection < 0 && InputManager.RightIntent) || (StateMachineScript.smWallDirection > 0 && InputManager.LeftIntent)))
         {
             if (wallDetachTimer.IsStopped())
             {

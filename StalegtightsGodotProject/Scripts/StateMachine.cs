@@ -80,6 +80,13 @@ public partial class StateMachine : Node
     public bool smDisableDownInput { get; set; } = false;
     public bool smDisableRightInput { get; set; } = false;
     public bool smDisableLeftInput { get; set; } = false;
+
+    //Raycasts
+    public RayCast2D smRaycastWallDetectRightHigh { get; set; }
+    public RayCast2D smRaycastWallDetectRightLow { get; set; }
+    public RayCast2D smRaycastWallDetectLeftHigh { get; set; }
+    public RayCast2D smRaycastWallDetectLeftLow { get; set; }
+    private float stepHeight = 32.1f;
     #endregion
 
     #region Methods
@@ -94,6 +101,12 @@ public partial class StateMachine : Node
         PlayerCB2DAnimPlayer = GetNode<AnimationPlayer>("/root/Main/World/Player/AnimationPlayer");
 
         CharacterStateBranch = "HasNormal"; //To be set somewhere else later, here for testing until other states are ready to use
+
+        //Raycasts for step up
+        smRaycastWallDetectRightHigh = GetNode<RayCast2D>("%StepUpRightCastHigh");
+        smRaycastWallDetectRightLow = GetNode<RayCast2D>("%StepUpRightCastLow");
+        smRaycastWallDetectLeftHigh = GetNode<RayCast2D>("%StepUpLeftCastHigh");
+        smRaycastWallDetectLeftLow = GetNode<RayCast2D>("%StepUpLeftCastLow");
 
         //Sets the State Nodes and Initializes them in order
         foreach (Node stateNode in GetChildren())
@@ -132,6 +145,23 @@ public partial class StateMachine : Node
 
         // Call current state for physics-based updates (after input handling)
         CurrentState.PhysicsUpdate(delta);
+
+        if (smRaycastWallDetectRightLow.IsColliding() && !smRaycastWallDetectRightHigh.IsColliding() && smInputManager.RightIntent)
+        {
+            if (PlayerState == "GROUND STATE" && smPlayerCB2D.IsOnFloor())
+            {
+                // Step upright
+                smPlayerCB2D.GlobalPosition += Vector2.Up * stepHeight;
+            }
+        }
+        else if (smRaycastWallDetectLeftLow.IsColliding() && !smRaycastWallDetectLeftHigh.IsColliding() && smInputManager.LeftIntent)
+        {
+            if (PlayerState == "GROUND STATE" && smPlayerCB2D.IsOnFloor())
+            {
+                // Step upleft
+                smPlayerCB2D.GlobalPosition += Vector2.Up * stepHeight;
+            }
+        }
 
         bool wasOnFloor = smPlayerCB2D.IsOnFloor();
         smPlayerCB2D.Velocity = smPlayerVelocity;

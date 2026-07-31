@@ -198,7 +198,9 @@ public partial class InputManager : Node
             PlayerInputBuffers["ground_jump"] = true;
         }
 
-        if (Input.IsActionJustPressed("jump") && playerCB2D.IsOnWallOnly())
+        bool onWallDetect = (stateMachineScript.smRaycastWallDetectLeftLow.IsColliding() && stateMachineScript.smRaycastWallDetectLeftHigh.IsColliding()) || (stateMachineScript.smRaycastWallDetectRightLow.IsColliding() && stateMachineScript.smRaycastWallDetectRightHigh.IsColliding());
+
+        if (Input.IsActionJustPressed("jump") && onWallDetect)
         {
             PlayerInputBuffers["wall_jump"] = true;
         }
@@ -206,13 +208,13 @@ public partial class InputManager : Node
         //TO DO: add a ground wall jump when in a corner using isonfloor() and isonwall() with a groundjump
 
         //Wall Jump Out
-        if (playerCB2D.IsOnWallOnly() && RightIntent && !LeftIntent && !UpIntent && !DownIntent)
+        if (onWallDetect && RightIntent && !LeftIntent && !UpIntent && !DownIntent)
         {
             PlayerInputBuffers["wall_jump_right"] = true;
             JumpOutWallCancel = false;
         }
 
-        if (playerCB2D.IsOnWallOnly() && LeftIntent && !RightIntent && !UpIntent && !DownIntent)
+        if (onWallDetect && LeftIntent && !RightIntent && !UpIntent && !DownIntent)
         {
             PlayerInputBuffers["wall_jump_left"] = true;
             JumpOutWallCancel = false;
@@ -224,7 +226,7 @@ public partial class InputManager : Node
             JumpOutWallCancel = true;
         }
 
-        if (playerCB2D.IsOnWall() && (UpIntent || DownIntent) && !RightIntent && !LeftIntent)
+        if (onWallDetect && (UpIntent || DownIntent) && !RightIntent && !LeftIntent)
         {
             PlayerInputBuffers["wall_jump_left"] = false;
             PlayerInputBuffers["wall_jump_right"] = false;

@@ -1504,18 +1504,22 @@ script = ExtResource("7_glx4g")
 unique_name_in_owner = true
 
 [node name="StepUpRightCastHigh" type="RayCast2D" parent="." unique_id=615328339]
+unique_name_in_owner = true
 position = Vector2(0, 6)
 target_position = Vector2(45, 0)
 
 [node name="StepUpRightCastLow" type="RayCast2D" parent="." unique_id=472882705]
+unique_name_in_owner = true
 position = Vector2(0, 52)
 target_position = Vector2(45, 0)
 
 [node name="StepUpLeftCastHigh" type="RayCast2D" parent="." unique_id=1130431462]
+unique_name_in_owner = true
 position = Vector2(0, 6)
 target_position = Vector2(-45, 0)
 
 [node name="StepUpLeftCastLow" type="RayCast2D" parent="." unique_id=391467959]
+unique_name_in_owner = true
 position = Vector2(0, 52)
 target_position = Vector2(-45, 0)
 

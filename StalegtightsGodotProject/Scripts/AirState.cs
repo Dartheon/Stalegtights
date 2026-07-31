@@ -224,7 +224,9 @@ public partial class AirState : States
         #endregion
 
         #region Check for Character interacting with the wall
-        if (PlayerCB2D.IsOnWall())
+        bool onWallDetect = (StateMachineScript.smRaycastWallDetectLeftLow.IsColliding() && StateMachineScript.smRaycastWallDetectLeftHigh.IsColliding()) || (StateMachineScript.smRaycastWallDetectRightLow.IsColliding() && StateMachineScript.smRaycastWallDetectRightHigh.IsColliding());
+
+        if (onWallDetect)
         {
             Vector2 wallNormal = PlayerCB2D.GetWallNormal();
 
@@ -243,7 +245,7 @@ public partial class AirState : States
         }
 
 
-        if (!StateMachineScript.smTeleporting && !StateMachineScript.smWallCancel && PlayerCB2D.IsOnWall())
+        if (!StateMachineScript.smTeleporting && !StateMachineScript.smWallCancel && onWallDetect)
         {
             Vector2 wallNormal = PlayerCB2D.GetWallNormal();
 
@@ -254,7 +256,6 @@ public partial class AirState : States
                 return;
             }
         }
-
         #endregion
 
         #region Check if the Character is Grounded
