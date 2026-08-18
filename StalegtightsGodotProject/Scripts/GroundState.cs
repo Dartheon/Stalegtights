@@ -11,7 +11,7 @@ public partial class GroundState : States
     private bool debugTiming = false;
     private bool previousInput = false;
 
-    private float velLimit = 255f;
+    private float velLimit = 500f;
     #endregion
 
     #region General
@@ -717,22 +717,15 @@ public partial class GroundState : States
 
             brakeTimer += 1f / Engine.PhysicsTicksPerSecond;
 
-            if (brakeTimer < CoastTime)
-            {
-                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, 0.35f);
-                StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
-            }
-            else
-            {
-                float t = (brakeTimer - CoastTime) / (DecelerationDuration - CoastTime);
+            float t = (brakeTimer - CoastTime) / (DecelerationDuration - CoastTime);
 
-                t = Mathf.Clamp(t, 0f, 1f);
+            t = Mathf.Clamp(t, 0f, 1f);
 
-                StateMachineScript.BaseDeceleration = Mathf.Lerp(1f, 16f, DecelerationCurve.Sample(t));
+            StateMachineScript.BaseDeceleration = Mathf.Lerp(1f, 16f, DecelerationCurve.Sample(t));
 
-                StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, StateMachineScript.BaseDeceleration);
-                StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
-            }
+            StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, StateMachineScript.BaseDeceleration);
+            StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
+
 
             return;
         }
@@ -763,7 +756,7 @@ public partial class GroundState : States
             // Higher exponent = slower climb near threshold.
             float curve = 1f - Mathf.Pow(t, 1.5f);
 
-            acceleration = Mathf.Lerp(12f, 5f, curve);
+            acceleration = Mathf.Lerp(10f, 5f, curve);
         }
         else
         {
@@ -840,11 +833,3 @@ public partial class GroundState : States
     }
     #endregion
 }
-/*Get normal acceleration feeling good.
-Get coasting feeling good.
-Get braking feeling good.
-Only then adjust the low-speed turnaround threshold.
-GroundAcceleration = 30f;
-GroundDeceleration = 20f;
-GroundBrakeDeceleration = 55f;
-*/
