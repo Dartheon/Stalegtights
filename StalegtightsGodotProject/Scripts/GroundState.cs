@@ -11,7 +11,7 @@ public partial class GroundState : States
     private bool debugTiming = false;
     private bool previousInput = false;
 
-    private float velLimit = 500f;
+    private float velLimit = 5000f;
     #endregion
 
     #region General
