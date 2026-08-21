@@ -787,18 +787,13 @@ public partial class GroundState : States
     {
         brakeTimer = 0f;
 
-        float speed = Mathf.Abs(StateMachineScript.smPlayerVelocity.X);
-
-        float thresholdSpeed = GroundMoveSpeed * BrakeThresholdPercent;
-
         // Map:
         // threshold speed (50%) -> 0
         // maximum speed (100%)  -> 1
-        float speedPercent = Mathf.InverseLerp(thresholdSpeed, GroundMoveSpeed, speed);
+        float speedPercent = Mathf.InverseLerp(GroundMoveSpeed * BrakeThresholdPercent, GroundMoveSpeed, Mathf.Abs(StateMachineScript.smPlayerVelocity.X));
 
-        // 50% speed = 0.25 seconds
-        // 100% speed = 1.00 second
-        currentBrakeDuration = Mathf.Lerp(0.25f, 1.00f, speedPercent);
+        //Adjust the lerp to control brake slide duration
+        currentBrakeDuration = Mathf.Lerp(0.15f, 0.25f, speedPercent);
 
         CurrentMovementState = GroundMovementStates.Braking;
     }
