@@ -761,7 +761,8 @@ public partial class GroundState : States
         {
             float t = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / 600f;
 
-            acceleration = Mathf.Lerp(5f, 7f, Mathf.Pow(t, 2f));
+            //acceleration = Mathf.Lerp(7f, 8f, Mathf.Pow(t, 2f));
+            acceleration = 8f;
 
             // log acceleration times under 600
             if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 100f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 110f)
