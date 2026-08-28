@@ -738,6 +738,67 @@ public partial class GroundState : States
 
         float acceleration;
 
+        //----------------------------------------------------
+        // PHASE 1
+        // 0 -> 350
+        //
+        // Slowly build acceleration.
+        //----------------------------------------------------
+
+        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 350f)
+        {
+            float t = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / 350f;
+
+            acceleration = Mathf.Lerp(2f, 8f, Mathf.Pow(t, 2f));
+        }
+
+        //----------------------------------------------------
+        // PHASE 2
+        // 350 -> 1000
+        //
+        // Strong acceleration.
+        //----------------------------------------------------
+
+        else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 950f)
+        {
+            float t = Mathf.InverseLerp(350f, 950f, Mathf.Abs(StateMachineScript.smPlayerVelocity.X));
+
+            // Strong acceleration through this section.
+            acceleration = Mathf.Lerp(8f, 4f, 1f - Mathf.Pow(t, 2f));
+        }
+
+        //----------------------------------------------------
+        // PHASE 3
+        // 1000+
+        //
+        // Exponential reduction in acceleration.
+        //
+        // The farther above 1000 the player gets,
+        // the smaller the acceleration becomes.
+        //----------------------------------------------------
+
+        else
+        {
+            // Controls how quickly acceleration dies off.
+            // At 1000 velocity: ~8 acceleration
+            // At 1250 velocity: ~3.0
+            // At 1500 velocity: ~1.1
+            // At 1750 velocity: ~0.4
+            // At 2000 velocity: ~0.15
+
+            acceleration = 0.1f + 8f * Mathf.Exp(-Mathf.Abs(StateMachineScript.smPlayerVelocity.X) - 150f / 250f);
+        }
+
+        //----------------------------------------------------
+        // APPLY ACCELERATION
+        //----------------------------------------------------
+
+        StateMachineScript.BaseAcceleration = acceleration;
+
+        StateMachineScript.smPlayerVelocity.X += Mathf.Sign(InputManager.HorizontalInput) * StateMachineScript.RunAcceleration;
+
+        /*float acceleration;
+
         if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < GroundMoveSpeed * BrakeThresholdPercent)
         {
             //----------------------------------------------------
@@ -780,7 +841,7 @@ public partial class GroundState : States
         StateMachineScript.BaseAcceleration = acceleration;
 
         StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
-        StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
+        StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);*/
     }
 
     private void EnterBraking()
