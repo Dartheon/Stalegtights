@@ -9,6 +9,8 @@ public partial class GroundState : States
     private float debugTimer = 0f;
     private float velocityAtRelease = 0f;
     private bool debugTiming = false;
+    float accelOnPressTimer = 0f;
+    float currentHorizontalVelocity= 0f;
     private bool previousInput = false;
 
     private float velLimit = 5000f;
@@ -253,6 +255,15 @@ public partial class GroundState : States
 
                 debugTiming = false;
             }
+        }
+
+        if (currentInput)
+        {
+            accelOnPressTimer += (float)delta;
+        }
+        else
+        {
+            accelOnPressTimer = 0f;
         }
 
         previousInput = currentInput;
@@ -734,37 +745,86 @@ public partial class GroundState : States
         // INPUT PRESSED
         //----------------------------------------------------
 
-        brakeTimer = 0f;
+        brakeTimer = 0f; 
 
         float acceleration;
 
         //----------------------------------------------------
         // PHASE 1
-        // 0 -> 350
+        // 0 -> 600
         //
-        // Slowly build acceleration.
+        // Quick start that decays slightly.
         //----------------------------------------------------
+        currentHorizontalVelocity = StateMachineScript.smPlayerVelocity.X;
 
-        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 350f)
+        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 600f)
         {
-            float t = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / 350f;
+            float t = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / 600f;
 
-            acceleration = Mathf.Lerp(2f, 8f, Mathf.Pow(t, 2f));
+            acceleration = Mathf.Lerp(12f, 7f, Mathf.Pow(t, 2f));
+
+            // log acceleration times under 600
+            if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 100f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 120f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 200f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 220f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 300f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 320f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 400f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 420f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 500f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 520f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 590f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 600f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
         }
 
         //----------------------------------------------------
         // PHASE 2
-        // 350 -> 1000
+        // 600 -> 1000
         //
-        // Strong acceleration.
+        // Strong acceleration, with gradually increasing decay
         //----------------------------------------------------
 
-        else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 950f)
+        else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 990f)
         {
-            float t = Mathf.InverseLerp(350f, 950f, Mathf.Abs(StateMachineScript.smPlayerVelocity.X));
+            float t = Mathf.InverseLerp(600f, 990f, Mathf.Abs(StateMachineScript.smPlayerVelocity.X));
 
-            // Strong acceleration through this section.
-            acceleration = Mathf.Lerp(8f, 4f, 1f - Mathf.Pow(t, 2f));
+            // First lerp value is decay level1, second value is initial acceleration before decay, third value is final decay value.
+            acceleration = Mathf.Lerp(2f, 7f, 1f - Mathf.Pow(t, 2f));
+
+            // log acceleration times over 600
+            if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 700f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 720f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 800f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 820f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 900f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 920f)
+            {
+               GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 950f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 960f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
+            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 985f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 990f)
+            {
+                GD.Print($"Time to {currentHorizontalVelocity}: {accelOnPressTimer} ");
+            }
         }
 
         //----------------------------------------------------
