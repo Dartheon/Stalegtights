@@ -227,7 +227,7 @@ public partial class GroundState : States
     {
         #region DEBUG
         //DEBUG Variables Go Here...
-        //----------------------------------------------------
+        /*//----------------------------------------------------
         // DEBUG STOP TIMER
         //----------------------------------------------------
 
@@ -266,7 +266,7 @@ public partial class GroundState : States
             accelOnPressTimer = 0f;
         }
 
-        previousInput = currentInput;
+        previousInput = currentInput;*/
         #endregion
 
         #region Animations
@@ -709,7 +709,7 @@ public partial class GroundState : States
         if (!Mathf.IsZeroApprox(InputManager.HorizontalInput) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) > 0f && Mathf.Sign(InputManager.HorizontalInput) != Mathf.Sign(StateMachineScript.smPlayerVelocity.X) && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= GroundMoveSpeed * BrakeThresholdPercent)
         {
             StateMachineScript.smPlayerVelocity.X = InputManager.HorizontalInput * GroundMoveSpeed * 0.01f;
-            StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
+            //StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
 
             return;
         }
@@ -735,7 +735,7 @@ public partial class GroundState : States
             StateMachineScript.BaseDeceleration = Mathf.Lerp(1f, 16f, DecelerationCurve.Sample(t));
 
             StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, StateMachineScript.BaseDeceleration);
-            StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
+            //StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
 
 
             return;
@@ -759,37 +759,13 @@ public partial class GroundState : States
 
         if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < 600f)
         {
-            float t = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / 600f;
-
             //acceleration = Mathf.Lerp(7f, 8f, Mathf.Pow(t, 2f));
             acceleration = 8f;
-
-            // log acceleration times under 600
-            if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 100f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 110f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
-            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 200f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 210f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
-            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 300f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 310f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
-            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 400f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 410f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
-            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 500f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 510f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
         }
 
         //----------------------------------------------------
         // PHASE 2
-        // 600 -> 1000
+        // 600 -> 990
         //
         // Strong acceleration, with gradually increasing decay
         //----------------------------------------------------
@@ -800,24 +776,6 @@ public partial class GroundState : States
 
             // First lerp value is decay level1, second value is initial acceleration before decay, third value is final decay value.
             acceleration = Mathf.Lerp(1f, 7f, 1f - Mathf.Pow(t, 2f));
-
-            // log acceleration times over 600
-            if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 600f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 610f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
-            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 700f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 710f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
-            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 800f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 810f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
-            else if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 900f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 910f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
         }
 
         //----------------------------------------------------
@@ -832,19 +790,7 @@ public partial class GroundState : States
 
         else
         {
-            // Controls how quickly acceleration dies off.
-            // At 1000 velocity: ~8 acceleration
-            // At 1250 velocity: ~3.0
-            // At 1500 velocity: ~1.1
-            // At 1750 velocity: ~0.4
-            // At 2000 velocity: ~0.15
-
             acceleration = 0.1f + 8f * Mathf.Exp(-Mathf.Abs(StateMachineScript.smPlayerVelocity.X) - 150f / 250f);
-
-            if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) >= 1000f && Mathf.Abs(StateMachineScript.smPlayerVelocity.X) <= 1001f)
-            {
-                GD.Print($"Time to {currentHorizontalVelocity:F3}: {accelOnPressTimer:F3} ");
-            }
         }
 
         //----------------------------------------------------
@@ -854,52 +800,8 @@ public partial class GroundState : States
         StateMachineScript.BaseAcceleration = acceleration;
 
         StateMachineScript.smPlayerVelocity.X += Mathf.Sign(InputManager.HorizontalInput) * StateMachineScript.RunAcceleration;
-
-        /*float acceleration;
-
-        if (Mathf.Abs(StateMachineScript.smPlayerVelocity.X) < GroundMoveSpeed * BrakeThresholdPercent)
-        {
-            //----------------------------------------------------
-            // PHASE 1
-            // 0% -> BRAKE THRESHOLD
-            //
-            // Slower acceleration.
-            // Target: roughly 1 second to reach threshold.
-            //----------------------------------------------------
-
-            float t = Mathf.Abs(StateMachineScript.smPlayerVelocity.X) / GroundMoveSpeed * BrakeThresholdPercent;
-
-            // Starts reasonably strong, then eases toward
-            // the threshold.
-            //
-            // Higher exponent = slower climb near threshold.
-            float curve = 1f - Mathf.Pow(t, 1.5f);
-
-            acceleration = Mathf.Lerp(10f, 5f, curve);
-        }
-        else
-        {
-            //----------------------------------------------------
-            // PHASE 2
-            // BRAKE THRESHOLD -> MAX SPEED
-            //
-            // Much faster acceleration.
-            // Target: roughly 0.5 seconds.
-            //----------------------------------------------------
-
-            float t = Mathf.InverseLerp(GroundMoveSpeed * BrakeThresholdPercent, GroundMoveSpeed, Mathf.Abs(StateMachineScript.smPlayerVelocity.X));
-
-            // Strong acceleration immediately after threshold,
-            // then taper as we approach max speed.
-            float curve = 1f - Mathf.Pow(t, 2f);
-
-            acceleration = Mathf.Lerp(28f, 8f, curve);
-        }
-
-        StateMachineScript.BaseAcceleration = acceleration;
-
-        StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, InputManager.HorizontalInput * GroundMoveSpeed, StateMachineScript.RunAcceleration);
-        StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);*/
+        ;
+        //StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);*/
     }
 
     private void EnterBraking()
@@ -924,7 +826,7 @@ public partial class GroundState : States
         if (brakeTimer < CoastTime * (currentBrakeDuration / DecelerationDuration))
         {
             StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, 0.35f);
-            StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
+            //StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
         }
         else
         {
@@ -935,7 +837,7 @@ public partial class GroundState : States
             StateMachineScript.BaseDeceleration = Mathf.Lerp(1f, 16f, DecelerationCurve.Sample(t));
 
             StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0f, StateMachineScript.BaseDeceleration);
-            StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
+            //StateMachineScript.smPlayerVelocity.X = Mathf.Min(StateMachineScript.smPlayerVelocity.X, velLimit);
         }
 
         if (brakeTimer >= currentBrakeDuration || Mathf.IsZeroApprox(StateMachineScript.smPlayerVelocity.X))

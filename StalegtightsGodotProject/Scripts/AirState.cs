@@ -143,10 +143,10 @@ public partial class AirState : States
 
         #region Movement
         #region Check for Climbing Input
-        if (InputManager.HorizontalInput != 0 && StateMachineScript.smPlayerVelocity.X < inAirMoveSpeed && StateMachineScript.smPlayerVelocity.X > -inAirMoveSpeed)
+        /*if (InputManager.HorizontalInput != 0 && StateMachineScript.smPlayerVelocity.X < inAirMoveSpeed && StateMachineScript.smPlayerVelocity.X > -inAirMoveSpeed)
         {
             StateMachineScript.smPlayerVelocity.X = InputManager.HorizontalInput * inAirMoveSpeed;
-        }
+        }*/
 
         if (!StateMachineScript.smTeleporting && PlayerScript.PlayerOnLadder && !InputManager.PlayerInputBuffers["ground_jump"] && StateMachineScript.smLadderDetachTimer <= 0 && InputManager.PlayerContinuousInputs["climb_up"] || InputManager.PlayerContinuousInputs["climb_down"])
         {
@@ -158,7 +158,7 @@ public partial class AirState : States
         #endregion
 
         #region Check Input for Moving Right/Left
-        if (InputManager.HorizontalInput != 0)
+        /*if (InputManager.HorizontalInput != 0)
         {
             StateMachineScript.BaseAcceleration = 20.0f;
 
@@ -181,12 +181,12 @@ public partial class AirState : States
                 StateMachineScript.smPlayerVelocity.X += InputManager.HorizontalInput * StateMachineScript.RunAcceleration * airControlMultiplier;
             }
         }
-        else
+        /*else
         {
             StateMachineScript.BaseAcceleration = 10.0f;
 
             StateMachineScript.smPlayerVelocity.X = Mathf.MoveToward(StateMachineScript.smPlayerVelocity.X, 0, StateMachineScript.RunAcceleration);
-        }
+        }*/
         #endregion
         #endregion
     }
